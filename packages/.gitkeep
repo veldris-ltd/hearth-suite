@@ -1,0 +1,2 @@
+# Shared TypeScript packages live here (e.g. the typed core client generated
+# from the `ffi` crate in P1.8). Empty during P0.1.

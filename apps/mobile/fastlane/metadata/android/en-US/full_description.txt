@@ -1,0 +1,15 @@
+Hearth Suite is an open-source, offline-first productivity suite, the modern heir to Microsoft Works. Writer, Sheets, Records and Calendar live together under one calm home, and everything stays on your device.
+
+Your work never touches a server you do not control. One tap to Seal encrypts a document end to end with post-quantum keys, so only the people you choose can open it, not even Veldris. The optional assistant, Ember, runs entirely on your device, so nothing you write is ever sent anywhere.
+
+What you get:
+- Writer, Sheets, Records and Calendar, in one place
+- Works fully offline, no account and no cloud required
+- One-tap post-quantum end-to-end encryption (Seal)
+- On-device AI that never sends your text off the device
+- Open formats, plus Microsoft Works (.wps/.wks/.wdb) import
+- Free and open source (Apache-2.0)
+
+Unlock with your fingerprint or face; your identity key is held in the device keystore and never leaves it.
+
+Hearth Suite by Veldris Ltd.

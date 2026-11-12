@@ -1,0 +1,45 @@
+# osv-scanner exceptions for the desktop shell's lockfile. Each entry states why
+# the finding cannot be fixed here and expires so it is re-reviewed when Tauri
+# moves off these crates.
+
+[[IgnoredVulns]]
+id = "RUSTSEC-2024-0429"
+ignoreUntil = 2027-04-30
+reason = """
+glib 0.18 VariantStrIter unsoundness. glib is part of the GTK3 stack that Tauri 2
+uses for the Linux webview (webkit2gtk); Hearth Suite never calls
+VariantStrIter. No glib 0.18 fix exists; it goes away with Tauri's move off GTK3.
+"""
+
+[[IgnoredVulns]]
+id = "RUSTSEC-2024-0370"
+ignoreUntil = 2027-04-30
+reason = "proc-macro-error is unmaintained (no vulnerability); a build-time dependency of the GTK3 bindings Tauri 2 uses on Linux."
+
+[[IgnoredVulns]]
+id = "RUSTSEC-2026-0370"
+ignoreUntil = 2027-04-30
+reason = "zvariant is unmaintained (no vulnerability); pulled in by zbus via Tauri's Linux D-Bus integration. No maintained replacement in Tauri 2."
+
+[[IgnoredVulns]]
+id = "RUSTSEC-2026-0371"
+ignoreUntil = 2027-04-30
+reason = "zbus_names is unmaintained (no vulnerability); same zbus chain as RUSTSEC-2026-0370."
+
+[[IgnoredVulns]]
+id = "RUSTSEC-2026-0372"
+ignoreUntil = 2027-04-30
+reason = "zvariant_derive is unmaintained (no vulnerability); same zbus chain as RUSTSEC-2026-0370."
+
+[[IgnoredVulns]]
+id = "GHSA-qwgh-2vcv-g2f7"
+ignoreUntil = 2027-01-31
+reason = """
+block-buffer 0.10.4: a panic inside the compression callback, caught with
+catch_unwind, can leave the buffer cursor invalid (fixed in 0.12.1). Hearth
+Suite's own crates now use block-buffer 0.12.1 (sha2 0.11, hmac 0.13, hkdf
+0.13, argon2 0.6). This lockfile keeps 0.10.4 only through tauri-codegen 2.7
+(sha2 0.10), which runs at build time inside Tauri's proc-macros and is not in
+the shipped binary; its callback is sha2's own compression function, which
+cannot panic. Re-review when Tauri releases a codegen on sha2 0.11.
+"""

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 40" role="img" aria-label="Hearth Suite">
+  <title>Hearth Suite horizontal lockup</title>
+  <g transform="translate(8 8)">
+    <path fill="#E8761A" d="M12 0c2.6 3.1 4.3 5.6 4.3 8.6a4.3 4.3 0 0 1-2.2 3.8c.5-1 .4-2.1-.4-3.1.1 1.4-.6 2.4-1.8 3.2a4.4 4.4 0 0 1-4.2-4.4c0-1.4.6-2.7 1.7-3.8-.2 1 .1 1.8.9 2.4C9.7 4.9 10.3 2.4 12 0z"/>
+  </g>
+  <text x="44" y="27" font-family="Literata, Georgia, serif" font-size="22" font-weight="600" fill="currentColor">Hearth Suite</text>
+</svg>

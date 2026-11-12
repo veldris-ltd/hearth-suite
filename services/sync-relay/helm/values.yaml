@@ -1,0 +1,24 @@
+replicaCount: 2
+
+image:
+  repository: ghcr.io/veldris-ltd/hearth-suite/sync-relay
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 8080
+
+# Wire these to your own Postgres + S3-compatible object store. No Veldris
+# infrastructure is required (AC-RELAY-4).
+config:
+  databaseUrl: ""
+  objectStoreUrl: ""
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: "1"
+    memory: 512Mi

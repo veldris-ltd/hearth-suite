@@ -1,0 +1,86 @@
+# Static and dynamic application security testing (P4.2, AC-SEC).
+#
+# - SAST: CodeQL (JS/TS). Semgrep runs in the main pipeline (ci.yml `sast`,
+#   ci/jobs/sast.sh) so it gates every push on GitHub and GitLab alike.
+# - DAST: OWASP ZAP baseline against the Admin Control Panel service.
+#
+# Supply-chain auditing (cargo-audit/deny, osv-scanner, SBOM) and parser fuzzing
+# live in the main CI pipeline (ci.yml). This workflow adds the SAST/DAST surface.
+name: security
+
+on:
+  push:
+    branches: ["main", "phase-*"]
+  pull_request:
+    branches: ["main"]
+  schedule:
+    - cron: "0 6 * * 1" # weekly, Monday 06:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: security-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ---- SAST: CodeQL for the TypeScript clients -------------------------------
+  codeql:
+    name: SAST (CodeQL, JS/TS)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read # CodeQL reads the workflow run; required on private repositories
+      security-events: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: github/codeql-action/init@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4.39.1
+        with:
+          languages: javascript-typescript
+      # Uploading to code scanning needs GitHub Code Security on a private
+      # repository. Set the repository variable CODE_SCANNING_ENABLED=true once
+      # it is enabled (always on for a public repository); until then the
+      # SARIF report is kept as a build artifact instead.
+      - uses: github/codeql-action/analyze@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4.39.1
+        with:
+          category: "/language:javascript-typescript"
+          upload: ${{ (vars.CODE_SCANNING_ENABLED == 'true' || !github.event.repository.private) && 'always' || 'never' }}
+          output: codeql-results
+      - if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: codeql-sarif
+          path: codeql-results
+          if-no-files-found: ignore
+
+  # ---- DAST: OWASP ZAP baseline against admin-cp -----------------------------
+  dast:
+    name: DAST (ZAP, admin-cp)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Build the admin-cp image
+        run: docker build -f services/admin-cp/Dockerfile -t hearth-admin-cp:scan .
+      - name: Run the service
+        run: |
+          docker run -d --name admincp -p 8080:8080 \
+            -e HEARTH_RP_ID=localhost \
+            -e HEARTH_RP_ORIGIN=http://localhost:8080 \
+            hearth-admin-cp:scan
+          # Wait for the panel to come up.
+          for _ in $(seq 1 30); do
+            if curl -fsS http://localhost:8080/ >/dev/null 2>&1; then break; fi
+            sleep 2
+          done
+      - name: ZAP baseline scan
+        uses: zaproxy/action-baseline@de8ad967d3548d44ef623df22cf95c3b0baf8b25 # v0.15.0
+        with:
+          target: "http://localhost:8080"
+          # Report findings without failing on low-severity warnings; high alerts
+          # surface as a failing rule via the ruleset config.
+          cmd_options: "-I"
+          allow_issue_writing: false

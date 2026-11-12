@@ -1,0 +1,27 @@
+%%{init: {'theme':'neutral'}}%%
+flowchart TB
+    user["User"]:::actor
+    subgraph tb_device["Trust Boundary: User Device (primary)"]
+        ui["UI Shell"]
+        core["Hearth Suite Core"]
+        vault[("Encrypted Vault + SQLite")]
+        ember["Ember Runtime"]
+    end
+    subgraph tb_net["Trust Boundary: Network (untrusted)"]
+        tls["TLS 1.3 channel"]
+    end
+    subgraph tb_cloud["Trust Boundary: Veldris Cloud (optional, semi-trusted)"]
+        relay["Sync Relay (zero-knowledge)"]
+        ident["Key Directory"]
+        obj[("Encrypted Object Store")]
+    end
+    user -->|local input| ui
+    ui --> core
+    core --> vault
+    core --> ember
+    core -->|encrypted blobs only| tls
+    tls --> relay
+    core -->|fetch public keys| tls
+    tls --> ident
+    relay --> obj
+    classDef actor fill:#08427B,color:#fff

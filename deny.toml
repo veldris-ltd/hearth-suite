@@ -1,0 +1,46 @@
+# cargo-deny configuration, supply-chain and licence gate for the Rust core.
+# Backs AC-FND-2 (open-licence compliance) and feeds the CI audit stage (P0.2).
+# Run locally with `cargo deny check` (or `just lint` once deps land).
+
+[graph]
+all-features = true
+
+[licenses]
+# Only OSI-approved permissive / copyleft-compatible licences are allowed.
+# Anything outside this list (or unknown) fails the check.
+confidence-threshold = 0.9
+# The allow-list is intentionally broad (forward-looking); don't warn on
+# entries no current dependency happens to use.
+unused-allowed-license = "allow"
+allow = [
+    "Apache-2.0",
+    "Apache-2.0 WITH LLVM-exception",
+    "MIT",
+    "MITNFA",
+    "BSD-2-Clause",
+    "BSD-3-Clause",
+    "ISC",
+    "Zlib",
+    "Unicode-3.0",
+    "Unicode-DFS-2016",
+    "CC0-1.0",
+    "MPL-2.0",
+    "Unlicense",
+    "BSL-1.0",
+]
+
+[bans]
+multiple-versions = "warn"
+# Forbid external wildcard version requirements, but allow intra-workspace
+# path dependencies (which are inherently unversioned).
+wildcards = "deny"
+allow-wildcard-paths = true
+
+[advisories]
+# Fail on any unfixed advisory; tune severity handling in CI (P0.2).
+yanked = "deny"
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"
+allow-registry = ["https://github.com/rust-lang/crates.io-index"]

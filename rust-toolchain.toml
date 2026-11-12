@@ -1,0 +1,6 @@
+[toolchain]
+# Pinned so every machine and CI platform (GitHub, GitLab image ci/image/Dockerfile)
+# builds and lints with the same compiler; new stable lints arrive only on a
+# deliberate bump of this file together with RUST_VERSION in ci/image/Dockerfile.
+channel = "1.99.0"
+components = ["rustfmt", "clippy"]

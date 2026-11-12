@@ -1,0 +1,28 @@
+Hearth Suite services "{{ .Release.Name }}" deployed to namespace "{{ .Release.Namespace }}".
+
+Enabled services:
+{{- range $name, $svc := .Values.services }}
+{{- if $svc.enabled }}
+  - {{ $name }} (x{{ $svc.replicas | default 1 }})  ->  https://{{ $.Values.ingress.host }}{{ $svc.path }}
+{{- end }}
+{{- end }}
+
+Before use, make sure the "{{ .Values.existingSecret }}" Secret exists with the
+service configuration, for example:
+
+  kubectl -n {{ .Release.Namespace }} create secret generic {{ .Values.existingSecret }} \
+    --from-literal=HEARTH_RELAY_TOKEN_SECRET=... \
+    --from-literal=HEARTH_PUBLISH_TOKEN=... \
+    --from-literal=HEARTH_ROOT_KEY_ID=hearth-release \
+    --from-literal=HEARTH_ROOT_PUBKEY_B64=... \
+    --from-literal=HEARTH_RP_ID=... --from-literal=HEARTH_RP_ORIGIN=https://...
+
+{{- if .Values.ingress.tls.enabled }}
+
+TLS is terminated at the ingress using the "{{ .Values.ingress.tls.secretName }}"
+certificate secret (issue it with cert-manager or provide your own).
+{{- else }}
+
+WARNING: ingress TLS is disabled. Enable `ingress.tls` and provide a certificate;
+the services emit HSTS and assume HTTPS termination upstream.
+{{- end }}

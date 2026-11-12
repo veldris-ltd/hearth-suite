@@ -1,0 +1,9 @@
+# Tauri build output and generated files.
+/target
+/gen
+# Generated icon binaries (produced by `tauri icon` in the package job).
+/icons/*.png
+/icons/*.icns
+/icons/*.ico
+/icons/android/
+/icons/ios/

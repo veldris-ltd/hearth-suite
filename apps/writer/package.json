@@ -1,0 +1,19 @@
+{
+  "name": "@hearth/writer",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Writer, Hearth Suite's word processing editor.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "main": "src/index.ts",
+  "dependencies": {
+    "@hearth/charts": "workspace:*",
+    "@hearth/core-client": "workspace:*",
+    "@hearth/design-system": "workspace:*",
+    "@hearth/lexicon": "workspace:*"
+  },
+  "scripts": {
+    "typecheck": "tsc --build",
+    "test": "node --test tests/writer.test.mjs"
+  }
+}

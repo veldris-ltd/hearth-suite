@@ -1,0 +1,21 @@
+flowchart LR
+    ui["ui-shell (The Mantel)"] --> ffi["core ffi/wasm"]
+    writer["writer"] --> ffi
+    sheets["sheets"] --> ffi
+    records["records"] --> ffi
+    calendar["calendar"] --> ffi
+    ffi --> bundle["core: bundle"]
+    ffi --> ember["core: ember-bridge"]
+    ffi --> crdt["core: crdt-sync"]
+    bundle --> odf["core: odf-io"]
+    bundle --> legacy["core: legacy-import"]
+    bundle --> seal["core: seal"]
+    seal --> crypto["crypto module"]
+    seal --> keymgr["core: key-manager"]
+    ember --> airt["ember runtime"]
+    bundle --> store["core: store"]
+    crdt --> store
+    store --> sqlite["sqlite + vault"]
+    relay["sync-relay"] --> pg["postgres"]
+    admincp["admin-cp"] --> pg
+    ident["key-directory"] --> pg

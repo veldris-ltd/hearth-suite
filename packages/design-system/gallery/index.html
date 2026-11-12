@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hearth Suite Design System, Gallery</title>
+    <!-- The design system itself: generated tokens + vendored fonts + components. -->
+    <link rel="stylesheet" href="/dist/tokens.css" />
+    <link rel="stylesheet" href="/styles/fonts.css" />
+    <link rel="stylesheet" href="/styles/components.css" />
+    <style>
+      /* Gallery-only page chrome (not part of the design system). */
+      body {
+        margin: 0;
+        background: var(--hb-color-bg);
+        color: var(--hb-color-text);
+        font-family: var(--hb-font-sans);
+      }
+      .gall-top {
+        position: sticky;
+        inset-block-start: 0;
+        z-index: var(--hb-z-nav);
+        display: flex;
+        align-items: center;
+        gap: var(--hb-space-3);
+        padding: var(--hb-space-3) var(--hb-space-6);
+        background: var(--hb-color-surface);
+        border-block-end: var(--hb-stroke-hair) solid var(--hb-color-border);
+      }
+      .gall-top h1 {
+        margin: 0;
+        font-family: var(--hb-font-serif);
+        font-size: var(--hb-text-h3);
+        margin-inline-end: auto;
+      }
+      main {
+        max-inline-size: var(--hb-content-max);
+        margin: 0 auto;
+        padding: var(--hb-space-8) var(--hb-space-6) var(--hb-space-24);
+      }
+      section {
+        margin-block-start: var(--hb-space-12);
+      }
+      h2.gall-h {
+        font-family: var(--hb-font-serif);
+        font-size: var(--hb-text-h2);
+        letter-spacing: var(--hb-tracking-h2);
+        border-block-end: var(--hb-stroke-hair) solid var(--hb-color-border);
+        padding-block-end: var(--hb-space-2);
+      }
+      h3.gall-sub {
+        font-size: var(--hb-text-h4);
+        color: var(--hb-color-text-muted);
+        margin-block: var(--hb-space-6) var(--hb-space-3);
+      }
+      .gall-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--hb-space-3);
+        align-items: center;
+      }
+      .gall-grid {
+        display: grid;
+        gap: var(--hb-space-3);
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      }
+      .gall-cell {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--hb-space-1);
+        padding: var(--hb-space-2);
+        border: var(--hb-stroke-hair) solid var(--hb-color-border);
+        border-radius: var(--hb-radius-md);
+        font-size: var(--hb-text-caption);
+        color: var(--hb-color-text-muted);
+        text-align: center;
+      }
+      .gall-swatch {
+        inline-size: 100%;
+        block-size: 44px;
+        border-radius: var(--hb-radius-sm);
+        border: var(--hb-stroke-hair) solid var(--hb-color-border);
+      }
+      .gall-ramp {
+        display: flex;
+        margin-block-end: var(--hb-space-2);
+      }
+      .gall-ramp-stop {
+        flex: 1;
+        block-size: 40px;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        font-size: 9px;
+        padding-block-end: 2px;
+        color: rgba(255, 255, 255, 0.85);
+        font-family: var(--hb-font-mono);
+      }
+      .gall-mono {
+        font-family: var(--hb-font-mono);
+        font-size: var(--hb-text-caption);
+      }
+    </style>
+  </head>
+  <body>
+    <header class="gall-top">
+      <h1>Hearth Suite Design System</h1>
+      <span class="hb-ondevice" id="gall-build">gallery</span>
+      <button class="hb-btn hb-btn--secondary" id="gall-theme" type="button">Toggle theme</button>
+    </header>
+
+    <main>
+      <!-- ============================ FOUNDATIONS ============================ -->
+      <section id="foundations">
+        <h2 class="gall-h">Foundations</h2>
+
+        <h3 class="gall-sub">Semantic colour (computed hex · contrast on surface)</h3>
+        <div class="gall-grid" id="gall-colors"></div>
+
+        <h3 class="gall-sub">Primitive ramps</h3>
+        <div id="gall-ramps"></div>
+
+        <h3 class="gall-sub">Type scale</h3>
+        <div id="gall-type"></div>
+
+        <h3 class="gall-sub">Spacing</h3>
+        <div id="gall-space"></div>
+
+        <h3 class="gall-sub">Radius</h3>
+        <div class="gall-row" id="gall-radius"></div>
+
+        <h3 class="gall-sub">Elevation</h3>
+        <div class="gall-row" id="gall-elev"></div>
+
+        <h3 class="gall-sub">Motion</h3>
+        <div class="gall-row" id="gall-motion"></div>
+
+        <h3 class="gall-sub">Icons (icon())</h3>
+        <div class="gall-grid" id="gall-icons"></div>
+      </section>
+
+      <!-- ============================ COMPONENTS ============================ -->
+      <section>
+        <h2 class="gall-h">Buttons</h2>
+        <div class="gall-row">
+          <button class="hb-btn hb-btn--primary">Primary</button>
+          <button class="hb-btn hb-btn--secondary">Secondary</button>
+          <button class="hb-btn hb-btn--tertiary">Tertiary</button>
+          <button class="hb-btn hb-btn--ghost">Ghost</button>
+          <button class="hb-btn hb-btn--quiet">Quiet</button>
+          <button class="hb-btn hb-btn--seal">Seal</button>
+          <button class="hb-btn hb-btn--danger">Danger</button>
+          <button class="hb-btn hb-btn--primary" disabled>Disabled</button>
+        </div>
+        <h3 class="gall-sub">Sizes</h3>
+        <div class="gall-row">
+          <button class="hb-btn hb-btn--primary hb-btn--sm">Small</button>
+          <button class="hb-btn hb-btn--primary">Default</button>
+          <button class="hb-btn hb-btn--primary hb-btn--lg">Large</button>
+          <button
+            class="hb-btn hb-btn--primary hb-btn--icon"
+            id="gall-iconbtn"
+            aria-label="Icon"
+          ></button>
+        </div>
+        <h3 class="gall-sub">Full width</h3>
+        <button class="hb-btn hb-btn--primary hb-btn--full">Full width</button>
+      </section>
+
+      <section>
+        <h2 class="gall-h">Forms</h2>
+        <div class="gall-grid" style="grid-template-columns: repeat(auto-fill, minmax(240px, 1fr))">
+          <label class="hb-field">
+            <span class="hb-label">Label <span class="req">*</span></span>
+            <input class="hb-input" placeholder="Placeholder" />
+            <span class="hb-hint">A short hint.</span>
+          </label>
+          <label class="hb-field">
+            <span class="hb-label">Select</span>
+            <select class="hb-select">
+              <option>Choose…</option>
+              <option>One</option>
+            </select>
+          </label>
+          <label class="hb-field is-error">
+            <span class="hb-label">With error</span>
+            <input class="hb-input" value="bad value" aria-invalid="true" />
+            <span class="hb-error-text" id="gall-errtext"></span>
+          </label>
+          <label class="hb-field">
+            <span class="hb-label">Lead icon</span>
+            <span class="hb-input-group"
+              ><span class="hb-input-group__icon" id="gall-leadicon"></span
+              ><input class="hb-input" placeholder="Search…"
+            /></span>
+          </label>
+          <label class="hb-field" style="grid-column: 1 / -1">
+            <span class="hb-label">Notes</span>
+            <textarea class="hb-textarea" placeholder="Multi-line…"></textarea>
+          </label>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="gall-h">Selection</h2>
+        <div class="gall-row">
+          <label class="hb-check"
+            ><input type="checkbox" checked /><span class="hb-check__box" id="gall-chk"></span
+            >Checkbox</label
+          >
+          <label class="hb-check"
+            ><input type="checkbox" /><span class="hb-check__box"></span>Unchecked</label
+          >
+          <label class="hb-check hb-check--radio"
+            ><input type="radio" name="r" checked /><span class="hb-check__box"></span>Radio</label
+          >
+          <label class="hb-check hb-check--radio"
+            ><input type="radio" name="r" /><span class="hb-check__box"></span>Radio</label
+          >
+          <label class="hb-switch"
+            ><input type="checkbox" checked /><span class="hb-switch__track"></span>Switch on</label
+          >
+          <label class="hb-switch"
+            ><input type="checkbox" /><span class="hb-switch__track"></span>Switch off</label
+          >
+        </div>
+      </section>
+
+      <section>
+        <h2 class="gall-h">Badges, tags & chips</h2>
+        <div class="gall-row">
+          <span class="hb-badge">neutral</span>
+          <span class="hb-badge hb-badge--primary">primary</span>
+          <span class="hb-badge hb-badge--success">success</span>
+          <span class="hb-badge hb-badge--warning">warning</span>
+          <span class="hb-badge hb-badge--danger">danger</span>
+          <span class="hb-badge hb-badge--info">info</span>
+          <span class="hb-badge hb-badge--seal">seal</span>
+        </div>
+        <div class="gall-row">
+          <span class="hb-tag"
+            >tag<button class="hb-tag__rm" id="gall-tagrm" aria-label="Remove"></button
+          ></span>
+          <span class="hb-sealed" id="gall-sealed"><span>Sealed to Maria</span></span>
+          <span class="hb-ondevice" id="gall-ondevice"><span>On your device</span></span>
+          <span class="hb-coming-soon" id="gall-soon"><span>Coming soon</span></span>
+        </div>
+        <h3 class="gall-sub">Hearth Suite Pro</h3>
+        <div class="gall-row">
+          <span style="font-family: var(--hb-font-serif); font-size: 32px; font-weight: 600"
+            >Hearth Suite<span class="hb-pro-pill">Pro</span></span
+          >
+          <span class="hb-pro-badge" id="gall-probadge"></span>
+          <span class="hb-pro-badge hb-pro-badge--ghost" id="gall-proghost"></span>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="gall-h">Avatars</h2>
+        <div class="gall-row">
+          <span class="hb-avatar hb-avatar--sm">S</span>
+          <span class="hb-avatar">M</span>
+          <span class="hb-avatar hb-avatar--lg">L</span>
+          <span class="hb-avatar hb-avatar--seal">K</span>
+          <span class="hb-avatar-stack">
+            <span class="hb-avatar">A</span><span class="hb-avatar hb-avatar--seal">B</span
+            ><span class="hb-avatar">C</span>
+          </span>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="gall-h">Tabs & segmented</h2>
+        <div class="hb-tabs">
+          <button class="hb-tab" aria-selected="true">Active</button>
+          <button class="hb-tab">Tab</button>
+          <button class="hb-tab">Tab</button>
+        </div>
+        <div class="gall-row" style="margin-block-start: var(--hb-space-4)">
+          <div class="hb-segmented">
+            <button class="is-active">Day</button><button>Week</button><button>Month</button>
+          </div>
+          <span class="hb-tip">Hover me<span class="hb-tip__bubble">A calm tooltip</span></span>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="gall-h">Feedback</h2>
+        <h3 class="gall-sub">Toasts</h3>
+        <div
+          class="gall-row"
+          style="flex-direction: column; align-items: stretch; max-inline-size: 380px"
+        >
+          <div class="hb-toast hb-toast--success">
+            <span class="hb-toast__icon" data-icon="check"></span>
+            <div class="hb-toast__body">
+              <div class="hb-toast__title">Saved</div>
+              <div class="hb-toast__msg">Your changes are on this device.</div>
+            </div>
+          </div>
+          <div class="hb-toast hb-toast--seal">
+            <span class="hb-toast__icon" data-icon="seal"></span>
+            <div class="hb-toast__body"><div class="hb-toast__msg">Sealed to Maria.</div></div>
+          </div>
+          <div class="hb-toast hb-toast--warning">
+            <span class="hb-toast__icon" data-icon="alert"></span>
+            <div class="hb-toast__body">
+              <div class="hb-toast__msg">Imported with changes.</div>
+            </div>
+          </div>
+          <div class="hb-toast hb-toast--danger">
+            <span class="hb-toast__icon" data-icon="alert"></span>
+            <div class="hb-toast__body"><div class="hb-toast__msg">Something went wrong.</div></div>
+          </div>
+        </div>
+        <h3 class="gall-sub">Progress, spinner & skeleton</h3>
+        <div
+          class="gall-row"
+          style="flex-direction: column; align-items: stretch; max-inline-size: 320px"
+        >
+          <div class="hb-progress">
+            <div class="hb-progress__bar" style="inline-size: 60%"></div>
+          </div>
+          <div class="hb-progress">
+            <div class="hb-progress__bar hb-progress__bar--seal" style="inline-size: 40%"></div>
+          </div>
+          <div class="hb-skeleton" style="block-size: 16px"></div>
+          <span class="hb-spinner"></span>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="gall-h">Surfaces</h2>
+        <div
+          class="gall-grid"
+          style="grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); align-items: start"
+        >
+          <div class="hb-card">
+            <div style="padding: var(--hb-space-4)">
+              <strong>Card</strong>
+              <p style="color: var(--hb-color-text-muted); margin: var(--hb-space-1) 0 0">
+                A surface with elev-1.
+              </p>
+            </div>
+          </div>
+          <div class="hb-modal" style="max-inline-size: none">
+            <div class="hb-modal__head"><h3 class="hb-modal__title">Modal title</h3></div>
+            <div class="hb-modal__body">Structured head / body / foot.</div>
+            <div class="hb-modal__foot">
+              <button class="hb-btn hb-btn--quiet">Cancel</button
+              ><button class="hb-btn hb-btn--primary">Confirm</button>
+            </div>
+          </div>
+          <div class="hb-menu">
+            <div class="hb-menu__item">Menu item</div>
+            <div class="hb-menu__item">Another item</div>
+          </div>
+        </div>
+        <h3 class="gall-sub">Table</h3>
+        <div class="hb-table-wrap">
+          <table class="hb-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Role</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="is-selected">
+                <td>Selected row</td>
+                <td>Editor</td>
+              </tr>
+              <tr>
+                <td>Ada</td>
+                <td>Owner</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <h3 class="gall-sub">Empty state</h3>
+        <div class="hb-empty"><div class="hb-empty__title">Nothing here yet</div></div>
+      </section>
+
+      <section>
+        <h2 class="gall-h">Ember panel</h2>
+        <div id="gall-ember" style="max-inline-size: 380px"></div>
+      </section>
+    </main>
+
+    <script type="module" src="/gallery/gallery.mjs"></script>
+  </body>
+</html>

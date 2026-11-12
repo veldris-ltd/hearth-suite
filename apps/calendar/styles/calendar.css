@@ -1,0 +1,483 @@
+/* Hearth Suite Calendar: a calm agenda with a per-source import panel. */
+/* The shared Ember panel sits at the foot of the sidebar (DSG-S8). */
+.hb-cal__ember {
+  margin-block-start: var(--hb-space-3);
+}
+
+.hb-cal {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hb-space-4);
+  padding: var(--hb-space-6);
+  font-family: var(--hb-font-sans);
+  color: var(--hb-color-text);
+}
+.hb-cal__main {
+  display: grid;
+  grid-template-columns: 1fr 17rem;
+  gap: var(--hb-space-4);
+  align-items: start;
+}
+@media (max-width: 820px) {
+  .hb-cal__main {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Titled header + encryption cue, consistent with Records/Writer/Sheets. */
+.hb-cal__header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--hb-space-4);
+  flex-wrap: wrap;
+}
+.hb-cal__title {
+  margin: 0;
+  font-family: var(--hb-font-serif);
+  font-size: var(--hb-text-h2);
+  font-weight: var(--hb-weight-semibold);
+}
+.hb-cal__meta {
+  margin: var(--hb-space-1) 0 0;
+  color: var(--hb-color-text-muted);
+  font-size: var(--hb-text-body-sm);
+}
+.hb-cal__header-right {
+  display: flex;
+  align-items: center;
+  gap: var(--hb-space-4);
+  flex-wrap: wrap;
+}
+.hb-cal__enc {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--hb-space-1);
+  color: var(--hb-color-accent);
+  font-size: var(--hb-text-caption);
+}
+
+.hb-cal__toolbar {
+  display: flex;
+  gap: var(--hb-space-2);
+}
+
+.hb-cal__reminders {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hb-space-2);
+}
+
+.hb-cal__agenda {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hb-space-2);
+}
+.hb-cal__agenda .hb-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--hb-space-3);
+}
+.hb-cal__agenda time {
+  color: var(--hb-color-text-muted);
+  font-size: var(--hb-text-body-sm);
+}
+
+.hb-cal__sources {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hb-space-2);
+  padding: var(--hb-space-3);
+  border: 1px solid var(--hb-color-border);
+  border-radius: var(--hb-radius-md);
+  background: var(--hb-color-surface);
+}
+.hb-cal__sources-title {
+  font-family: var(--hb-font-serif);
+  font-size: var(--hb-text-body-lg);
+  margin: 0;
+}
+.hb-cal__source {
+  display: flex;
+  align-items: center;
+  gap: var(--hb-space-3);
+  justify-content: space-between;
+}
+
+/* ---- DSG-S7: external (not-E2E) vs sealed-local labelling -------------- */
+/* Subscriptions header: these calendars are not end-to-end encrypted. */
+.hb-cal__ext-note,
+.hb-cal__sealed-note {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--hb-space-1);
+  margin: 0;
+  font-size: var(--hb-text-caption);
+  line-height: 1.4;
+}
+.hb-cal__ext-note {
+  color: var(--hb-color-warning-text);
+}
+.hb-cal__sealed-note {
+  color: var(--hb-color-sealed-text);
+}
+.hb-cal__ext-note svg {
+  color: var(--hb-color-warning);
+  flex: 0 0 auto;
+}
+.hb-cal__sealed-note svg {
+  color: var(--hb-color-sealed-icon);
+  flex: 0 0 auto;
+}
+/* Each external source carries a left accent so it never blurs with sealed
+   local calendars, plus a "Not E2E" chip. */
+.hb-cal__source.is-external {
+  padding-inline-start: var(--hb-space-2);
+  border-inline-start: var(--hb-stroke-strong, 2px) solid var(--hb-color-warning);
+}
+.hb-cal__source-name {
+  display: flex;
+  align-items: center;
+  gap: var(--hb-space-2);
+  min-inline-size: 0;
+  flex: 1;
+  font-size: var(--hb-text-body-sm);
+}
+.hb-cal__e2e-chip {
+  flex: 0 0 auto;
+  padding: 1px var(--hb-space-2);
+  border-radius: var(--hb-radius-pill);
+  background: var(--hb-color-warning-bg);
+  color: var(--hb-color-warning-text);
+  font-size: var(--hb-text-caption);
+  white-space: nowrap;
+}
+/* The per-event E2E status banner in the editor dialog. */
+.hb-cal__e2e {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--hb-space-1);
+  padding: var(--hb-space-2) var(--hb-space-3);
+  border-radius: var(--hb-radius-sm);
+  font-size: var(--hb-text-caption);
+  line-height: 1.4;
+}
+.hb-cal__e2e svg {
+  flex: 0 0 auto;
+}
+.hb-cal__e2e--sealed {
+  background: var(--hb-color-sealed-bg);
+  color: var(--hb-color-sealed-text);
+}
+.hb-cal__e2e--sealed svg {
+  color: var(--hb-color-sealed-icon);
+}
+.hb-cal__e2e--ext {
+  background: var(--hb-color-warning-bg);
+  color: var(--hb-color-warning-text);
+}
+.hb-cal__e2e--ext svg {
+  color: var(--hb-color-warning);
+}
+
+@media (max-width: 560px) {
+  .hb-cal__agenda .hb-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* ---- PW-2.8: toolbar, views, sidebar, dialog --------------------------- */
+.hb-cal__toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--hb-space-2);
+  flex-wrap: wrap;
+}
+.hb-cal__nav,
+.hb-cal__views {
+  display: inline-flex;
+  gap: var(--hb-space-1);
+  align-items: center;
+}
+.hb-cal__iconbtn {
+  min-inline-size: 2rem;
+  font-weight: var(--hb-weight-bold);
+}
+
+/* Month grid. */
+.hb-cal__month {
+  border: 1px solid var(--hb-color-border);
+  border-radius: var(--hb-radius-md);
+  overflow: hidden;
+}
+.hb-cal__month-head,
+.hb-cal__week-row {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+.hb-cal__dow {
+  padding: var(--hb-space-1) var(--hb-space-2);
+  font-size: var(--hb-text-caption);
+  color: var(--hb-color-text-muted);
+  background: var(--hb-color-surface-sunken);
+  border-bottom: 1px solid var(--hb-color-border);
+  text-align: center;
+}
+.hb-cal__day {
+  min-block-size: 5.5rem;
+  border-inline-end: 1px solid var(--hb-color-border);
+  border-block-end: 1px solid var(--hb-color-border);
+  padding: 2px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: var(--hb-color-surface);
+}
+.hb-cal__day.is-out {
+  background: var(--hb-color-surface-sunken);
+  color: var(--hb-color-text-muted);
+}
+.hb-cal__day.is-today {
+  outline: 2px solid var(--hb-color-primary);
+  outline-offset: -2px;
+}
+.hb-cal__daynum {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: var(--hb-text-body-sm);
+  text-align: start;
+  cursor: pointer;
+  padding: 0 2px;
+}
+
+/* Event chips. */
+.hb-cal__chip {
+  appearance: none;
+  border: 0;
+  border-inline-start: 3px solid var(--chip, var(--hb-color-primary));
+  background: color-mix(in srgb, var(--chip, var(--hb-color-primary)) 16%, transparent);
+  color: var(--hb-color-text);
+  font: inherit;
+  font-size: var(--hb-text-caption);
+  text-align: start;
+  border-radius: var(--hb-radius-sm);
+  padding: 1px 4px;
+  cursor: pointer;
+  inline-size: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.hb-cal__chip.is-compact {
+  white-space: nowrap;
+}
+
+/* Hour grid (day / week). */
+.hb-cal__hours-wrap {
+  max-block-size: 30rem;
+  overflow: auto;
+  border: 1px solid var(--hb-color-border);
+  border-radius: var(--hb-radius-md);
+}
+.hb-cal__hours {
+  inline-size: 100%;
+  border-collapse: collapse;
+  font-size: var(--hb-text-body-sm);
+}
+.hb-cal__hours th,
+.hb-cal__hours td {
+  border: 1px solid var(--hb-color-border);
+  padding: 2px;
+  vertical-align: top;
+}
+.hb-cal__hours thead,
+.hb-cal__hours tr:first-child th {
+  position: sticky;
+  inset-block-start: 0;
+  background: var(--hb-color-surface-sunken);
+  z-index: 1;
+}
+.hb-cal__hour-col {
+  inline-size: 3.5rem;
+  color: var(--hb-color-text-muted);
+  font-size: var(--hb-text-caption);
+  text-align: end;
+  white-space: nowrap;
+}
+.hb-cal__hours th.is-today {
+  color: var(--hb-color-primary);
+}
+.hb-cal__allday-row td {
+  background: var(--hb-color-surface-sunken);
+}
+
+/* Agenda dot. */
+.hb-cal__dot {
+  inline-size: 0.6rem;
+  block-size: 0.6rem;
+  border-radius: 50%;
+  display: inline-block;
+  margin-inline-end: var(--hb-space-2);
+}
+
+/* Sidebar panels. */
+.hb-cal__sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hb-space-3);
+}
+.hb-cal__panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hb-space-2);
+  padding: var(--hb-space-3);
+  border: 1px solid var(--hb-color-border);
+  border-radius: var(--hb-radius-md);
+  background: var(--hb-color-surface);
+}
+.hb-cal__panel-title {
+  margin: 0;
+  font-family: var(--hb-font-serif, var(--hb-font-sans));
+  font-size: var(--hb-text-body, 1rem);
+}
+.hb-cal__cal-row,
+.hb-cal__check {
+  display: flex;
+  align-items: center;
+  gap: var(--hb-space-2);
+  font-size: var(--hb-text-body-sm);
+}
+.hb-cal__swatch {
+  inline-size: 0.85rem;
+  block-size: 0.85rem;
+  border-radius: 3px;
+}
+.hb-cal__catchips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--hb-space-1);
+}
+.hb-cal__catchip {
+  appearance: none;
+  border: 1px solid var(--hb-color-border);
+  background: var(--hb-color-surface);
+  color: var(--hb-color-text);
+  font: inherit;
+  font-size: var(--hb-text-caption);
+  padding: 1px var(--hb-space-2);
+  border-radius: 999px;
+  cursor: pointer;
+}
+.hb-cal__catchip.is-active {
+  background: var(--hb-color-primary);
+  color: var(--hb-color-on-accent, #fff);
+  border-color: var(--hb-color-primary);
+}
+.hb-cal__todos {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--hb-space-1);
+}
+.hb-cal__todo {
+  display: flex;
+  align-items: center;
+  gap: var(--hb-space-2);
+  font-size: var(--hb-text-body-sm);
+}
+.hb-cal__todo.is-done .hb-cal__todo-title {
+  text-decoration: line-through;
+  color: var(--hb-color-text-muted);
+}
+.hb-cal__todo-due {
+  margin-inline-start: auto;
+  font-size: var(--hb-text-caption);
+  color: var(--hb-color-text-muted);
+}
+
+/* Event + IO dialog. */
+.hb-cal__modal {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--hb-space-6);
+  background: rgb(0 0 0 / 42%);
+  overflow: auto;
+}
+.hb-cal__dialog {
+  inline-size: min(28rem, 94vw);
+  display: flex;
+  flex-direction: column;
+  gap: var(--hb-space-2);
+  padding: var(--hb-space-5);
+  background: var(--hb-color-surface);
+  border: 1px solid var(--hb-color-border);
+  border-radius: var(--hb-radius-md);
+  box-shadow: var(--hb-shadow-2, 0 16px 48px rgb(0 0 0 / 28%));
+}
+.hb-cal__dialog-title {
+  margin: 0 0 var(--hb-space-1);
+  font-family: var(--hb-font-serif, var(--hb-font-sans));
+  font-size: var(--hb-text-body-lg, 1.125rem);
+}
+.hb-cal__field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: var(--hb-text-body-sm);
+}
+.hb-cal__field-label {
+  font-weight: var(--hb-weight-medium);
+}
+.hb-cal__dialog-times {
+  display: flex;
+  gap: var(--hb-space-3);
+}
+.hb-cal__dialog-times .hb-cal__field {
+  flex: 1;
+}
+.hb-cal__dialog-foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--hb-space-2);
+  margin-top: var(--hb-space-2);
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .hb-cal__viewwrap,
+  .hb-cal__viewwrap * {
+    visibility: visible;
+  }
+  .hb-cal__viewwrap {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    inline-size: 100%;
+  }
+  .hb-cal__hours-wrap {
+    max-block-size: none;
+    overflow: visible;
+  }
+}
+
+/* DSG-S1: tint the editor chrome with the calendar module accent. */
+.hb-cal {
+  --hb-color-primary: var(--hb-color-calendar);
+  --hb-color-primary-hover: color-mix(in srgb, var(--hb-color-calendar) 88%, #000);
+  --hb-color-primary-active: color-mix(in srgb, var(--hb-color-calendar) 76%, #000);
+  --hb-color-primary-subtle: var(--hb-color-calendar-bg);
+  --hb-color-primary-subtle-text: var(--hb-color-calendar);
+}

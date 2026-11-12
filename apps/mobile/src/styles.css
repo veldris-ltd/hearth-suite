@@ -1,0 +1,40 @@
+/*
+ * Mobile-only chrome. The workspace layout (rail → bottom bar on narrow
+ * viewports, top bar, content) lives in `@hearth/client-shell/styles/chrome.css`;
+ * this file holds only what is unique to the mobile host, safe-area insets and
+ * the biometric lock screen. Tokens come from @hearth/design-system.
+ */
+
+/* Respect notches / home indicators. */
+body {
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom)
+    env(safe-area-inset-left);
+}
+
+/* The biometric lock screen shown until access is granted (AC-MOB-3). */
+.hb-lock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--hb-space-4, 1rem);
+  min-block-size: 100dvh;
+  padding: var(--hb-space-6, 2rem);
+  text-align: center;
+  background: var(--hb-color-bg);
+  color: var(--hb-color-text);
+}
+.hb-lock__brand {
+  color: var(--hb-color-primary);
+}
+.hb-lock__title {
+  margin: 0;
+  font-family: var(--hb-font-serif);
+  font-size: var(--hb-text-h2);
+  font-weight: var(--hb-weight-semibold);
+}
+.hb-lock p {
+  margin: 0;
+  max-inline-size: 22rem;
+  color: var(--hb-color-text-muted);
+}

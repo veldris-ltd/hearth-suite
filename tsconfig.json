@@ -1,0 +1,21 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./apps/shell" },
+    { "path": "./apps/writer" },
+    { "path": "./apps/sheets" },
+    { "path": "./apps/records" },
+    { "path": "./apps/calendar" },
+    { "path": "./apps/desktop" },
+    { "path": "./apps/mobile" },
+    { "path": "./apps/admin" },
+    { "path": "./packages/core-client" },
+    { "path": "./packages/design-system" },
+    { "path": "./packages/lexicon" },
+    { "path": "./packages/contacts" },
+    { "path": "./packages/charts" },
+    { "path": "./packages/help" },
+    { "path": "./packages/legacy" },
+    { "path": "./packages/client-shell" }
+  ]
+}

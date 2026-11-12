@@ -1,0 +1,51 @@
+[package]
+name = "hearth-ffi"
+description = "FFI / WASM bindings exposing the Hearth Suite core to desktop (Tauri) and mobile clients."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+publish = false
+
+# The binding surface ships as a Rust rlib (path dep for the desktop host), a
+# C-ABI dynamic library (`cdylib` -> Android `libhearth_ffi.so`) and a static
+# library (`staticlib` -> iOS `libhearth_ffi.a`). The WASM target is added
+# alongside via the `wasm` feature.
+[lib]
+crate-type = ["lib", "cdylib", "staticlib"]
+
+[dependencies]
+hearth-bundle = { path = "../bundle" }
+hearth-store = { path = "../store" }
+hearth-seal = { path = "../seal" }
+hearth-key-manager = { path = "../key-manager" }
+hearth-lexicon = { path = "../lexicon" }
+hearth-legacy-import = { path = "../legacy-import" }
+hearth-ember-bridge = { path = "../ember-bridge" }
+hearth-crdt-sync = { version = "0.0.0", path = "../crdt-sync" }
+serde_json = "1.0.150"
+base64 = "0.22.1"
+futures = "0.3.32"
+thiserror = "2.0.18"
+ts-rs = "12.0.1"
+serde = { version = "1.0.228", features = ["derive"] }
+wasm-bindgen = { version = "0.2.122", optional = true }
+serde-wasm-bindgen = { version = "0.6.5", optional = true }
+jni = { version = "0.21", optional = true }
+uuid = "1.20.0"
+
+[lints]
+workspace = true
+
+# `wasm` pulls in the wasm-bindgen surface (built only for the wasm32 target in
+# the web CI job). `jni` adds the Android JNI exports for the Capacitor plugin
+# (built for the android targets via cargo-ndk). The default build is the native
+# C-ABI facade (used by iOS' static lib and the desktop rlib).
+[features]
+wasm = ["dep:wasm-bindgen", "dep:serde-wasm-bindgen"]
+jni = ["dep:jni"]
+
+[dev-dependencies]
+tempfile = "3.27.0"

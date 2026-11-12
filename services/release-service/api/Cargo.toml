@@ -1,0 +1,30 @@
+# The release/update service (TUF). NOT a workspace member (see root Cargo.toml
+# `exclude`): it pulls a web stack provisioned only on the service runners. It
+# depends on the in-workspace `hearth-release` (TUF metadata + verification) and
+# `hearth-seal` (role signing) by path; built by `.github/workflows/services.yml`.
+[package]
+name = "hearth-release-service"
+version = "0.0.0"
+edition = "2021"
+rust-version = "1.82"
+description = "Hearth Suite release/update service, TUF-signed metadata and channels."
+license = "Apache-2.0"
+authors = ["Veldris Ltd."]
+publish = false
+
+[[bin]]
+name = "hearth-release-service"
+path = "src/main.rs"
+
+[dependencies]
+hearth-release = { path = "../../../crates/release" }
+hearth-seal = { path = "../../../crates/seal" }
+hearth-observability = { path = "../../../crates/observability" }
+axum = "0.7"
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "signal"] }
+tower-http = { version = "0.6", features = ["trace", "set-header"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["json", "env-filter"] }
+base64 = "0.22"

@@ -1,0 +1,726 @@
+/* Hearth Suite Records: a calm database. Form view (novice default) + a typed Table
+ * view with no-code relations. Token-driven; themes with the system. */
+
+.hb-records {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hb-space-5);
+  padding: var(--hb-space-8);
+  font-family: var(--hb-font-sans);
+  color: var(--hb-color-text);
+}
+
+/* Header: title + count, view toggle, and actions. */
+.hb-records__header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--hb-space-4);
+  flex-wrap: wrap;
+}
+.hb-records__title {
+  margin: 0;
+  font-family: var(--hb-font-serif);
+  font-size: var(--hb-text-h2);
+  font-weight: var(--hb-weight-semibold);
+}
+.hb-records__count {
+  margin: var(--hb-space-1) 0 0;
+  color: var(--hb-color-text-muted);
+  font-size: var(--hb-text-body-sm);
+}
+/* The "Encrypted on this device" cue, matching Sheets and Calendar. */
+.hb-records__enc {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--hb-space-1);
+  color: var(--hb-color-accent);
+  font-size: var(--hb-text-caption);
+}
+.hb-records__enc svg {
+  flex: 0 0 auto;
+}
+.hb-records__header-right {
+  display: flex;
+  align-items: center;
+  gap: var(--hb-space-3);
+  flex-wrap: wrap;
+}
+.hb-records__seg {
+  display: inline-flex;
+  padding: 2px;
+  border: 1px solid var(--hb-color-border);
+  border-radius: var(--hb-radius-md);
+  background: var(--hb-color-surface-sunken);
+}
+.hb-records__seg .hb-tab {
+  min-height: 2rem;
+  padding-block: var(--hb-space-1);
+  border: none;
+  border-radius: var(--hb-radius-sm);
+}
+.hb-records__seg .hb-tab[aria-selected="true"] {
+  background: var(--hb-color-surface);
+  color: var(--hb-color-text);
+  box-shadow: var(--hb-elev-1);
+}
+.hb-records__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--hb-space-2);
+  flex-wrap: wrap;
+}
+
+/* Form view: a simple, labelled column, the novice default. */
+.hb-records__form {
+  display: grid;
+  grid-template-columns: 8rem 1fr;
+  gap: var(--hb-space-3);
+  align-items: center;
+  /* v1.0 form card ≈ 560px. */
+  max-inline-size: 560px;
+}
+.hb-records__form label {
+  color: var(--hb-color-text-muted);
+  font-size: var(--hb-text-body-sm);
+}
+.hb-records__form-actions,
+.hb-records__form .hb-field__error {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: var(--hb-space-2);
+}
+
+/* Table view: typed columns, avatar name cell, add-column affordance. */
+.hb-records__table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--hb-color-border);
+  border-radius: var(--hb-radius-lg);
+}
+.hb-records__table {
+  font-size: var(--hb-text-body-sm);
+}
+.hb-records__table th {
+  background: var(--hb-color-surface-sunken);
+  vertical-align: top;
+}
+/* In-grid cell editor (D4): borderless until focused, fills the cell. */
+.hb-records__listcell {
+  inline-size: 100%;
+  min-inline-size: 5rem;
+  border: 1px solid transparent;
+  border-radius: var(--hb-radius-sm, 4px);
+  background: transparent;
+  padding: var(--hb-space-1) var(--hb-space-2);
+  font: inherit;
+  color: inherit;
+}
+.hb-records__listcell:hover {
+  border-color: var(--hb-color-border);
+}
+.hb-records__listcell:focus {
+  outline: none;
+  border-color: var(--hb-color-primary);
+  background: var(--hb-color-surface);
+}
+.hb-records__listcell-bool {
+  margin: var(--hb-space-1);
+}
+.hb-records__col-name {
+  display: block;
+  font-weight: var(--hb-weight-semibold);
+  color: var(--hb-color-text);
+}
+.hb-records__col-type {
+  display: block;
+  margin-block-start: 2px;
+  font-size: var(--hb-text-caption);
+  letter-spacing: 0.06em;
+  color: var(--hb-color-text-muted);
+}
+.hb-records__add-col {
+  inline-size: 3rem;
+  text-align: center;
+}
+/* The Key column: each record's sharing/verification state (DSG-S9). */
+.hb-records__key-col {
+  white-space: nowrap;
+}
+.hb-records__key {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--hb-space-1);
+  font-size: var(--hb-text-caption);
+}
+.hb-records__key.hb-sealed {
+  padding: 2px var(--hb-space-2);
+  font-size: var(--hb-text-caption);
+  font-weight: var(--hb-weight-medium);
+}
+.hb-records__key.hb-sealed svg {
+  inline-size: 12px;
+  block-size: 12px;
+}
+.hb-records__key--off {
+  color: var(--hb-color-text-subtle);
+}
+/* Status / Select values render as a calm pill in the Table view. */
+.hb-records__tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px var(--hb-space-2);
+  border-radius: var(--hb-radius-pill);
+  font-size: var(--hb-text-caption);
+  background: var(--hb-color-surface-sunken);
+  color: var(--hb-color-text-muted);
+}
+.hb-records__tag--status {
+  background: var(--hb-color-primary-subtle);
+  color: var(--hb-color-primary-subtle-text);
+}
+.hb-records__add-col-btn {
+  inline-size: 1.75rem;
+  block-size: 1.75rem;
+  border: 1px solid var(--hb-color-border);
+  border-radius: var(--hb-radius-sm);
+  background: var(--hb-color-surface);
+  color: var(--hb-color-text-muted);
+  cursor: pointer;
+  line-height: 1;
+}
+.hb-records__add-col-btn:hover {
+  color: var(--hb-color-text);
+}
+.hb-records__name-cell {
+  display: flex;
+  align-items: center;
+  gap: var(--hb-space-2);
+}
+.hb-records__avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 1.75rem;
+  block-size: 1.75rem;
+  flex: 0 0 auto;
+  border-radius: var(--hb-radius-pill);
+  background: var(--hb-color-primary);
+  color: var(--hb-color-text-on-primary);
+  font-size: var(--hb-text-caption);
+  font-weight: var(--hb-weight-semibold);
+}
+.hb-records__empty-cell {
+  padding: var(--hb-space-8) var(--hb-space-4);
+  text-align: center;
+  color: var(--hb-color-text-muted);
+}
+
+/* No-code relations panel (progressive depth). */
+.hb-records__relations-label {
+  margin-block-end: var(--hb-space-2);
+  color: var(--hb-color-text-muted);
+  font-size: var(--hb-text-caption);
+  font-weight: var(--hb-weight-semibold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.hb-records__relation {
+  display: flex;
+  align-items: center;
+  gap: var(--hb-space-4);
+  flex-wrap: wrap;
+}
+.hb-records__relation-node {
+  padding: var(--hb-space-3) var(--hb-space-4);
+  border: 1px solid var(--hb-color-border);
+  border-radius: var(--hb-radius-md);
+  background: var(--hb-color-surface);
+  text-align: center;
+  min-inline-size: 9rem;
+}
+.hb-records__relation-title {
+  font-family: var(--hb-font-serif);
+  font-weight: var(--hb-weight-semibold);
+}
+.hb-records__relation-meta {
+  color: var(--hb-color-text-muted);
+  font-size: var(--hb-text-body-sm);
+}
+.hb-records__relation-link {
+  color: var(--hb-color-text-muted);
+  font-size: var(--hb-text-caption);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.hb-records__relation-note {
+  flex-basis: 100%;
+  margin: 0;
+  color: var(--hb-color-text-muted);
+  font-size: var(--hb-text-body-sm);
+}
+
+.hb-records__ember {
+  margin-block-start: var(--hb-space-4);
+  max-inline-size: 28rem;
+}
+
+@media (max-width: 560px) {
+  .hb-records {
+    padding: var(--hb-space-5);
+  }
+  .hb-records__form {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---- PW-2.6: form navigation, designer, list, dialogs ------------------- */
+
+/* Form view + record navigation. */
+.hb-records__formview {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hb-space-3);
+}
+.hb-records__nav {
+  display: flex;
+  align-items: center;
+  gap: var(--hb-space-2);
+  padding: var(--hb-space-2) 0;
+}
+.hb-records__nav:focus-visible {
+  outline: var(--hb-size-focus-ring) solid var(--hb-color-ring);
+  outline-offset: 2px;
+  border-radius: var(--hb-radius-sm);
+}
+.hb-records__nav-btn {
+  appearance: none;
+  border: 1px solid var(--hb-color-border);
+  background: var(--hb-color-surface);
+  color: var(--hb-color-text);
+  font: inherit;
+  min-inline-size: 2rem;
+  padding: var(--hb-space-1) var(--hb-space-2);
+  border-radius: var(--hb-radius-sm);
+  cursor: pointer;
+}
+.hb-records__nav-btn[disabled] {
+  opacity: 0.4;
+  cursor: default;
+}
+.hb-records__nav-counter {
+  font-variant-numeric: tabular-nums;
+  font-size: var(--hb-text-body-sm);
+  color: var(--hb-color-text-muted);
+  min-inline-size: 5rem;
+  text-align: center;
+}
+.hb-records__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hb-space-1);
+  margin-block-end: var(--hb-space-3);
+}
+.hb-records__field-label {
+  font-size: var(--hb-text-body-sm);
+  font-weight: var(--hb-weight-medium);
+  color: var(--hb-color-text);
+}
+.hb-records__field-hint {
+  font-size: var(--hb-text-caption);
+  color: var(--hb-color-text-muted);
+  font-family: var(--hb-font-mono);
+}
+.hb-records__form--free {
+  position: relative;
+  min-block-size: 22rem;
+  border: 1px dashed var(--hb-color-border);
+  border-radius: var(--hb-radius-md);
+  padding: var(--hb-space-3);
+}
+.hb-records__form--free .hb-records__field {
+  inline-size: 16rem;
+}
+
+/* Form designer. */
+.hb-records__designer {
+  position: relative;
+  min-block-size: 24rem;
+  border: 1px dashed var(--hb-color-primary);
+  border-radius: var(--hb-radius-md);
+  background: var(--hb-color-surface-sunken);
+  overflow: hidden;
+}
+.hb-records__designer-note {
+  position: absolute;
+  inset-block-start: var(--hb-space-2);
+  inset-inline-start: var(--hb-space-3);
+  font-size: var(--hb-text-caption);
+  color: var(--hb-color-text-muted);
+  max-inline-size: 60%;
+}
+.hb-records__design-field,
+.hb-records__design-image {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--hb-space-2);
+  padding: var(--hb-space-2) var(--hb-space-3);
+  background: var(--hb-color-surface);
+  border: 1px solid var(--hb-color-border);
+  border-radius: var(--hb-radius-sm);
+  box-shadow: var(--hb-elev-1, 0 1px 3px rgb(0 0 0 / 12%));
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+.hb-records__design-field:active,
+.hb-records__design-image:active {
+  cursor: grabbing;
+}
+.hb-records__design-grip {
+  color: var(--hb-color-text-muted);
+}
+.hb-records__design-type {
+  font-size: var(--hb-text-caption);
+  color: var(--hb-color-text-muted);
+}
+.hb-records__design-image img {
+  max-inline-size: 8rem;
+  max-block-size: 6rem;
+  display: block;
+}
+.hb-records__designer-tools {
+  position: absolute;
+  inset-block-end: var(--hb-space-3);
+  inset-inline-end: var(--hb-space-3);
+  display: flex;
+  gap: var(--hb-space-2);
+}
+
+/* List view extras. */
+.hb-records__listbar {
+  display: flex;
+  align-items: center;
+  gap: var(--hb-space-3);
+  margin-block-end: var(--hb-space-2);
+}
+.hb-records__check {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--hb-space-1);
+  font-size: var(--hb-text-body-sm);
+}
+.hb-records__th {
+  position: relative;
+}
+.hb-records__col-sort {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: start;
+}
+.hb-records__col-hide {
+  position: absolute;
+  inset-block-start: 2px;
+  inset-inline-end: 2px;
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--hb-color-text-muted);
+  cursor: pointer;
+  font-size: var(--hb-text-body-sm);
+  opacity: 0;
+}
+.hb-records__th:hover .hb-records__col-hide {
+  opacity: 1;
+}
+.hb-records__mark-col {
+  inline-size: 2rem;
+  text-align: center;
+}
+.hb-records__star {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font-size: var(--hb-text-body);
+  color: var(--hb-color-primary);
+}
+.hb-records__rowopen {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--hb-color-text);
+  font: inherit;
+  cursor: pointer;
+  text-align: start;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.hb-records__table tr.is-marked td {
+  background: color-mix(in srgb, var(--hb-color-primary) 10%, transparent);
+}
+
+/* Filter status chips. */
+.hb-records__filterbar {
+  display: flex;
+  align-items: center;
+  gap: var(--hb-space-2);
+  margin-block-end: var(--hb-space-2);
+}
+.hb-records__chip {
+  font-size: var(--hb-text-body-sm);
+  padding: var(--hb-space-1) var(--hb-space-3);
+  border-radius: 999px;
+  background: var(--hb-color-surface-sunken);
+  border: 1px solid var(--hb-color-border);
+}
+
+/* Dialogs (filter, sort, export, import, add field). */
+.hb-records__modal {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--hb-space-6);
+  background: rgb(0 0 0 / 42%);
+  overflow: auto;
+}
+.hb-records__dialog {
+  inline-size: min(34rem, 94vw);
+  display: flex;
+  flex-direction: column;
+  gap: var(--hb-space-3);
+  padding: var(--hb-space-5);
+  background: var(--hb-color-surface);
+  border: 1px solid var(--hb-color-border);
+  border-radius: var(--hb-radius-md);
+  box-shadow: var(--hb-shadow-2, 0 16px 48px rgb(0 0 0 / 28%));
+}
+.hb-records__dialog-title {
+  margin: 0;
+  font-family: var(--hb-font-serif, var(--hb-font-sans));
+  font-size: var(--hb-text-body-lg, 1.125rem);
+}
+.hb-records__dialog-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hb-space-1);
+  font-size: var(--hb-text-body-sm);
+}
+.hb-records__dialog-label {
+  font-weight: var(--hb-weight-medium);
+}
+.hb-records__conds {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hb-space-2);
+}
+.hb-records__cond {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr auto;
+  gap: var(--hb-space-2);
+  align-items: center;
+}
+.hb-records__saved {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--hb-space-2);
+}
+.hb-records__saved-label {
+  font-size: var(--hb-text-body-sm);
+  color: var(--hb-color-text-muted);
+}
+.hb-records__dialog-foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--hb-space-2);
+  margin-block-start: var(--hb-space-2);
+}
+.hb-records__hint {
+  margin: 0;
+  font-size: var(--hb-text-body-sm);
+  color: var(--hb-color-text-muted);
+}
+
+.hb-records__savestate {
+  margin: var(--hb-space-2) 0 0;
+  font-size: var(--hb-text-caption);
+  color: var(--hb-color-text-muted);
+}
+
+/* ---- Reports (ReportCreator heir, D12..D14) ----------------------------- */
+.hb-records__reportdlg .hb-records__cond {
+  grid-template-columns: auto 1fr 1fr auto;
+}
+.hb-records__cond-of {
+  font-size: var(--hb-text-body-sm);
+  color: var(--hb-color-text-muted);
+}
+
+.hb-records__reportview {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--hb-space-6);
+  background: rgb(0 0 0 / 42%);
+  overflow: auto;
+}
+.hb-records__report {
+  inline-size: min(52rem, 96vw);
+  background: var(--hb-color-surface);
+  border-radius: var(--hb-radius-md);
+  box-shadow: var(--hb-shadow-2, 0 16px 48px rgb(0 0 0 / 28%));
+  overflow: hidden;
+}
+.hb-records__report-tools {
+  display: flex;
+  align-items: center;
+  gap: var(--hb-space-2);
+  flex-wrap: wrap;
+  padding: var(--hb-space-3) var(--hb-space-4);
+  border-bottom: 1px solid var(--hb-color-border);
+}
+.hb-records__report-title {
+  margin: 0 auto 0 0;
+  font-family: var(--hb-font-serif, var(--hb-font-sans));
+  font-size: var(--hb-text-body-lg, 1.125rem);
+}
+.hb-records__report-body {
+  padding: var(--hb-space-5);
+  max-block-size: 70vh;
+  overflow: auto;
+  color: var(--hb-color-text);
+}
+.hb-records__report-group {
+  margin: var(--hb-space-3) 0 var(--hb-space-1);
+  font-weight: var(--hb-weight-semibold);
+  color: var(--hb-color-primary);
+}
+.hb-records__report-table {
+  inline-size: 100%;
+  border-collapse: collapse;
+  margin-block-end: var(--hb-space-2);
+}
+.hb-records__report-table th,
+.hb-records__report-table td {
+  border: 1px solid var(--hb-color-border);
+  padding: var(--hb-space-1) var(--hb-space-2);
+  text-align: start;
+  font-size: var(--hb-text-body-sm);
+}
+.hb-records__report-subtotal td {
+  background: var(--hb-color-surface-sunken);
+}
+.hb-records__report-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--hb-space-3);
+}
+.hb-records__report-stat {
+  font-size: var(--hb-text-body-sm);
+  font-weight: var(--hb-weight-medium);
+}
+.hb-records__report-grand {
+  margin: var(--hb-space-3) 0 var(--hb-space-1);
+  font-weight: var(--hb-weight-semibold);
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .hb-records__report,
+  .hb-records__report * {
+    visibility: visible;
+  }
+  .hb-records__reportview {
+    position: static;
+    background: none;
+    padding: 0;
+  }
+  .hb-records__report {
+    box-shadow: none;
+    inline-size: 100%;
+  }
+  .hb-records__report-tools {
+    display: none;
+  }
+}
+
+/* The Forge (Pro) relational builder, a calm, in-context locked preview. */
+.hb-records__forge {
+  margin-block-start: var(--hb-space-6);
+  padding: var(--hb-space-4) var(--hb-space-5);
+  border: var(--hb-stroke-hair) solid var(--hb-color-border);
+  border-radius: var(--hb-radius-lg);
+  background: var(--hb-color-surface-sunken);
+}
+.hb-records__forge-head {
+  display: flex;
+  align-items: center;
+  gap: var(--hb-space-2);
+}
+.hb-records__forge-glyph {
+  display: inline-flex;
+  color: var(--hb-color-records);
+}
+.hb-records__forge-title {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--hb-space-2);
+  font-family: var(--hb-font-serif);
+  font-size: var(--hb-text-h4);
+  font-weight: var(--hb-weight-semibold);
+}
+.hb-records__forge-note {
+  margin: var(--hb-space-2) 0 var(--hb-space-3);
+  max-inline-size: 46rem;
+  color: var(--hb-color-text-muted);
+  font-size: var(--hb-text-body-sm);
+}
+.hb-records__forge-preview {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--hb-space-2);
+  padding: var(--hb-space-2) var(--hb-space-3);
+  border: var(--hb-stroke-hair) dashed var(--hb-color-border-strong);
+  border-radius: var(--hb-radius-md);
+  background: var(--hb-color-surface);
+  color: var(--hb-color-text-muted);
+  font-size: var(--hb-text-body-sm);
+  opacity: 0.72;
+  user-select: none;
+}
+.hb-records__forge-lock {
+  display: inline-flex;
+  color: var(--hb-color-text-subtle);
+}
+.hb-records__forge-rel {
+  font-family: var(--hb-font-mono);
+  color: var(--hb-color-text);
+}
+.hb-records__forge-sep {
+  color: var(--hb-color-text-subtle);
+}
+
+/* DSG-S1: tint the editor chrome with the records module accent. */
+.hb-records {
+  --hb-color-primary: var(--hb-color-records);
+  --hb-color-primary-hover: color-mix(in srgb, var(--hb-color-records) 88%, #000);
+  --hb-color-primary-active: color-mix(in srgb, var(--hb-color-records) 76%, #000);
+  --hb-color-primary-subtle: var(--hb-color-records-bg);
+  --hb-color-primary-subtle-text: var(--hb-color-records);
+}

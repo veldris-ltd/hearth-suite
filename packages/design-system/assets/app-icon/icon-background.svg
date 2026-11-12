@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" role="img" aria-label="Hearth Suite">
+  <title>Hearth Suite app icon, adaptive background</title>
+  <!-- Android adaptive background: the ember gradient, full bleed. -->
+  <defs>
+    <linearGradient id="hb-ember" x1="0" y1="0" x2="0" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#E2904F"/>
+      <stop offset="1" stop-color="#A8481A"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" fill="url(#hb-ember)"/>
+</svg>

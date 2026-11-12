@@ -1,0 +1,27 @@
+{
+  "name": "@hearth/client-shell",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Shared web host that composes The Mantel and the module editors for every Hearth Suite client.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "typecheck": "tsc --build"
+  },
+  "dependencies": {
+    "@hearth/calendar": "workspace:*",
+    "@hearth/charts": "workspace:*",
+    "@hearth/contacts": "workspace:*",
+    "@hearth/core-client": "workspace:*",
+    "@hearth/design-system": "workspace:*",
+    "@hearth/help": "workspace:*",
+    "@hearth/legacy": "workspace:*",
+    "@hearth/lexicon": "workspace:*",
+    "@hearth/records": "workspace:*",
+    "@hearth/sheets": "workspace:*",
+    "@hearth/shell": "workspace:*",
+    "@hearth/writer": "workspace:*"
+  }
+}

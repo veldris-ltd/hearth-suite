@@ -1,0 +1,33 @@
+# Self-host the Hearth Suite key directory (no Veldris infrastructure).
+#
+#   docker compose -f services/key-directory/docker-compose.yml up --build
+#
+# The directory stores only PUBLIC keys + an append-only transparency log.
+#
+# No default passwords: set them first, for example in a `.env` file next to
+# this compose file (never commit it). Use URL-safe values:
+#   POSTGRES_PASSWORD=$(openssl rand -hex 24)
+# Compose refuses to start while POSTGRES_PASSWORD is unset.
+services:
+  key-directory:
+    build:
+      context: ../..
+      dockerfile: services/key-directory/Dockerfile
+    environment:
+      DATABASE_URL: postgres://hearth:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}@postgres:5432/keydir
+    ports:
+      - "8081:8080"
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: hearth
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+      POSTGRES_DB: keydir
+    volumes:
+      - keydir-pg:/var/lib/postgresql/data
+
+volumes:
+  keydir-pg:

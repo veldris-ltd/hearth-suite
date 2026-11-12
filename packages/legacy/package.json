@@ -1,0 +1,16 @@
+{
+  "name": "@hearth/legacy",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Hearth Suite legacy import, translate decoded Works .wps/.wks/.wdb into native models with an honest fidelity report.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "typecheck": "tsc --build"
+  },
+  "dependencies": {
+    "@hearth/charts": "workspace:*"
+  }
+}

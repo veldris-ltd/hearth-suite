@@ -1,0 +1,68 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Hearth Suite",
+  "version": "0.0.0",
+  "identifier": "io.veldris.hearthsuite",
+  "build": {
+    "beforeDevCommand": "pnpm dev",
+    "devUrl": "http://localhost:1420",
+    "beforeBuildCommand": "pnpm build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "Hearth Suite",
+        "width": 1100,
+        "height": 760,
+        "minWidth": 720,
+        "minHeight": 480
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; img-src 'self' data: asset: https://asset.localhost; style-src 'self' 'unsafe-inline'; script-src 'self'"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "category": "Productivity",
+    "shortDescription": "Open-source, offline-first productivity suite.",
+    "longDescription": "Hearth Suite is an open-source, offline-first, privacy-first productivity suite, documents, spreadsheets, records, and calendar, with post-quantum end-to-end Seal and on-device AI.",
+    "copyright": "© Veldris Ltd.",
+    "publisher": "Veldris Ltd.",
+    "licenseFile": "../../../LICENSE",
+    "targets": ["msi", "nsis", "app", "dmg", "appimage", "deb"],
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "windows": {
+      "digestAlgorithm": "sha256",
+      "timestampUrl": "http://timestamp.digicert.com",
+      "webviewInstallMode": { "type": "embedBootstrapper" },
+      "wix": { "language": "en-US" },
+      "nsis": { "installMode": "perMachine" }
+    },
+    "macOS": {
+      "minimumSystemVersion": "10.15",
+      "entitlements": "entitlements.plist",
+      "exceptionDomain": ""
+    },
+    "linux": {
+      "deb": { "depends": [] }
+    },
+    "createUpdaterArtifacts": true
+  },
+  "plugins": {
+    "updater": {
+      "active": true,
+      "dialog": false,
+      "pubkey": "REPLACE_WITH_TUF_RELEASE_PUBKEY_AT_P3.3",
+      "endpoints": ["https://updates.hearth-suite.app/{{target}}/{{arch}}/{{current_version}}"],
+      "windows": { "installMode": "passive" }
+    }
+  }
+}

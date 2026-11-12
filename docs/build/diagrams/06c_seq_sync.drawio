@@ -1,0 +1,23 @@
+<mxfile host="imhotep" agent="imhotep-skill" version="1.0">
+  <diagram name="Seq: Encrypted Sync (CRDT)" id="s6c">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="826" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="s0" value="User: edit (offline-first)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1168BD;fontColor=#ffffff;strokeColor=#0B4884" vertex="1" parent="1"><mxGeometry x="360" y="40" width="300" height="50" as="geometry"/></mxCell>
+        <mxCell id="s1" value="Core -> crdt-sync: apply local op" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1168BD;fontColor=#ffffff;strokeColor=#0B4884" vertex="1" parent="1"><mxGeometry x="360" y="130" width="300" height="50" as="geometry"/></mxCell>
+        <mxCell id="s2" value="Core -> Crypto: encrypt CRDT delta" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1168BD;fontColor=#ffffff;strokeColor=#0B4884" vertex="1" parent="1"><mxGeometry x="360" y="220" width="300" height="50" as="geometry"/></mxCell>
+        <mxCell id="s3" value="Core -> Sync Relay: PUT encrypted delta" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1168BD;fontColor=#ffffff;strokeColor=#0B4884" vertex="1" parent="1"><mxGeometry x="360" y="310" width="300" height="50" as="geometry"/></mxCell>
+        <mxCell id="s4" value="Relay -> Object Store: opaque blob" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1168BD;fontColor=#ffffff;strokeColor=#0B4884" vertex="1" parent="1"><mxGeometry x="360" y="400" width="300" height="50" as="geometry"/></mxCell>
+        <mxCell id="s5" value="Relay -> Core: peer deltas (encrypted)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1168BD;fontColor=#ffffff;strokeColor=#0B4884" vertex="1" parent="1"><mxGeometry x="360" y="490" width="300" height="50" as="geometry"/></mxCell>
+        <mxCell id="s6" value="Core: decrypt + merge -> converged" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1168BD;fontColor=#ffffff;strokeColor=#0B4884" vertex="1" parent="1"><mxGeometry x="360" y="580" width="300" height="50" as="geometry"/></mxCell>
+        <mxCell id="f1" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="s0" target="s1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="f2" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="s1" target="s2"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="f3" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="s2" target="s3"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="f4" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="s3" target="s4"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="f5" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="s4" target="s5"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="f6" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="s5" target="s6"><mxGeometry relative="1" as="geometry"/></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,91 @@
+/*
+ * Desktop-only chrome. The workspace layout (rail, top bar, content) lives in
+ * `@hearth/client-shell/styles/chrome.css`; this file holds only what is unique
+ * to the desktop host, the verified-update banner (AC-DESK-3). Tokens come from
+ * @hearth/design-system.
+ */
+
+/* The verified-update banner. */
+.hb-update {
+  position: fixed;
+  inset-block-end: var(--hb-space-4, 1rem);
+  inset-inline-end: var(--hb-space-4, 1rem);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: var(--hb-space-3, 0.75rem);
+  padding: var(--hb-space-3, 0.75rem) var(--hb-space-4, 1rem);
+  border: 1px solid var(--hb-color-border, #e5e5e5);
+  border-radius: var(--hb-radius-md, 0.5rem);
+  background: var(--hb-color-surface, #f7f7f7);
+  color: var(--hb-color-text);
+  box-shadow: var(--hb-elev-2, 0 4px 12px rgb(0 0 0 / 12%));
+}
+.hb-update button {
+  font: inherit;
+}
+
+/* The verified-update verification panel (AC-DESK-3 / DSG-S5). */
+.hb-update--panel {
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--hb-space-3, 0.75rem);
+  inline-size: min(22rem, calc(100vw - 2rem));
+}
+.hb-update__head {
+  display: flex;
+  align-items: center;
+  gap: var(--hb-space-2, 0.5rem);
+  font-family: var(--hb-font-serif);
+  color: var(--hb-color-text);
+}
+.hb-update__steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hb-space-2, 0.5rem);
+}
+.hb-update__step {
+  display: flex;
+  align-items: center;
+  gap: var(--hb-space-2, 0.5rem);
+}
+.hb-update__step-icon {
+  display: inline-flex;
+  inline-size: 20px;
+  justify-content: center;
+  flex: 0 0 20px;
+  color: var(--hb-color-text-subtle);
+}
+.hb-update__step-icon.is-ok {
+  color: var(--hb-color-success);
+}
+.hb-update__step-label {
+  font-size: var(--hb-text-body-sm);
+  font-weight: var(--hb-weight-semibold);
+}
+.hb-update__step-detail {
+  font-size: var(--hb-text-caption);
+  color: var(--hb-color-text-muted);
+  font-family: var(--hb-font-mono);
+}
+.hb-update__success {
+  display: flex;
+  align-items: center;
+  gap: var(--hb-space-2, 0.5rem);
+  color: var(--hb-color-success-text);
+  font-size: var(--hb-text-body-sm);
+}
+.hb-update__success svg {
+  color: var(--hb-color-success);
+  flex: 0 0 auto;
+}
+.hb-update__badges {
+  display: flex;
+  gap: var(--hb-space-1, 0.25rem);
+  flex-wrap: wrap;
+}
+.hb-update__actions {
+  display: flex;
+  gap: var(--hb-space-2, 0.5rem);
+  justify-content: flex-end;
+}

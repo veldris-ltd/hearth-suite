@@ -1,0 +1,1431 @@
+/*
+ * Hearth Suite core components. Every value is a token (--hb-*), so both light and
+ * dark themes are covered automatically (see tokens.css). Each interactive
+ * component defines default / hover / focus / active / disabled / error states
+ * (AC-DS-4) and meets WCAG 2.1 AA: visible focus rings, >=44px touch targets,
+ * and the Sealed state is conveyed by icon + text, never colour alone (AC-A11Y-1).
+ */
+
+:where(.hb-btn, .hb-input, .hb-select, .hb-tab, .hb-menu__item, .hb-search input) {
+  font-family: var(--hb-font-sans);
+  font-size: var(--hb-text-body);
+}
+
+/* Skip-to-content link (P2-Q1): the first focusable element on every page.
+   Off-screen until focused, then it pins to the top-left so a keyboard user can
+   jump straight past the chrome to the main landmark (#hb-main). */
+.hb-skip-link {
+  position: absolute;
+  inset-block-start: var(--hb-space-2);
+  inset-inline-start: var(--hb-space-2);
+  z-index: var(--hb-z-toast, 800);
+  padding: var(--hb-space-2) var(--hb-space-4);
+  border-radius: var(--hb-radius-sm);
+  background: var(--hb-color-primary);
+  color: var(--hb-color-text-on-primary);
+  font-family: var(--hb-font-sans);
+  font-size: var(--hb-text-body);
+  text-decoration: none;
+  transform: translateY(-150%);
+  opacity: 0;
+  pointer-events: none;
+}
+.hb-skip-link:focus,
+.hb-skip-link:focus-visible {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+  outline: var(--hb-size-focus-ring) solid var(--hb-color-ring);
+  outline-offset: 2px;
+}
+
+/* Shared visible focus ring for keyboard users. */
+:where(
+  .hb-btn,
+  .hb-input,
+  .hb-select,
+  .hb-toggle,
+  .hb-tab,
+  .hb-menu__item,
+  .hb-search input
+):focus-visible {
+  outline: var(--hb-size-focus-ring) solid var(--hb-color-ring);
+  outline-offset: 2px;
+}
+
+/* ---- Button ------------------------------------------------------------- */
+.hb-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--hb-space-2);
+  min-height: var(--hb-size-touch-target);
+  padding: var(--hb-space-2) var(--hb-space-4);
+  border: var(--hb-stroke-hair) solid transparent;
+  border-radius: var(--hb-radius-md);
+  font-weight: var(--hb-weight-semibold);
+  line-height: var(--hb-leading-tight);
+  cursor: pointer;
+  background: var(--hb-color-surface-sunken);
+  color: var(--hb-color-text);
+  transition:
+    background-color var(--hb-dur-fast) var(--hb-ease-standard),
+    filter var(--hb-dur-fast) var(--hb-ease-standard);
+}
+.hb-btn:hover {
+  filter: brightness(0.97);
+}
+.hb-btn:active {
+  filter: brightness(0.93);
+}
+.hb-btn:disabled,
+.hb-btn[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  filter: none;
+}
+.hb-btn--primary {
+  background: var(--hb-color-primary);
+  color: var(--hb-color-text-on-primary);
+}
+.hb-btn--secondary {
+  background: var(--hb-color-surface);
+  color: var(--hb-color-text);
+  border-color: var(--hb-color-border);
+}
+.hb-btn--ghost {
+  background: transparent;
+  color: var(--hb-color-primary);
+}
+.hb-btn--danger {
+  background: var(--hb-color-danger);
+  color: var(--hb-color-text-inverse);
+}
+
+/* ---- Input -------------------------------------------------------------- */
+.hb-input,
+.hb-select {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: var(--hb-size-touch-target);
+  padding: var(--hb-space-2) var(--hb-space-3);
+  background: var(--hb-color-surface);
+  color: var(--hb-color-text);
+  border: var(--hb-stroke-hair) solid var(--hb-color-border);
+  border-radius: var(--hb-radius-md);
+}
+.hb-input::placeholder {
+  color: var(--hb-color-text-muted);
+}
+.hb-input:hover,
+.hb-select:hover {
+  border-color: var(--hb-color-text-muted);
+}
+.hb-input:disabled,
+.hb-select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.hb-input[aria-invalid="true"],
+.hb-select[aria-invalid="true"] {
+  border-color: var(--hb-color-danger);
+}
+.hb-field__error {
+  margin-top: var(--hb-space-1);
+  color: var(--hb-color-danger);
+  font-size: var(--hb-text-body-sm);
+}
+
+/* ---- Toggle / switch ---------------------------------------------------- */
+.hb-toggle {
+  position: relative;
+  display: inline-block;
+  inline-size: 44px;
+  block-size: 24px;
+  border-radius: var(--hb-radius-pill);
+  background: var(--hb-color-border);
+  border: none;
+  cursor: pointer;
+}
+.hb-toggle::after {
+  content: "";
+  position: absolute;
+  inset-block-start: 2px;
+  inset-inline-start: 2px;
+  inline-size: 20px;
+  block-size: 20px;
+  border-radius: 50%;
+  background: var(--hb-color-surface);
+  transition: inset-inline-start var(--hb-dur-fast) var(--hb-ease-standard);
+}
+.hb-toggle[aria-checked="true"] {
+  background: var(--hb-color-primary);
+}
+.hb-toggle[aria-checked="true"]::after {
+  inset-inline-start: 22px;
+}
+.hb-toggle:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ---- Tabs --------------------------------------------------------------- */
+.hb-tabs {
+  display: flex;
+  gap: var(--hb-space-1);
+  border-bottom: var(--hb-stroke-hair) solid var(--hb-color-border);
+}
+.hb-tab {
+  min-height: var(--hb-size-touch-target);
+  padding: var(--hb-space-2) var(--hb-space-3);
+  background: transparent;
+  border: none;
+  border-bottom: var(--hb-stroke-strong) solid transparent;
+  color: var(--hb-color-text-muted);
+  cursor: pointer;
+}
+.hb-tab:hover {
+  color: var(--hb-color-text);
+}
+.hb-tab[aria-selected="true"] {
+  color: var(--hb-color-text);
+  border-bottom-color: var(--hb-color-primary);
+}
+.hb-tab:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ---- Card --------------------------------------------------------------- */
+.hb-card {
+  background: var(--hb-color-surface);
+  border: var(--hb-stroke-hair) solid var(--hb-color-border);
+  border-radius: var(--hb-radius-lg);
+  padding: var(--hb-space-4);
+  box-shadow: var(--hb-elev-1);
+}
+
+/* ---- Checkbox & radio --------------------------------------------------- */
+.hb-checkbox,
+.hb-radio {
+  inline-size: 1.15rem;
+  block-size: 1.15rem;
+  margin: 0;
+  accent-color: var(--hb-color-primary);
+  cursor: pointer;
+}
+.hb-radio {
+  border-radius: 50%;
+}
+.hb-checkbox:focus-visible,
+.hb-radio:focus-visible {
+  outline: var(--hb-size-focus-ring) solid var(--hb-color-ring);
+  outline-offset: 2px;
+}
+.hb-checkbox:disabled,
+.hb-radio:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+/* A labelled checkbox/radio row with a comfortable target. */
+.hb-check {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--hb-space-2);
+  min-height: var(--hb-size-touch-target);
+  cursor: pointer;
+}
+
+/* ---- Avatar ------------------------------------------------------------- */
+.hb-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 2rem;
+  block-size: 2rem;
+  flex: 0 0 auto;
+  border-radius: var(--hb-radius-pill);
+  background: var(--hb-color-primary);
+  color: var(--hb-color-text-on-primary);
+  font-size: var(--hb-text-body-sm);
+  font-weight: var(--hb-weight-semibold);
+  user-select: none;
+}
+.hb-avatar--sm {
+  inline-size: 1.6rem;
+  block-size: 1.6rem;
+  font-size: var(--hb-text-caption);
+}
+.hb-avatar--seal {
+  background: var(--hb-color-sealed-bg);
+  color: var(--hb-color-sealed-text);
+}
+
+/* ---- Progress & loading ------------------------------------------------- */
+.hb-spinner {
+  display: inline-block;
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+  border: var(--hb-stroke-strong) solid var(--hb-color-border);
+  border-block-start-color: var(--hb-color-primary);
+  border-radius: 50%;
+  animation: hb-spin 0.7s linear infinite;
+}
+@keyframes hb-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+/* App-wide reduced-motion (P2-Q1): neutralise all non-essential animation,
+   transition and smooth-scroll when the user asks for less motion. Applies
+   across every Hearth Suite app (each imports this stylesheet). The loading spinner
+   is kept as a gentle, slowed rotation because it is essential feedback. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+  .hb-spinner {
+    animation-duration: 1.5s !important;
+    animation-iteration-count: infinite !important;
+  }
+}
+.hb-progress {
+  inline-size: 100%;
+  block-size: 6px;
+  border-radius: var(--hb-radius-pill);
+  background: var(--hb-color-surface-sunken);
+  overflow: hidden;
+}
+.hb-progress__bar {
+  display: block;
+  block-size: 100%;
+  background: var(--hb-color-primary);
+  transition: inline-size var(--hb-dur-base) var(--hb-ease-standard);
+}
+
+/* ---- Tooltip ------------------------------------------------------------ */
+/* Attribute-driven: add data-hb-tooltip="text" to any element. */
+[data-hb-tooltip] {
+  position: relative;
+}
+[data-hb-tooltip]::after {
+  content: attr(data-hb-tooltip);
+  position: absolute;
+  inset-block-end: calc(100% + var(--hb-space-1));
+  inset-inline-start: 50%;
+  transform: translateX(-50%);
+  padding: var(--hb-space-1) var(--hb-space-2);
+  border-radius: var(--hb-radius-sm);
+  background: var(--hb-color-text);
+  color: var(--hb-color-bg);
+  font-size: var(--hb-text-caption);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--hb-dur-fast) var(--hb-ease-standard);
+  z-index: var(--hb-z-popover);
+}
+[data-hb-tooltip]:hover::after,
+[data-hb-tooltip]:focus-visible::after {
+  opacity: 1;
+}
+
+/* ---- Modal / dialog ----------------------------------------------------- */
+.hb-modal__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: var(--hb-z-modal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--hb-space-4);
+  background: rgba(33, 28, 24, 0.5);
+}
+.hb-modal {
+  background: var(--hb-color-surface);
+  color: var(--hb-color-text);
+  border-radius: var(--hb-radius-lg);
+  padding: var(--hb-space-6);
+  box-shadow: var(--hb-elev-3);
+  max-inline-size: 32rem;
+}
+
+/* ---- Toast -------------------------------------------------------------- */
+.hb-toast {
+  display: flex;
+  align-items: center;
+  gap: var(--hb-space-2);
+  background: var(--hb-color-surface);
+  color: var(--hb-color-text);
+  border: var(--hb-stroke-hair) solid var(--hb-color-border);
+  border-left: 4px solid var(--hb-color-primary);
+  border-radius: var(--hb-radius-md);
+  padding: var(--hb-space-3) var(--hb-space-4);
+  box-shadow: var(--hb-elev-2);
+  z-index: var(--hb-z-toast);
+}
+.hb-toast--success {
+  border-left-color: var(--hb-color-success);
+}
+.hb-toast--danger {
+  border-left-color: var(--hb-color-danger);
+}
+
+/* ---- Table -------------------------------------------------------------- */
+.hb-table {
+  inline-size: 100%;
+  border-collapse: collapse;
+  font-size: var(--hb-text-body-sm);
+}
+.hb-table th,
+.hb-table td {
+  text-align: start;
+  padding: var(--hb-space-2) var(--hb-space-3);
+  border-bottom: var(--hb-stroke-hair) solid var(--hb-color-border);
+}
+.hb-table th {
+  color: var(--hb-color-text-muted);
+  font-weight: var(--hb-weight-semibold);
+}
+.hb-table tbody tr:hover {
+  background: var(--hb-color-surface-sunken);
+}
+
+/* ---- Menu / dropdown ---------------------------------------------------- */
+.hb-menu {
+  background: var(--hb-color-surface);
+  border: var(--hb-stroke-hair) solid var(--hb-color-border);
+  border-radius: var(--hb-radius-md);
+  padding: var(--hb-space-1);
+  box-shadow: var(--hb-elev-2);
+  min-inline-size: 12rem;
+}
+.hb-menu__item {
+  display: flex;
+  align-items: center;
+  gap: var(--hb-space-2);
+  inline-size: 100%;
+  min-height: var(--hb-size-touch-target);
+  padding: var(--hb-space-2) var(--hb-space-3);
+  background: transparent;
+  border: none;
+  border-radius: var(--hb-radius-sm);
+  color: var(--hb-color-text);
+  text-align: start;
+  cursor: pointer;
+}
+.hb-menu__item:hover,
+.hb-menu__item[aria-current="true"] {
+  background: var(--hb-color-surface-sunken);
+}
+.hb-menu__item:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ---- Sidebar ------------------------------------------------------------ */
+.hb-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hb-space-1);
+  inline-size: 16rem;
+  block-size: 100%;
+  padding: var(--hb-space-3);
+  background: var(--hb-color-surface-sunken);
+  border-inline-end: var(--hb-stroke-hair) solid var(--hb-color-border);
+}
+
+/* ---- Search ------------------------------------------------------------- */
+.hb-search {
+  display: flex;
+  align-items: center;
+  gap: var(--hb-space-2);
+  padding-inline: var(--hb-space-3);
+  background: var(--hb-color-surface);
+  border: var(--hb-stroke-hair) solid var(--hb-color-border);
+  border-radius: var(--hb-radius-pill);
+}
+.hb-search input {
+  flex: 1;
+  min-height: var(--hb-size-touch-target);
+  border: none;
+  background: transparent;
+  color: var(--hb-color-text);
+}
+.hb-search input:focus-visible {
+  outline: none;
+}
+.hb-search:focus-within {
+  border-color: var(--hb-color-primary);
+}
+
+/* ---- Ember effort segmented control ------------------------------------- */
+.hb-effort {
+  display: inline-flex;
+  padding: 2px;
+  border: var(--hb-stroke-hair) solid var(--hb-color-border);
+  border-radius: var(--hb-radius-md);
+  background: var(--hb-color-surface-sunken);
+}
+.hb-effort__seg {
+  flex: 1;
+  min-height: 2rem;
+  padding: var(--hb-space-1) var(--hb-space-2);
+  border: none;
+  border-radius: var(--hb-radius-sm);
+  background: transparent;
+  color: var(--hb-color-text-muted);
+  font-family: var(--hb-font-mono);
+  font-size: var(--hb-text-body-sm);
+  cursor: pointer;
+}
+.hb-effort__seg:hover {
+  color: var(--hb-color-text);
+}
+.hb-effort__seg[aria-selected="true"] {
+  background: var(--hb-color-surface);
+  color: var(--hb-color-primary);
+  font-weight: var(--hb-weight-semibold);
+  box-shadow: var(--hb-elev-1);
+}
+.hb-effort__seg:focus-visible {
+  outline: var(--hb-size-focus-ring) solid var(--hb-color-ring);
+  outline-offset: 2px;
+}
+
+/* ---- Style-set gallery ("Easy Formats" heir) ---------------------------- */
+.hb-stylemenu {
+  position: relative;
+  display: inline-block;
+}
+.hb-stylemenu__pop {
+  position: absolute;
+  inset-block-start: calc(100% + var(--hb-space-1));
+  inset-inline-start: 0;
+  z-index: var(--hb-z-popover);
+  display: none;
+  flex-direction: column;
+  min-inline-size: 14rem;
+  max-block-size: 60vh;
+  overflow: auto;
+  padding: var(--hb-space-1);
+  background: var(--hb-color-surface);
+  border: var(--hb-stroke-hair) solid var(--hb-color-border);
+  border-radius: var(--hb-radius-md);
+  box-shadow: var(--hb-elev-2);
+}
+.hb-stylemenu.is-open .hb-stylemenu__pop {
+  display: flex;
+}
+.hb-stylemenu__item,
+.hb-stylemenu__save {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--hb-space-2);
+  inline-size: 100%;
+  min-height: var(--hb-size-touch-target);
+  padding: var(--hb-space-2) var(--hb-space-3);
+  border: none;
+  border-radius: var(--hb-radius-sm);
+  background: transparent;
+  color: var(--hb-color-text);
+  text-align: start;
+  cursor: pointer;
+  font-family: var(--hb-font-sans);
+}
+.hb-stylemenu__item:hover,
+.hb-stylemenu__save:hover {
+  background: var(--hb-color-surface-sunken);
+}
+.hb-stylemenu__tag {
+  flex: 0 0 auto;
+  padding: 0 var(--hb-space-1);
+  border-radius: var(--hb-radius-pill);
+  background: var(--hb-color-surface-sunken);
+  color: var(--hb-color-text-muted);
+  font-size: var(--hb-text-caption);
+}
+.hb-stylemenu__save {
+  margin-block-start: var(--hb-space-1);
+  border-block-start: var(--hb-stroke-hair) solid var(--hb-color-border);
+  color: var(--hb-color-primary);
+  font-weight: var(--hb-weight-medium);
+}
+
+/* ---- Empty state -------------------------------------------------------- */
+.hb-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--hb-space-3);
+  padding: var(--hb-space-12) var(--hb-space-6);
+  text-align: center;
+  color: var(--hb-color-text-muted);
+}
+.hb-empty__title {
+  font-family: var(--hb-font-serif);
+  font-size: var(--hb-text-h3);
+  color: var(--hb-color-text);
+}
+
+/* ---- Badge -------------------------------------------------------------- */
+.hb-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--hb-space-1);
+  padding: 2px var(--hb-space-2);
+  border-radius: var(--hb-radius-pill);
+  font-size: var(--hb-text-caption);
+  font-weight: var(--hb-weight-medium);
+  background: var(--hb-color-surface-sunken);
+  color: var(--hb-color-text);
+}
+
+/*
+ * Sealed badge: the encrypted state uses the dedicated Seal colour AND a lock
+ * icon AND a text label, so it is never conveyed by colour alone (AC-A11Y-1,
+ * AC-DS-2). Pair with a plain-language description, e.g. "Only you and Maria
+ * can open this" (AC-UX-SEAL-2).
+ */
+.hb-seal-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--hb-space-1);
+  padding: 2px var(--hb-space-2);
+  border-radius: var(--hb-radius-pill);
+  font-size: var(--hb-text-caption);
+  font-weight: var(--hb-weight-semibold);
+  background: var(--hb-color-sealed-bg);
+  color: var(--hb-color-sealed-text);
+  border: var(--hb-stroke-hair) solid var(--hb-color-sealed-border);
+}
+.hb-seal-badge__icon {
+  color: var(--hb-color-sealed-icon);
+  inline-size: 1em;
+  block-size: 1em;
+}
+
+/* ---- Hearth Suite Pro commercial identity -------------------------------------- */
+/* The wordmark + Pro pill is the ONLY Pro mark, never a separate logo. The pill
+   is em-scaled so it tracks the wordmark size wherever it sits. */
+.hb-pro-pill {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--hb-font-sans);
+  font-weight: var(--hb-weight-bold);
+  font-size: 0.4em;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: #fff;
+  background: linear-gradient(135deg, var(--hb-ember-500), var(--hb-ember-700));
+  padding: 0.42em 0.72em 0.38em;
+  border-radius: 2em;
+  vertical-align: 0.18em;
+  line-height: 1;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.16);
+}
+[data-theme="dark"] .hb-pro-pill {
+  color: #1a1410;
+}
+.hb-pro-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+  font-weight: var(--hb-weight-bold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #fff;
+  background: linear-gradient(130deg, var(--hb-ember-500), var(--hb-ember-700));
+  padding: 3px 8px;
+  border-radius: var(--hb-radius-pill);
+  box-shadow: var(--hb-elev-1);
+}
+[data-theme="dark"] .hb-pro-badge {
+  color: #1a1410;
+}
+.hb-pro-badge svg {
+  inline-size: 11px;
+  block-size: 11px;
+}
+.hb-pro-badge--ghost {
+  background: none;
+  color: var(--hb-ember-600);
+  border: var(--hb-stroke-base) solid var(--hb-ember-500);
+  box-shadow: none;
+}
+[data-theme="dark"] .hb-pro-badge--ghost {
+  color: var(--hb-ember-400);
+}
+
+/* ---- Coming-soon affordance --------------------------------------------- */
+/* A calm warning-tinted chip for roadmap / not-yet-shipped items. */
+.hb-coming-soon {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border-radius: var(--hb-radius-pill);
+  border: var(--hb-stroke-hair) solid color-mix(in srgb, var(--hb-color-warning) 38%, transparent);
+  background: var(--hb-color-warning-bg);
+  color: var(--hb-color-warning-text);
+  font-size: 10px;
+  font-weight: var(--hb-weight-bold);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.hb-coming-soon svg {
+  inline-size: 11px;
+  block-size: 11px;
+}
+
+/* ---- Platform sub-brand mark (roadmap family) --------------------------- */
+/* Pairs a platform glyph in its module-tinted accent with a label. Set the tint
+   per epic via the `--hb-tint` custom property (see PLATFORM_MARKS[].tint),
+   e.g. style="--hb-tint: var(--hb-color-writer)". Roadmap-only: present with a
+   .hb-coming-soon affordance, never as an active module. */
+.hb-platform {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--hb-space-2);
+  color: var(--hb-color-text);
+}
+.hb-platform__glyph {
+  display: inline-flex;
+  color: var(--hb-tint, var(--hb-color-primary));
+}
+
+/* =========================================================================
+   v1.0 COMPONENT PARITY (DSG-C1), variants/components transcribed from the
+   handoff components.css, mapped to --hb-* tokens. Additive: existing classes
+   keep working.
+   ========================================================================= */
+
+/* ---- Button variants & sizes -------------------------------------------- */
+.hb-btn--seal {
+  background: var(--hb-color-accent);
+  color: var(--hb-color-text-on-primary);
+  border-color: var(--hb-color-accent);
+  box-shadow: var(--hb-elev-1);
+}
+.hb-btn--seal:hover {
+  background: var(--hb-color-accent-hover);
+  border-color: var(--hb-color-accent-hover);
+}
+.hb-btn--quiet {
+  background: transparent;
+  color: var(--hb-color-text-muted);
+  border-color: transparent;
+}
+.hb-btn--quiet:hover {
+  background: var(--hb-color-bg-subtle);
+  color: var(--hb-color-text);
+}
+.hb-btn--tertiary {
+  background: transparent;
+  color: var(--hb-color-text);
+  border-color: var(--hb-color-border-strong);
+}
+.hb-btn--tertiary:hover {
+  background: var(--hb-color-bg-subtle);
+  border-color: var(--hb-color-border-stronger);
+}
+.hb-btn--lg {
+  min-height: 48px;
+  padding-inline: var(--hb-space-5);
+  font-size: var(--hb-text-body);
+}
+.hb-btn--sm {
+  min-height: 32px;
+  padding: 0 var(--hb-space-3);
+  font-size: var(--hb-text-caption);
+}
+.hb-btn--icon {
+  padding: 0;
+  inline-size: var(--hb-size-touch-target);
+  min-inline-size: var(--hb-size-touch-target);
+}
+.hb-btn--icon.hb-btn--sm {
+  inline-size: 32px;
+  min-inline-size: 32px;
+}
+.hb-btn--full {
+  inline-size: 100%;
+  width: 100%;
+}
+
+/* ---- Form field system -------------------------------------------------- */
+.hb-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.hb-label {
+  font-size: var(--hb-text-body-sm);
+  font-weight: var(--hb-weight-semibold);
+  color: var(--hb-color-text);
+}
+.hb-label .req,
+.hb-label__req {
+  color: var(--hb-color-danger);
+  margin-inline-start: 2px;
+}
+.hb-hint {
+  font-size: var(--hb-text-caption);
+  color: var(--hb-color-text-muted);
+}
+.hb-textarea {
+  display: block;
+  box-sizing: border-box;
+  inline-size: 100%;
+  min-block-size: 96px;
+  padding: var(--hb-space-3);
+  line-height: var(--hb-leading-normal);
+  resize: vertical;
+  font-family: var(--hb-font-sans);
+  font-size: var(--hb-text-body);
+  color: var(--hb-color-text);
+  background: var(--hb-color-surface);
+  border: var(--hb-stroke-hair) solid var(--hb-color-border);
+  border-radius: var(--hb-radius-md);
+}
+.hb-textarea::placeholder {
+  color: var(--hb-color-text-muted);
+}
+.hb-textarea:hover {
+  border-color: var(--hb-color-text-muted);
+}
+.hb-textarea:focus-visible {
+  outline: var(--hb-size-focus-ring) solid var(--hb-color-ring);
+  outline-offset: 2px;
+}
+.hb-input-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.hb-input-group__icon {
+  position: absolute;
+  inset-inline-start: var(--hb-space-3);
+  display: inline-flex;
+  color: var(--hb-color-text-subtle);
+  pointer-events: none;
+}
+.hb-input-group .hb-input {
+  padding-inline-start: var(--hb-space-10);
+}
+.hb-error-text {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: var(--hb-text-caption);
+  color: var(--hb-color-danger-text);
+}
+.hb-field.is-error .hb-input,
+.hb-field.is-error .hb-textarea,
+.hb-input.is-error,
+.hb-textarea.is-error {
+  border-color: var(--hb-color-danger);
+  background: var(--hb-color-danger-bg);
+}
+
+/* ---- Custom checkbox / radio (spring) ----------------------------------- */
+/* Scoped to the custom-control variant so the plain `.hb-check` row (native
+   checkbox) keeps working. */
+.hb-check:has(.hb-check__box) input {
+  position: absolute;
+  opacity: 0;
+  inline-size: 0;
+  block-size: 0;
+}
+.hb-check__box {
+  inline-size: 20px;
+  block-size: 20px;
+  flex-shrink: 0;
+  border-radius: var(--hb-radius-xs);
+  border: var(--hb-stroke-base) solid var(--hb-color-border-stronger);
+  background: var(--hb-color-surface);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background var(--hb-dur-fast),
+    border-color var(--hb-dur-fast);
+}
+.hb-check__box svg {
+  inline-size: 14px;
+  block-size: 14px;
+  color: var(--hb-color-text-on-primary);
+  opacity: 0;
+  transform: scale(0.6);
+  transition: all var(--hb-dur-fast) var(--hb-ease-spring);
+}
+.hb-check input:checked + .hb-check__box {
+  background: var(--hb-color-primary);
+  border-color: var(--hb-color-primary);
+}
+.hb-check input:checked + .hb-check__box svg {
+  opacity: 1;
+  transform: scale(1);
+}
+.hb-check input:focus-visible + .hb-check__box {
+  outline: var(--hb-size-focus-ring) solid var(--hb-color-ring);
+  outline-offset: 2px;
+}
+.hb-check--radio .hb-check__box {
+  border-radius: var(--hb-radius-pill);
+}
+.hb-check--radio .hb-check__box::after {
+  content: "";
+  inline-size: 9px;
+  block-size: 9px;
+  border-radius: var(--hb-radius-pill);
+  background: var(--hb-color-primary);
+  opacity: 0;
+  transform: scale(0.4);
+  transition: all var(--hb-dur-fast) var(--hb-ease-spring);
+}
+.hb-check--radio input:checked + .hb-check__box {
+  border-color: var(--hb-color-primary);
+  background: var(--hb-color-surface);
+}
+.hb-check--radio input:checked + .hb-check__box::after {
+  opacity: 1;
+  transform: scale(1);
+}
+.hb-check input:disabled ~ * {
+  opacity: 0.45;
+}
+
+/* ---- Switch (track + thumb) --------------------------------------------- */
+.hb-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--hb-space-2);
+  cursor: pointer;
+  font-size: var(--hb-text-body-sm);
+  color: var(--hb-color-text);
+}
+.hb-switch input {
+  position: absolute;
+  opacity: 0;
+}
+.hb-switch__track {
+  position: relative;
+  inline-size: 44px;
+  block-size: 26px;
+  flex-shrink: 0;
+  border-radius: var(--hb-radius-pill);
+  background: var(--hb-color-border-stronger);
+  transition: background var(--hb-dur-base) var(--hb-ease-standard);
+}
+.hb-switch__track::after {
+  content: "";
+  position: absolute;
+  inset-block-start: 3px;
+  inset-inline-start: 3px;
+  inline-size: 20px;
+  block-size: 20px;
+  border-radius: var(--hb-radius-pill);
+  background: var(--hb-color-surface);
+  box-shadow: var(--hb-elev-1);
+  transition: transform var(--hb-dur-base) var(--hb-ease-spring);
+}
+.hb-switch input:checked + .hb-switch__track {
+  background: var(--hb-color-primary);
+}
+.hb-switch input:checked + .hb-switch__track::after {
+  transform: translateX(18px);
+}
+.hb-switch input:focus-visible + .hb-switch__track {
+  outline: var(--hb-size-focus-ring) solid var(--hb-color-ring);
+  outline-offset: 2px;
+}
+.hb-switch input:disabled + .hb-switch__track {
+  opacity: 0.4;
+}
+
+/* ---- Badge variants & removable tag ------------------------------------- */
+.hb-badge--primary {
+  background: var(--hb-color-primary-subtle);
+  color: var(--hb-color-primary-subtle-text);
+}
+.hb-badge--success {
+  background: var(--hb-color-success-bg);
+  color: var(--hb-color-success-text);
+}
+.hb-badge--warning {
+  background: var(--hb-color-warning-bg);
+  color: var(--hb-color-warning-text);
+}
+.hb-badge--danger {
+  background: var(--hb-color-danger-bg);
+  color: var(--hb-color-danger-text);
+}
+.hb-badge--info {
+  background: var(--hb-color-info-bg);
+  color: var(--hb-color-info-text);
+}
+.hb-badge--seal {
+  background: var(--hb-color-sealed-bg);
+  color: var(--hb-color-sealed-text);
+}
+.hb-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--hb-space-1);
+  padding: 4px var(--hb-space-2);
+  border-radius: var(--hb-radius-sm);
+  background: var(--hb-color-bg-subtle);
+  color: var(--hb-color-text);
+  border: var(--hb-stroke-hair) solid var(--hb-color-border);
+  font-size: var(--hb-text-body-sm);
+  font-weight: var(--hb-weight-medium);
+}
+.hb-tag__rm {
+  display: inline-flex;
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  color: var(--hb-color-text-subtle);
+}
+.hb-tag__rm:hover {
+  color: var(--hb-color-text);
+}
+
+/* ---- Avatar size + stack ------------------------------------------------ */
+.hb-avatar--lg {
+  inline-size: 3.5rem;
+  block-size: 3.5rem;
+  font-size: var(--hb-text-body-lg);
+}
+.hb-avatar-stack {
+  display: inline-flex;
+}
+.hb-avatar-stack .hb-avatar {
+  border: var(--hb-stroke-strong) solid var(--hb-color-surface);
+  margin-inline-start: -10px;
+}
+.hb-avatar-stack .hb-avatar:first-child {
+  margin-inline-start: 0;
+}
+
+/* ---- Segmented control -------------------------------------------------- */
+.hb-segmented {
+  display: inline-flex;
+  padding: 3px;
+  background: var(--hb-color-bg-subtle);
+  border-radius: var(--hb-radius-md);
+  border: var(--hb-stroke-hair) solid var(--hb-color-border);
+}
+.hb-segmented button {
+  appearance: none;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-family: var(--hb-font-sans);
+  font-size: var(--hb-text-caption);
+  font-weight: var(--hb-weight-semibold);
+  color: var(--hb-color-text-muted);
+  padding: 6px var(--hb-space-3);
+  border-radius: var(--hb-radius-sm);
+  transition: all var(--hb-dur-fast);
+}
+.hb-segmented button.is-active {
+  background: var(--hb-color-surface-raised);
+  color: var(--hb-color-text);
+  box-shadow: var(--hb-elev-1);
+}
+.hb-segmented button:focus-visible {
+  outline: var(--hb-size-focus-ring) solid var(--hb-color-ring);
+  outline-offset: 1px;
+}
+
+/* ---- Tooltip (hover bubble + arrow) ------------------------------------- */
+.hb-tip {
+  position: relative;
+  display: inline-flex;
+}
+.hb-tip__bubble {
+  position: absolute;
+  inset-block-end: calc(100% + 8px);
+  inset-inline-start: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background: var(--hb-warm-900);
+  color: var(--hb-warm-50);
+  font-size: var(--hb-text-caption);
+  font-weight: var(--hb-weight-medium);
+  line-height: 1.4;
+  padding: 6px var(--hb-space-2);
+  border-radius: var(--hb-radius-sm);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  box-shadow: var(--hb-elev-2);
+  z-index: var(--hb-z-popover);
+  transition: all var(--hb-dur-fast) var(--hb-ease-standard);
+}
+[data-theme="dark"] .hb-tip__bubble {
+  background: var(--hb-warm-200);
+  color: var(--hb-warm-900);
+}
+.hb-tip__bubble::after {
+  content: "";
+  position: absolute;
+  inset-block-start: 100%;
+  inset-inline-start: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-block-start-color: var(--hb-warm-900);
+}
+[data-theme="dark"] .hb-tip__bubble::after {
+  border-block-start-color: var(--hb-warm-200);
+}
+.hb-tip:hover .hb-tip__bubble,
+.hb-tip:focus-within .hb-tip__bubble {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ---- Toast: structured content + variants ------------------------------- */
+.hb-toast__icon {
+  flex-shrink: 0;
+}
+.hb-toast__title {
+  font-size: var(--hb-text-body-sm);
+  font-weight: var(--hb-weight-semibold);
+  color: var(--hb-color-text);
+}
+.hb-toast__msg {
+  margin-block-start: 2px;
+  font-size: var(--hb-text-caption);
+  color: var(--hb-color-text-muted);
+}
+.hb-toast--seal {
+  border-inline-start-color: var(--hb-color-accent);
+}
+.hb-toast--seal .hb-toast__icon {
+  color: var(--hb-color-accent);
+}
+.hb-toast--warning {
+  border-inline-start-color: var(--hb-color-warning);
+}
+.hb-toast--warning .hb-toast__icon {
+  color: var(--hb-color-warning);
+}
+.hb-toast--success .hb-toast__icon {
+  color: var(--hb-color-success);
+}
+.hb-toast--danger .hb-toast__icon {
+  color: var(--hb-color-danger);
+}
+
+/* ---- Progress (seal variant) + skeleton --------------------------------- */
+.hb-progress__bar--seal {
+  background: var(--hb-color-accent);
+}
+.hb-skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--hb-color-bg-subtle) 25%,
+    var(--hb-color-surface-sunken) 50%,
+    var(--hb-color-bg-subtle) 75%
+  );
+  background-size: 200% 100%;
+  border-radius: var(--hb-radius-sm);
+  animation: hb-shimmer 1.4s infinite;
+}
+@keyframes hb-shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* ---- Modal: structured head / body / foot ------------------------------- */
+/* When a modal uses the structured subparts, drop the base padding so the
+   head/body/foot own their spacing (plain `.hb-modal` keeps its padding). */
+.hb-modal:has(.hb-modal__head, .hb-modal__body, .hb-modal__foot) {
+  padding: 0;
+  overflow: hidden;
+}
+.hb-modal__head {
+  padding: var(--hb-space-5) var(--hb-space-6) 0;
+}
+.hb-modal__title {
+  margin: 0;
+  font-family: var(--hb-font-serif);
+  font-size: var(--hb-text-h3);
+  font-weight: var(--hb-weight-semibold);
+  letter-spacing: var(--hb-tracking-h3);
+  color: var(--hb-color-text);
+}
+.hb-modal__body {
+  padding: var(--hb-space-3) var(--hb-space-6) var(--hb-space-2);
+  color: var(--hb-color-text-muted);
+  font-size: var(--hb-text-body-sm);
+  line-height: var(--hb-leading-body);
+}
+.hb-modal__foot {
+  display: flex;
+  gap: var(--hb-space-2);
+  justify-content: flex-end;
+  padding: var(--hb-space-4) var(--hb-space-6) var(--hb-space-5);
+}
+
+/* ---- Table wrap + selected row ------------------------------------------ */
+.hb-table-wrap {
+  border: var(--hb-stroke-hair) solid var(--hb-color-border);
+  border-radius: var(--hb-radius-lg);
+  overflow: hidden;
+}
+.hb-table tbody tr.is-selected {
+  background: var(--hb-color-primary-subtle);
+}
+
+/* ---- Security chips: sealed + on-device --------------------------------- */
+/* Conveyed by icon + label, never colour alone (AC-A11Y-1, AC-DS-2). */
+.hb-sealed {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px var(--hb-space-3) 5px var(--hb-space-2);
+  border-radius: var(--hb-radius-pill);
+  background: var(--hb-color-sealed-bg);
+  color: var(--hb-color-sealed-text);
+  border: var(--hb-stroke-hair) solid var(--hb-color-sealed-border);
+  font-size: var(--hb-text-body-sm);
+  font-weight: var(--hb-weight-semibold);
+}
+.hb-sealed svg {
+  inline-size: 16px;
+  block-size: 16px;
+  color: var(--hb-color-sealed-icon);
+}
+.hb-ondevice {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--hb-space-1);
+  padding: 4px var(--hb-space-2);
+  border-radius: var(--hb-radius-pill);
+  background: var(--hb-color-bg-subtle);
+  color: var(--hb-color-text-muted);
+  border: var(--hb-stroke-hair) solid var(--hb-color-border);
+  font-size: var(--hb-text-caption);
+  font-weight: var(--hb-weight-semibold);
+}
+.hb-ondevice svg {
+  inline-size: 14px;
+  block-size: 14px;
+  color: var(--hb-seal-500);
+}
+
+/* ---- Ember panel (shared AI assistant, mounts in every module) ---------- */
+.hb-ember {
+  display: flex;
+  flex-direction: column;
+  inline-size: 100%;
+  overflow: hidden;
+  background: var(--hb-color-surface);
+  border: var(--hb-stroke-hair) solid var(--hb-color-border);
+  border-radius: var(--hb-radius-lg);
+  box-shadow: var(--hb-elev-2);
+}
+.hb-ember__head {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: var(--hb-space-3) var(--hb-space-4);
+  border-block-end: var(--hb-stroke-hair) solid var(--hb-color-border);
+}
+.hb-ember__spark {
+  flex-shrink: 0;
+  inline-size: 34px;
+  block-size: 34px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  background: radial-gradient(120% 120% at 30% 20%, var(--hb-ember-400), var(--hb-ember-600));
+  box-shadow: var(--hb-elev-ember);
+}
+.hb-ember__title {
+  font-weight: var(--hb-weight-semibold);
+  color: var(--hb-color-text);
+  line-height: 1.1;
+}
+.hb-ember__title small {
+  display: block;
+  font-weight: var(--hb-weight-medium);
+  font-size: var(--hb-text-caption);
+  color: var(--hb-color-text-muted);
+}
+.hb-ember__head .hb-ondevice {
+  margin-inline-start: auto;
+}
+.hb-ember__msgs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hb-space-3);
+  padding: var(--hb-space-4);
+  min-block-size: 132px;
+  overflow: auto;
+}
+.hb-ember__msg {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hb-space-2);
+}
+.hb-ember__bubble {
+  align-self: flex-start;
+  max-inline-size: 92%;
+  padding: 11px var(--hb-space-3);
+  border-radius: 4px 14px 14px 14px;
+  background: var(--hb-color-primary-subtle);
+  color: var(--hb-color-text);
+  font-size: var(--hb-text-body-sm);
+  line-height: 1.55;
+  white-space: pre-wrap;
+}
+.hb-ember__bubble--user {
+  align-self: flex-end;
+  border-radius: 14px 4px 14px 14px;
+  background: var(--hb-color-bg-subtle);
+}
+.hb-ember__bubble--mono {
+  font-family: var(--hb-font-mono);
+}
+.hb-ember__actions {
+  display: flex;
+  gap: var(--hb-space-2);
+  flex-wrap: wrap;
+  margin-block-start: var(--hb-space-1);
+}
+.hb-ember__suggestions {
+  display: flex;
+  gap: var(--hb-space-2);
+  flex-wrap: wrap;
+}
+.hb-ember__chip {
+  padding: 6px var(--hb-space-3);
+  border-radius: var(--hb-radius-pill);
+  border: var(--hb-stroke-hair) solid var(--hb-color-border-strong);
+  background: var(--hb-color-surface);
+  color: var(--hb-color-text-muted);
+  font-size: var(--hb-text-caption);
+  font-weight: var(--hb-weight-semibold);
+  cursor: pointer;
+  transition: all var(--hb-dur-fast);
+}
+.hb-ember__chip:hover {
+  border-color: var(--hb-color-primary);
+  color: var(--hb-color-primary);
+}
+.hb-ember__cursor {
+  display: inline-block;
+  inline-size: 7px;
+  block-size: 14px;
+  margin-inline-start: 2px;
+  vertical-align: -2px;
+  background: var(--hb-color-primary);
+  animation: hb-ember-blink 0.9s steps(2) infinite;
+}
+@keyframes hb-ember-blink {
+  50% {
+    opacity: 0;
+  }
+}
+.hb-ember__foot {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hb-space-2);
+  padding: var(--hb-space-3);
+  border-block-start: var(--hb-stroke-hair) solid var(--hb-color-border);
+}
+.hb-ember__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--hb-space-2);
+}
+.hb-ember__tier {
+  font-family: var(--hb-font-mono);
+  font-size: var(--hb-text-caption);
+  color: var(--hb-color-text-subtle);
+}
+.hb-ember__input-row {
+  display: flex;
+  gap: var(--hb-space-2);
+}
+.hb-ember__input-row .hb-input {
+  flex: 1;
+  min-height: 38px;
+}
+
+/* ---- Toast host (runtime stack) ----------------------------------------- */
+.hb-toast-host {
+  position: fixed;
+  inset-block-end: var(--hb-space-5);
+  inset-inline-end: var(--hb-space-5);
+  z-index: var(--hb-z-toast);
+  display: flex;
+  flex-direction: column;
+  gap: var(--hb-space-2);
+  inline-size: min(380px, calc(100vw - 2 * var(--hb-space-5)));
+  pointer-events: none;
+}
+.hb-toast-host .hb-toast {
+  align-items: flex-start;
+  pointer-events: auto;
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity var(--hb-dur-base) var(--hb-ease-emphasized),
+    transform var(--hb-dur-base) var(--hb-ease-emphasized);
+}
+.hb-toast.is-in {
+  opacity: 1;
+  transform: none;
+}
+.hb-toast.is-out {
+  opacity: 0;
+  transform: translateY(10px);
+}
+.hb-toast__body {
+  flex: 1;
+  min-inline-size: 0;
+}
+.hb-toast__close {
+  flex-shrink: 0;
+  display: inline-flex;
+  margin-inline-start: var(--hb-space-1);
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--hb-color-text-subtle);
+  cursor: pointer;
+}
+.hb-toast__close:hover {
+  color: var(--hb-color-text);
+}
+.hb-toast__close:focus-visible {
+  outline: var(--hb-size-focus-ring) solid var(--hb-color-ring);
+  outline-offset: 2px;
+  border-radius: var(--hb-radius-sm);
+}
+
+/* ---- Selection highlight (v1.0: warm ember-200 across the editors) ------- */
+::selection {
+  background-color: var(--hb-ember-200);
+  color: var(--hb-warm-900);
+}

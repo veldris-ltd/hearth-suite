@@ -1,0 +1,279 @@
+{
+  "license": "CC0-1.0. Original, concise definitions compiled for Hearth Suite as a starter sample, NOT copied from any proprietary dictionary. The production lexicon loads a full open-licence dataset (WordNet 3.0 / Wiktionary, licence-checked) through the core `lexicon` FFI capability; this file is the offline fallback and the shape contract.",
+  "source": "hearth-sample",
+  "entries": {
+    "calm": {
+      "pos": "adjective",
+      "definitions": ["Free from disturbance; peaceful and untroubled."],
+      "synonyms": ["peaceful", "tranquil", "serene", "still", "composed"],
+      "antonyms": ["agitated", "anxious", "restless"]
+    },
+    "warm": {
+      "pos": "adjective",
+      "definitions": [
+        "Having a comfortable, moderate heat.",
+        "Friendly and affectionate in manner."
+      ],
+      "synonyms": ["cosy", "snug", "friendly", "genial"],
+      "antonyms": ["cold", "chilly", "aloof"]
+    },
+    "home": {
+      "pos": "noun",
+      "definitions": ["The place where one lives; a setting of refuge and belonging."],
+      "synonyms": ["house", "dwelling", "residence", "hearth"],
+      "antonyms": []
+    },
+    "hearth": {
+      "pos": "noun",
+      "definitions": ["The floor of a fireplace; figuratively, the warm centre of a home."],
+      "synonyms": ["fireside", "home", "fireplace"],
+      "antonyms": []
+    },
+    "quiet": {
+      "pos": "adjective",
+      "definitions": ["Making little or no noise; free from disturbance."],
+      "synonyms": ["silent", "hushed", "still", "peaceful"],
+      "antonyms": ["loud", "noisy"]
+    },
+    "bright": {
+      "pos": "adjective",
+      "definitions": ["Giving out much light.", "Clever and quick to learn."],
+      "synonyms": ["radiant", "luminous", "vivid", "clever"],
+      "antonyms": ["dim", "dull", "dark"]
+    },
+    "clear": {
+      "pos": "adjective",
+      "definitions": ["Easy to perceive or understand; free of obstruction."],
+      "synonyms": ["plain", "obvious", "lucid", "transparent"],
+      "antonyms": ["unclear", "vague", "murky"]
+    },
+    "simple": {
+      "pos": "adjective",
+      "definitions": ["Easily understood or done; without needless complexity."],
+      "synonyms": ["plain", "straightforward", "easy", "uncomplicated"],
+      "antonyms": ["complex", "complicated"]
+    },
+    "careful": {
+      "pos": "adjective",
+      "definitions": ["Giving close attention to avoid harm or error."],
+      "synonyms": ["cautious", "attentive", "thorough", "diligent"],
+      "antonyms": ["careless", "reckless"]
+    },
+    "kind": {
+      "pos": "adjective",
+      "definitions": ["Considerate and generous toward others."],
+      "synonyms": ["gentle", "considerate", "compassionate", "warm"],
+      "antonyms": ["cruel", "unkind"]
+    },
+    "happy": {
+      "pos": "adjective",
+      "definitions": ["Feeling or showing pleasure and contentment."],
+      "synonyms": ["glad", "content", "cheerful", "joyful"],
+      "antonyms": ["sad", "unhappy"]
+    },
+    "sad": {
+      "pos": "adjective",
+      "definitions": ["Feeling or showing sorrow or low spirits."],
+      "synonyms": ["unhappy", "sorrowful", "downcast", "melancholy"],
+      "antonyms": ["happy", "cheerful"]
+    },
+    "big": {
+      "pos": "adjective",
+      "definitions": ["Of considerable size, extent, or intensity."],
+      "synonyms": ["large", "great", "substantial", "considerable"],
+      "antonyms": ["small", "little", "tiny"]
+    },
+    "small": {
+      "pos": "adjective",
+      "definitions": ["Of less than average or usual size."],
+      "synonyms": ["little", "tiny", "compact", "modest"],
+      "antonyms": ["big", "large", "huge"]
+    },
+    "fast": {
+      "pos": "adjective",
+      "definitions": ["Moving or capable of moving at high speed."],
+      "synonyms": ["quick", "rapid", "swift", "speedy"],
+      "antonyms": ["slow", "sluggish"]
+    },
+    "slow": {
+      "pos": "adjective",
+      "definitions": ["Moving or operating at a low speed."],
+      "synonyms": ["unhurried", "gradual", "leisurely"],
+      "antonyms": ["fast", "quick", "rapid"]
+    },
+    "begin": {
+      "pos": "verb",
+      "definitions": ["To start; to perform the first part of an action."],
+      "synonyms": ["start", "commence", "initiate", "open"],
+      "antonyms": ["end", "finish", "conclude"]
+    },
+    "end": {
+      "pos": "noun",
+      "definitions": ["The final part of something; the point at which it stops."],
+      "synonyms": ["conclusion", "finish", "close", "termination"],
+      "antonyms": ["beginning", "start"]
+    },
+    "make": {
+      "pos": "verb",
+      "definitions": ["To form or produce something by combining parts or materials."],
+      "synonyms": ["create", "build", "produce", "form"],
+      "antonyms": ["destroy", "demolish"]
+    },
+    "build": {
+      "pos": "verb",
+      "definitions": ["To construct by assembling parts over time."],
+      "synonyms": ["construct", "assemble", "erect", "create"],
+      "antonyms": ["demolish", "dismantle"]
+    },
+    "write": {
+      "pos": "verb",
+      "definitions": ["To mark letters or words on a surface; to compose text."],
+      "synonyms": ["compose", "pen", "draft", "author"],
+      "antonyms": ["erase"]
+    },
+    "think": {
+      "pos": "verb",
+      "definitions": ["To use the mind to consider, reason, or form ideas."],
+      "synonyms": ["consider", "ponder", "reflect", "reason"],
+      "antonyms": []
+    },
+    "help": {
+      "pos": "verb",
+      "definitions": ["To make it easier for someone to do something; to assist."],
+      "synonyms": ["assist", "aid", "support", "abet"],
+      "antonyms": ["hinder", "obstruct"]
+    },
+    "keep": {
+      "pos": "verb",
+      "definitions": ["To retain possession of; to continue to have or hold."],
+      "synonyms": ["retain", "hold", "preserve", "save"],
+      "antonyms": ["lose", "discard"]
+    },
+    "show": {
+      "pos": "verb",
+      "definitions": ["To make visible or known; to display."],
+      "synonyms": ["display", "reveal", "present", "exhibit"],
+      "antonyms": ["hide", "conceal"]
+    },
+    "hide": {
+      "pos": "verb",
+      "definitions": ["To put or keep out of sight; to conceal."],
+      "synonyms": ["conceal", "cover", "screen", "mask"],
+      "antonyms": ["show", "reveal", "expose"]
+    },
+    "open": {
+      "pos": "verb",
+      "definitions": ["To move so as to leave a space allowing access; to unfold."],
+      "synonyms": ["unseal", "unfold", "uncover", "unlock"],
+      "antonyms": ["close", "shut", "seal"]
+    },
+    "close": {
+      "pos": "verb",
+      "definitions": ["To move so as to cover an opening; to shut."],
+      "synonyms": ["shut", "seal", "fasten"],
+      "antonyms": ["open"]
+    },
+    "safe": {
+      "pos": "adjective",
+      "definitions": ["Protected from danger, risk, or harm."],
+      "synonyms": ["secure", "protected", "guarded", "sheltered"],
+      "antonyms": ["unsafe", "exposed", "vulnerable"]
+    },
+    "secure": {
+      "pos": "adjective",
+      "definitions": ["Fixed or fastened firmly; protected against loss or attack."],
+      "synonyms": ["safe", "protected", "fastened", "sound"],
+      "antonyms": ["insecure", "exposed"]
+    },
+    "private": {
+      "pos": "adjective",
+      "definitions": ["Belonging to or intended for one person; not shared or public."],
+      "synonyms": ["personal", "confidential", "secluded"],
+      "antonyms": ["public", "shared", "open"]
+    },
+    "seal": {
+      "pos": "verb",
+      "definitions": ["To close securely so that contents are protected or hidden."],
+      "synonyms": ["close", "secure", "fasten", "encrypt"],
+      "antonyms": ["open", "unseal"]
+    },
+    "share": {
+      "pos": "verb",
+      "definitions": ["To give a portion of something to others; to let others use."],
+      "synonyms": ["distribute", "divide", "give", "impart"],
+      "antonyms": ["withhold", "keep"]
+    },
+    "true": {
+      "pos": "adjective",
+      "definitions": ["In accordance with fact or reality; accurate."],
+      "synonyms": ["accurate", "correct", "factual", "genuine"],
+      "antonyms": ["false", "untrue"]
+    },
+    "important": {
+      "pos": "adjective",
+      "definitions": ["Of great significance or value."],
+      "synonyms": ["significant", "vital", "crucial", "essential"],
+      "antonyms": ["trivial", "minor", "unimportant"]
+    },
+    "useful": {
+      "pos": "adjective",
+      "definitions": ["Able to be used for a practical purpose; helpful."],
+      "synonyms": ["helpful", "practical", "handy", "valuable"],
+      "antonyms": ["useless", "pointless"]
+    },
+    "easy": {
+      "pos": "adjective",
+      "definitions": ["Achieved without great effort; not difficult."],
+      "synonyms": ["simple", "effortless", "straightforward"],
+      "antonyms": ["hard", "difficult"]
+    },
+    "hard": {
+      "pos": "adjective",
+      "definitions": ["Requiring great effort; not easy.", "Solid and firm to the touch."],
+      "synonyms": ["difficult", "tough", "demanding", "firm"],
+      "antonyms": ["easy", "soft"]
+    },
+    "new": {
+      "pos": "adjective",
+      "definitions": ["Made, introduced, or discovered recently; not existing before."],
+      "synonyms": ["fresh", "recent", "novel", "modern"],
+      "antonyms": ["old", "ancient"]
+    },
+    "old": {
+      "pos": "adjective",
+      "definitions": ["Having existed for a long time; not new."],
+      "synonyms": ["aged", "ancient", "former", "vintage"],
+      "antonyms": ["new", "young", "modern"]
+    },
+    "good": {
+      "pos": "adjective",
+      "definitions": ["To be desired or approved of; of high quality."],
+      "synonyms": ["fine", "excellent", "worthy", "sound"],
+      "antonyms": ["bad", "poor"]
+    },
+    "work": {
+      "pos": "noun",
+      "definitions": ["Activity involving effort done to achieve a purpose or result."],
+      "synonyms": ["labour", "task", "effort", "toil"],
+      "antonyms": ["rest", "leisure"]
+    },
+    "plan": {
+      "pos": "noun",
+      "definitions": ["A detailed proposal for achieving something."],
+      "synonyms": ["scheme", "strategy", "design", "blueprint"],
+      "antonyms": []
+    },
+    "find": {
+      "pos": "verb",
+      "definitions": ["To discover or locate, whether by search or by chance."],
+      "synonyms": ["discover", "locate", "uncover", "spot"],
+      "antonyms": ["lose", "miss"]
+    },
+    "change": {
+      "pos": "verb",
+      "definitions": ["To make or become different."],
+      "synonyms": ["alter", "modify", "transform", "adjust"],
+      "antonyms": ["keep", "preserve"]
+    }
+  }
+}

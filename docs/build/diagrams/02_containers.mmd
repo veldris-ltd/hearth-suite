@@ -1,0 +1,42 @@
+%%{init: {'theme':'neutral'}}%%
+flowchart TB
+    user["User"]:::actor
+    subgraph client["Hearth Suite Client (desktop: Tauri/Rust+webview; mobile: Capacitor/RN)"]
+        ui["UI Shell (The Mantel)\n[Web stack: TS + framework]"]:::container
+        editors["Editors: Writer / Sheets / Records / Calendar\n[document engines]"]:::container
+        core["Hearth Suite Core (Rust)\nBundle I/O, ODF, CRDT, orchestration"]:::container
+        crypto["Crypto Module (Rust)\nML-KEM/ML-DSA + AES-256-GCM (Seal)"]:::container
+        ai["Ember Runtime\nllama.cpp / GGUF local inference"]:::container
+        localdb[("Local Store\nSQLite (Records) + encrypted file vault")]:::datastore
+    end
+    subgraph backend["Optional Cloud (Veldris) - self-hostable"]
+        relay["Sync Relay\n[Rust service] zero-knowledge blob store"]:::container
+        ident["Key Directory\n[service] publishes PQ public keys"]:::container
+        rel["Release/Update Service\nsigned artifact metadata (TUF)"]:::container
+        admincp["Admin Control Panel\n[web app + API]"]:::container
+        objstore[("Encrypted Object Store\nS3-compatible")]:::datastore
+        metadb[("Operational DB\nPostgres (accounts/relay metadata)")]:::datastore
+    end
+    models["Model weights mirror"]:::external
+
+    user -->|interacts| ui
+    ui --> editors
+    editors --> core
+    core --> crypto
+    core --> ai
+    core --> localdb
+    ai -.one-time.-> models
+    core -->|"encrypted blobs (opt-in)"| relay
+    core -->|"fetch recipient PQ keys"| ident
+    core -->|"check updates"| rel
+    relay --> objstore
+    ident --> metadb
+    relay --> metadb
+    admincp --> metadb
+    admincp --> objstore
+    rel --> objstore
+
+    classDef actor fill:#08427B,color:#fff
+    classDef container fill:#1168BD,color:#fff
+    classDef datastore fill:#1168BD,color:#fff
+    classDef external fill:#999999,color:#fff

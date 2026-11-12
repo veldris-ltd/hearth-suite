@@ -1,0 +1,27 @@
+<mxfile host="imhotep" agent="imhotep-skill" version="1.0">
+  <diagram name="Data Model (ER)" id="er">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="826" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="b" value="BUNDLE" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1168BD;fontColor=#ffffff;strokeColor=#0B4884" vertex="1" parent="1"><mxGeometry x="360" y="40" width="180" height="60" as="geometry"/></mxCell>
+        <mxCell id="d" value="DOCUMENT" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1168BD;fontColor=#ffffff;strokeColor=#0B4884" vertex="1" parent="1"><mxGeometry x="360" y="160" width="180" height="60" as="geometry"/></mxCell>
+        <mxCell id="v" value="VERSION" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1168BD;fontColor=#ffffff;strokeColor=#0B4884" vertex="1" parent="1"><mxGeometry x="360" y="280" width="180" height="60" as="geometry"/></mxCell>
+        <mxCell id="rt" value="RECORD_TABLE" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1168BD;fontColor=#ffffff;strokeColor=#0B4884" vertex="1" parent="1"><mxGeometry x="40" y="160" width="180" height="60" as="geometry"/></mxCell>
+        <mxCell id="rf" value="RECORD_FIELD" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1168BD;fontColor=#ffffff;strokeColor=#0B4884" vertex="1" parent="1"><mxGeometry x="40" y="280" width="180" height="60" as="geometry"/></mxCell>
+        <mxCell id="rr" value="RECORD_ROW" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1168BD;fontColor=#ffffff;strokeColor=#0B4884" vertex="1" parent="1"><mxGeometry x="40" y="400" width="180" height="60" as="geometry"/></mxCell>
+        <mxCell id="id" value="IDENTITY" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1168BD;fontColor=#ffffff;strokeColor=#0B4884" vertex="1" parent="1"><mxGeometry x="680" y="40" width="180" height="60" as="geometry"/></mxCell>
+        <mxCell id="dv" value="DEVICE" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1168BD;fontColor=#ffffff;strokeColor=#0B4884" vertex="1" parent="1"><mxGeometry x="680" y="160" width="180" height="60" as="geometry"/></mxCell>
+        <mxCell id="sg" value="SEAL_GRANT" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1168BD;fontColor=#ffffff;strokeColor=#0B4884" vertex="1" parent="1"><mxGeometry x="680" y="280" width="180" height="60" as="geometry"/></mxCell>
+        <mxCell id="e1" value="contains" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="b" target="d"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e2" value="history" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="d" target="v"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e3" value="contains" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="b" target="rt"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e4" value="defines" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="rt" target="rf"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e5" value="contains" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="rt" target="rr"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e6" value="sealed for" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="b" target="sg"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e7" value="key used" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="id" target="sg"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e8" value="owns" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="id" target="dv"><mxGeometry relative="1" as="geometry"/></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

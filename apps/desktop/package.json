@@ -1,0 +1,29 @@
+{
+  "name": "@hearth/desktop",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Hearth Suite desktop client, Tauri shell embedding the Rust core, web UI in the system webview.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "main": "src/main.ts",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "typecheck": "tsc --build",
+    "test": "node --test tests/*.test.mjs",
+    "tauri": "tauri"
+  },
+  "dependencies": {
+    "@hearth/client-shell": "workspace:*",
+    "@hearth/contacts": "workspace:*",
+    "@hearth/core-client": "workspace:*",
+    "@hearth/design-system": "workspace:*",
+    "@tauri-apps/api": "^2.12.4",
+    "@tauri-apps/plugin-http": "^2.8.3",
+    "@tauri-apps/plugin-updater": "^2.14.0"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.12.3",
+    "vite": "^6.4.5"
+  }
+}

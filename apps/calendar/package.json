@@ -1,0 +1,17 @@
+{
+  "name": "@hearth/calendar",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Calendar, Hearth Suite's scheduling editor.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "typecheck": "tsc --build",
+    "test": "node --test tests/calendar.test.mjs"
+  },
+  "dependencies": {
+    "@hearth/core-client": "workspace:*",
+    "@hearth/design-system": "workspace:*"
+  }
+}

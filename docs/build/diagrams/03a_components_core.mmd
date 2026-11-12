@@ -1,0 +1,29 @@
+%%{init: {'theme':'neutral'}}%%
+flowchart TB
+    subgraph core["Hearth Suite Core (Rust crate workspace)"]
+        bundle["bundle\nProject container read/write (ZIP+manifest)"]
+        odf["odf-io\nODF + docx/xlsx round-trip"]
+        legacy["legacy-import\nlibwps .wps/.wks/.wdb"]
+        crdt["crdt-sync\nCo-edit merge, version history"]
+        keymgr["key-manager\nidentity, recovery phrase"]
+        sealapi["seal\nencrypt/decrypt Bundle (calls crypto)"]
+        emberbridge["ember-bridge\nprompt assembly, RAG, model mgmt"]
+        store["store\nSQLite + encrypted vault access"]
+        ffi["ffi / wasm bindings\nexposed to UI layer"]
+    end
+    crypto[("crypto module")]
+    ai[("Ember runtime")]
+    db[("Local Store")]
+    bundle --> odf
+    bundle --> legacy
+    bundle --> store
+    sealapi --> crypto
+    sealapi --> keymgr
+    bundle --> sealapi
+    crdt --> store
+    emberbridge --> ai
+    emberbridge --> store
+    ffi --> bundle
+    ffi --> emberbridge
+    ffi --> crdt
+    store --> db

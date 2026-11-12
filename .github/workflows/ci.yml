@@ -1,0 +1,343 @@
+# Hearth Suite CI/CD pipeline, GitHub Actions (ADR-HS-006).
+#
+# Every job calls a script under ci/jobs/; .gitlab-ci.yml calls the same scripts,
+# so GitHub and GitLab run identical checks. This file only provisions toolchains
+# (.github/actions/setup) and wires the ordering:
+#
+#   lint -> test (Linux/Windows/macOS) -> e2e, a11y, coverage
+#   lint -> sast
+#   e2e -> audit -> reproducible-build, fuzz, build -> sign -> publish beta -> stable
+#
+# Ordering is enforced with `needs:` so a failure blocks everything downstream
+# (AC-CI-1). To keep Actions usage down, pull requests run the checks only:
+# the platform build matrix, fuzzing and the reproducible build run on a push
+# to main (and on a manual run), and pushes to dev run nothing because the
+# pull request into main already covers them. Audit fails on any Rust advisory or a HIGH/CRITICAL npm advisory
+# (AC-CI-2); sign rejects unsigned artifacts (AC-CI-3); reproducible-build checks
+# hash stability (AC-CI-4).
+name: ci
+
+on:
+  push:
+    branches: ["main", "phase-*"]
+  pull_request:
+    branches: ["main", "dev"]
+  workflow_dispatch:
+
+# Least privilege by default; jobs opt into more where needed.
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: 1
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  # ---- Stage 1: lint + format -------------------------------------------------
+  lint:
+    name: lint + fmt
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: ./.github/actions/setup
+        with:
+          rust-components: rustfmt, clippy
+      - run: ci/jobs/lint.sh
+
+  # Developer Certificate of Origin for inbound public pull requests (CONTRIBUTING.md).
+  # Runs only on the public repository: maintainer commits reach it as signed
+  # export snapshots, never as pull requests.
+  dco:
+    name: DCO sign-off
+    if: github.event_name == 'pull_request' && github.repository == 'veldris-ltd/hearth-suite'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - run: ci/jobs/dco.sh
+        env:
+          DCO_BASE: ${{ github.event.pull_request.base.sha }}
+          DCO_HEAD: ${{ github.event.pull_request.head.sha }}
+
+  # ---- Stage 2: unit + integration tests -------------------------------------
+  test:
+    name: tests (${{ matrix.os }})
+    needs: lint
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: ./.github/actions/setup
+      - run: ci/jobs/test.sh
+
+  # ---- Stage 3: E2E + accessibility ------------------------------------------
+  e2e:
+    name: E2E smoke
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: ./.github/actions/setup
+      - run: ci/jobs/e2e.sh
+
+  a11y:
+    name: accessibility (axe-core)
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: ./.github/actions/setup
+      - run: ci/jobs/a11y.sh
+
+  # ---- SAST (Semgrep) ---------------------------------------------------------
+  sast:
+    name: SAST (Semgrep)
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.12"
+      - run: ci/jobs/sast.sh
+
+  # ---- Stage 4: SBOM + dependency audit (AC-CI-2) -----------------------------
+  audit:
+    name: SBOM + dependency audit
+    needs: e2e
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: ./.github/actions/setup
+      - name: osv-scanner
+        uses: google/osv-scanner-action/osv-scanner-action@daa2c68f50d845057895a9c300e42478481c1d26 # v1.9.1
+        with:
+          scan-args: |-
+            --recursive
+            --skip-git
+            ./
+      - run: ci/jobs/audit.sh
+      - name: Generate SBOM (syft -> CycloneDX)
+        uses: anchore/sbom-action@66cbf4bc1f1c0d2edc94016e65bc221b6bb0ad6c # v0.24.3
+        with:
+          format: cyclonedx-json
+          output-file: sbom.cyclonedx.json
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: sbom
+          path: sbom.cyclonedx.json
+          if-no-files-found: error
+
+  reproducible-build:
+    name: reproducible build
+    needs: audit
+    if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: ./.github/actions/setup
+        with:
+          node: "false"
+      - run: ci/jobs/reproducible.sh
+
+  coverage:
+    name: coverage gate
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: ./.github/actions/setup
+        with:
+          rust-components: llvm-tools-preview
+      - uses: taiki-e/install-action@1e29709c0ec63babbe8f266397a465f29a825f91 # v2
+        with:
+          tool: cargo-llvm-cov
+      - run: ci/jobs/coverage.sh
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: coverage
+          path: |
+            lcov-rust.info
+            coverage/lcov.info
+          if-no-files-found: ignore
+
+  fuzz:
+    name: parser fuzzing (smoke)
+    needs: audit
+    if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: ./.github/actions/setup
+        with:
+          rust-toolchain: nightly
+          node: "false"
+      - uses: taiki-e/install-action@1e29709c0ec63babbe8f266397a465f29a825f91 # v2
+        with:
+          tool: cargo-fuzz
+      - run: ci/jobs/fuzz.sh
+
+  # ---- Stage 5: build matrix (Win/macOS/Linux/iOS/Android) -------------------
+  build:
+    name: build (${{ matrix.platform }})
+    needs: audit
+    if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { platform: linux, os: ubuntu-latest, target: x86_64-unknown-linux-gnu, kind: desktop }
+          - { platform: windows, os: windows-latest, target: x86_64-pc-windows-msvc, kind: desktop }
+          - { platform: macos, os: macos-latest, target: aarch64-apple-darwin, kind: desktop }
+          - { platform: ios, os: macos-latest, target: aarch64-apple-ios, kind: mobile }
+          - { platform: android, os: ubuntu-latest, target: aarch64-linux-android, kind: mobile }
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: ./.github/actions/setup
+        with:
+          rust-targets: ${{ matrix.target }}
+      - name: Install Linux desktop dependencies
+        if: matrix.platform == 'linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev \
+            libgtk-3-dev patchelf imagemagick
+      - name: Build desktop installers (Tauri)
+        if: matrix.kind == 'desktop'
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          WINDOWS_CERTIFICATE: ${{ secrets.WINDOWS_CERTIFICATE }}
+          WINDOWS_CERTIFICATE_PASSWORD: ${{ secrets.WINDOWS_CERTIFICATE_PASSWORD }}
+        run: ci/desktop/package.sh ${{ matrix.platform }}
+      - name: Build mobile core + web layer
+        if: matrix.kind == 'mobile'
+        run: ci/jobs/mobile-core.sh ${{ matrix.platform }}
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: build-${{ matrix.platform }}
+          path: dist/
+          if-no-files-found: error
+
+  # ---- Stage 6: sign artifacts (code signing + TUF, AC-CI-3) -----------------
+  sign:
+    name: sign artifacts
+    needs: build
+    # Release step, as on GitLab (.on-main-or-tag) and like publish-beta: pull
+    # requests and other branches build and test installers but never sign them.
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # keyless signing via Sigstore OIDC
+      attestations: write # SLSA build-provenance + SBOM attestations
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          pattern: build-*
+          path: artifacts
+          merge-multiple: true
+      - uses: sigstore/cosign-installer@398d4b0eeef1380460a10c8013a76f728fb906ac # v3
+      - uses: ./.github/actions/setup
+        with:
+          node: "false"
+      - run: ci/jobs/sign.sh artifacts
+        env:
+          HEARTH_RELEASE_ROLE_SEED: ${{ secrets.HEARTH_RELEASE_ROLE_SEED }}
+          HEARTH_ROOT_KEY_ID: ${{ vars.HEARTH_ROOT_KEY_ID }}
+      # Artifact attestations need a public repository or a plan that supports
+      # them on private ones. Set the repository variable ATTESTATIONS_ENABLED=true
+      # once available; Sigstore signatures and TUF metadata are produced either way.
+      - name: Attestations unavailable
+        if: vars.ATTESTATIONS_ENABLED != 'true' && github.event.repository.private
+        run: echo "::notice::artifact attestations skipped (private repository; set ATTESTATIONS_ENABLED=true once the plan supports them)"
+      - name: Attest build provenance (SLSA)
+        if: vars.ATTESTATIONS_ENABLED == 'true' || !github.event.repository.private
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-path: |
+            artifacts/*.msi
+            artifacts/*.exe
+            artifacts/*.dmg
+            artifacts/*.AppImage
+            artifacts/*.deb
+            artifacts/libhearth_ffi*
+            artifacts/hearth-*.txt
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        if: vars.ATTESTATIONS_ENABLED == 'true' || !github.event.repository.private
+        with:
+          name: sbom
+          path: sbom
+      - name: Attest SBOM
+        if: vars.ATTESTATIONS_ENABLED == 'true' || !github.event.repository.private
+        uses: actions/attest-sbom@c604332985a26aa8cf1bdc465b92731239ec6b9e # v4.1.0
+        with:
+          subject-path: |
+            artifacts/*.msi
+            artifacts/*.dmg
+            artifacts/*.AppImage
+            artifacts/*.deb
+            artifacts/libhearth_ffi*
+          sbom-path: sbom/sbom.cyclonedx.json
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: signed-release
+          path: artifacts/
+          if-no-files-found: error
+
+  # ---- Stage 7/8: publish beta, then stable after maintainer approval --------
+  publish-beta:
+    name: publish beta
+    needs: sign
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: beta
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: signed-release
+          path: release
+      - run: ci/jobs/release-publish.sh beta release
+        env:
+          RELEASE_SERVICE_URL: ${{ vars.RELEASE_SERVICE_URL }}
+          HEARTH_PUBLISH_TOKEN: ${{ secrets.HEARTH_PUBLISH_TOKEN }}
+
+  publish-stable:
+    name: publish stable
+    needs: publish-beta
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    # The `production` environment carries required reviewers: the maintainer gate.
+    environment: production
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: signed-release
+          path: release
+      - run: ci/jobs/release-publish.sh stable release
+        env:
+          RELEASE_SERVICE_URL: ${{ vars.RELEASE_SERVICE_URL }}
+          HEARTH_PUBLISH_TOKEN: ${{ secrets.HEARTH_PUBLISH_TOKEN }}

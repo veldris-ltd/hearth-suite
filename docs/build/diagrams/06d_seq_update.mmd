@@ -1,0 +1,14 @@
+sequenceDiagram
+    participant CI as CI/CD Pipeline
+    participant Rel as Release Service (TUF)
+    participant CDN as CDN
+    participant App as Hearth Suite Client
+    actor User
+    CI->>CI: build, test, SBOM, sign artifacts
+    CI->>Rel: publish signed metadata + hashes
+    Rel->>CDN: distribute artifacts
+    App->>Rel: check latest (signed metadata)
+    Rel-->>App: version + signatures
+    App->>CDN: download artifact
+    App->>App: verify signature + hash (TUF roots)
+    App-->>User: prompt to install verified update

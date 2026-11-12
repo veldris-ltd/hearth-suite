@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Offline-first: the webview loads only local assets; no remote origins. -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; img-src 'self' data: asset: https://asset.localhost; style-src 'self' 'unsafe-inline'; script-src 'self'"
+    />
+    <title>Hearth Suite</title>
+    <!-- App-icon set generated from the SVG masters by
+         `pnpm --filter @hearth/design-system build:icons` (DSG-B2). The keyhole
+         flame on ember reads from favicon to launcher; favicon stays the plain flame. -->
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon-180.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#F4EEE7" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#17130F" />
+  </head>
+  <body>
+    <a class="hb-skip-link" href="#hb-main">Skip to content</a>
+    <div id="app"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "Capabilities for the Hearth Suite document windows: core dispatch, window controls, opening additional document windows (W28), the verified updater, OS reminder notifications, and native HTTP for CalDAV/ICS calendar subscriptions.",
+  "windows": ["main", "doc-*"],
+  "permissions": [
+    "core:default",
+    "core:window:allow-start-dragging",
+    "core:webview:allow-create-webview-window",
+    "updater:default",
+    "notification:default",
+    {
+      "identifier": "http:default",
+      "allow": [{ "url": "https://*" }, { "url": "https://*/*" }]
+    }
+  ]
+}

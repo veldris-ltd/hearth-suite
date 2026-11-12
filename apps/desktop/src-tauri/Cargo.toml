@@ -1,0 +1,51 @@
+# The Hearth Suite desktop binary. Intentionally NOT a member of the root Cargo
+# workspace (see the root Cargo.toml `exclude`): it pulls the platform webview
+# toolchain that only the packaging runners provision, so it must not gate
+# `cargo test --workspace` / `cargo deny`. It depends on the core crates by path.
+[package]
+name = "hearth-desktop"
+version = "0.0.0"
+edition = "2021"
+rust-version = "1.82"
+description = "Hearth Suite desktop client, Tauri shell embedding the Rust core."
+license = "Apache-2.0"
+authors = ["Veldris Ltd."]
+publish = false
+
+[lib]
+name = "hearth_desktop_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+# Without the default `zip` feature: tauri.conf.json sets createUpdaterArtifacts=true,
+# so updates are the signed .msi/.exe/.AppImage themselves, never .zip or .tar.gz
+# bundles. That removes zip 4.x (RUSTSEC-2026-0367/0368/0369) from the build.
+tauri-plugin-updater = { version = "2", default-features = false, features = ["rustls-tls", "system-proxy"] }
+tauri-plugin-notification = "2"
+# Native HTTP for CalDAV/ICS calendar subscriptions (bypasses the webview CORS
+# sandbox); the allow-list of reachable hosts lives in capabilities/default.json.
+tauri-plugin-http = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+futures = "0.3"
+dirs = "5"
+base64 = "0.22"
+getrandom = "0.3"
+# Fetch the signed TUF targets metadata from the release channel (rustls, no
+# system OpenSSL; consistent with the zero-egress, self-contained posture).
+reqwest = { version = "0.12", default-features = false, features = ["rustls-tls"] }
+
+# The Hearth Suite core, by path (these ARE workspace members).
+hearth-ffi = { path = "../../../crates/ffi" }
+hearth-seal = { path = "../../../crates/seal" }
+hearth-key-manager = { path = "../../../crates/key-manager" }
+hearth-release = { path = "../../../crates/release" }
+hearth-ember-bridge = { path = "../../../crates/ember-bridge" }
+
+[features]
+# Production builds embed assets via Tauri's custom protocol.
+custom-protocol = ["tauri/custom-protocol"]

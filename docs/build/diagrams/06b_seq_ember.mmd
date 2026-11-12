@@ -1,0 +1,14 @@
+sequenceDiagram
+    actor User
+    participant UI as Writer (UI)
+    participant Bridge as ember-bridge
+    participant Store as Local Store
+    participant Ember as Ember Runtime (llama.cpp)
+    User->>UI: "Summarise this document"
+    UI->>Bridge: request(summarise, doc_id, effort=Balanced)
+    Bridge->>Store: retrieve doc + local RAG context
+    Store-->>Bridge: plaintext (in-memory, never leaves device)
+    Bridge->>Ember: prompt + context (selected model tier)
+    Ember-->>Bridge: completion (streamed tokens)
+    Bridge-->>UI: streamed summary
+    UI-->>User: summary inline; "ran on your device"

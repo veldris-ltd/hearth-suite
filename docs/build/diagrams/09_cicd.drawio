@@ -1,0 +1,27 @@
+<mxfile host="imhotep" agent="imhotep-skill" version="1.0">
+  <diagram name="CI/CD Pipeline" id="ci">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="826" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="s0" value="Git push / PR" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1168BD;fontColor=#ffffff;strokeColor=#0B4884" vertex="1" parent="1"><mxGeometry x="360" y="40" width="300" height="50" as="geometry"/></mxCell>
+        <mxCell id="s1" value="Lint + format" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1168BD;fontColor=#ffffff;strokeColor=#0B4884" vertex="1" parent="1"><mxGeometry x="360" y="130" width="300" height="50" as="geometry"/></mxCell>
+        <mxCell id="s2" value="Unit + integration tests" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1168BD;fontColor=#ffffff;strokeColor=#0B4884" vertex="1" parent="1"><mxGeometry x="360" y="220" width="300" height="50" as="geometry"/></mxCell>
+        <mxCell id="s3" value="E2E client smoke" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1168BD;fontColor=#ffffff;strokeColor=#0B4884" vertex="1" parent="1"><mxGeometry x="360" y="310" width="300" height="50" as="geometry"/></mxCell>
+        <mxCell id="s4" value="SBOM + dep audit" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1168BD;fontColor=#ffffff;strokeColor=#0B4884" vertex="1" parent="1"><mxGeometry x="360" y="400" width="300" height="50" as="geometry"/></mxCell>
+        <mxCell id="s5" value="Build matrix (5 platforms)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1168BD;fontColor=#ffffff;strokeColor=#0B4884" vertex="1" parent="1"><mxGeometry x="360" y="490" width="300" height="50" as="geometry"/></mxCell>
+        <mxCell id="s6" value="Sign artifacts (TUF)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1168BD;fontColor=#ffffff;strokeColor=#0B4884" vertex="1" parent="1"><mxGeometry x="360" y="580" width="300" height="50" as="geometry"/></mxCell>
+        <mxCell id="s7" value="Publish beta -> approval -> stable" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1168BD;fontColor=#ffffff;strokeColor=#0B4884" vertex="1" parent="1"><mxGeometry x="360" y="670" width="300" height="50" as="geometry"/></mxCell>
+        <mxCell id="s8" value="Build service images -> deploy staging -> approval -> prod" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1168BD;fontColor=#ffffff;strokeColor=#0B4884" vertex="1" parent="1"><mxGeometry x="360" y="760" width="300" height="50" as="geometry"/></mxCell>
+        <mxCell id="f1" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="s0" target="s1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="f2" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="s1" target="s2"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="f3" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="s2" target="s3"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="f4" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="s3" target="s4"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="f5" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="s4" target="s5"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="f6" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="s5" target="s6"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="f7" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="s6" target="s7"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="f8" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="s7" target="s8"><mxGeometry relative="1" as="geometry"/></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

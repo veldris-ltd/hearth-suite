@@ -1,0 +1,323 @@
+# Hearth Suite CI/CD pipeline, GitLab CI (ADR-HS-006).
+#
+# Same checks, same order, same scripts as .github/workflows/ci.yml: every job
+# calls ci/jobs/<job>.sh inside the CI image built from ci/image/Dockerfile.
+#
+#   image    ci-image (only when ci/image/Dockerfile changes, or on demand)
+#   test     lint, test, e2e, a11y, sast, coverage (+ GitLab SAST/secret detection)
+#   verify   audit, reproducible-build, fuzz
+#   build    desktop + mobile (main and tags), service images
+#   sign     cosign keyless (SIGSTORE_ID_TOKEN) + TUF metadata
+#   publish  release channels (beta automatic, stable manual), service deploys
+#
+# Runners: Linux jobs need a standard Docker executor. Windows and macOS jobs run
+# only when HEARTH_RUNNER_WINDOWS / HEARTH_RUNNER_MACOS are "true" and runners
+# tagged `windows` / `macos` exist. Service image jobs need a privileged runner
+# (Docker-in-Docker).
+
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS
+      when: never
+    - if: $CI_COMMIT_BRANCH
+    - if: $CI_COMMIT_TAG
+
+stages:
+  - image
+  - test
+  - verify
+  - build
+  - sign
+  - publish
+
+variables:
+  CI_IMAGE: $CI_REGISTRY_IMAGE/ci:2026-10-1
+  CARGO_HOME: $CI_PROJECT_DIR/.cargo-home
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: "1"
+  GIT_DEPTH: "20"
+
+include:
+  - template: Security/SAST.gitlab-ci.yml
+  - template: Security/Secret-Detection.gitlab-ci.yml
+
+default:
+  image: $CI_IMAGE
+  interruptible: true
+  cache:
+    key: $CI_JOB_NAME_SLUG
+    paths:
+      - .cargo-home/registry/
+      - .cargo-home/git/
+      - target/
+    when: always
+
+.on-main-push:
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push"
+
+.on-main-or-tag:
+  rules:
+    - if: $CI_COMMIT_TAG
+    - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push"
+
+# Long-running verification (fuzzing, reproducible build): main, tags and
+# manually started pipelines only, as on GitHub.
+.on-main-tag-or-manual:
+  rules:
+    - if: $CI_COMMIT_TAG
+    - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push"
+    - if: $CI_PIPELINE_SOURCE == "web"
+
+# ---- Image -----------------------------------------------------------------------
+ci-image:
+  stage: image
+  image: quay.io/buildah/stable:v1.38.0
+  variables:
+    STORAGE_DRIVER: vfs
+    BUILDAH_ISOLATION: chroot
+  cache: []
+  script:
+    - echo "$CI_REGISTRY_PASSWORD" | buildah login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
+    - buildah build -f ci/image/Dockerfile -t "$CI_IMAGE" ci/image
+    - buildah push "$CI_IMAGE"
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "schedule"
+    - changes:
+        - ci/image/Dockerfile
+
+# ---- Stage: test -----------------------------------------------------------------
+lint:
+  stage: test
+  script: ci/jobs/lint.sh
+
+test:
+  stage: test
+  needs: [lint]
+  script: ci/jobs/test.sh
+
+test-windows:
+  stage: test
+  needs: [lint]
+  tags: [windows]
+  image: null
+  cache: []
+  script: bash ci/jobs/test.sh
+  rules:
+    - if: $HEARTH_RUNNER_WINDOWS == "true"
+
+test-macos:
+  stage: test
+  needs: [lint]
+  tags: [macos]
+  image: null
+  cache: []
+  script: bash ci/jobs/test.sh
+  rules:
+    - if: $HEARTH_RUNNER_MACOS == "true"
+
+e2e:
+  stage: test
+  needs: [test]
+  script: ci/jobs/e2e.sh
+
+a11y:
+  stage: test
+  needs: [test]
+  script: ci/jobs/a11y.sh
+
+sast:
+  stage: test
+  needs: [lint]
+  script: ci/jobs/sast.sh
+
+coverage:
+  stage: test
+  needs: [test]
+  script: ci/jobs/coverage.sh
+  coverage: '/^TOTAL.*\s(\d+(?:\.\d+)?)%/'
+  artifacts:
+    when: always
+    paths: [lcov-rust.info, coverage/lcov.info]
+    expire_in: 7 days
+
+# ---- Stage: verify ---------------------------------------------------------------
+audit:
+  stage: verify
+  needs: [e2e]
+  script: ci/jobs/audit.sh
+  artifacts:
+    paths: [dist/sbom.cyclonedx.json]
+    expire_in: 30 days
+
+reproducible-build:
+  stage: verify
+  extends: .on-main-tag-or-manual
+  needs: [audit]
+  script: ci/jobs/reproducible.sh
+
+fuzz:
+  stage: verify
+  extends: .on-main-tag-or-manual
+  needs: [audit]
+  script: ci/jobs/fuzz.sh
+
+# ---- Stage: build ----------------------------------------------------------------
+build-linux:
+  stage: build
+  needs: [audit]
+  extends: .on-main-or-tag
+  script: ci/desktop/package.sh linux
+  artifacts:
+    paths: [dist/]
+    expire_in: 30 days
+
+build-android:
+  stage: build
+  needs: [audit]
+  extends: .on-main-or-tag
+  script:
+    - rustup target add aarch64-linux-android
+    - ci/jobs/mobile-core.sh android
+  artifacts:
+    paths: [dist/]
+    expire_in: 30 days
+
+build-windows:
+  stage: build
+  needs: [audit]
+  tags: [windows]
+  image: null
+  cache: []
+  script: bash ci/desktop/package.sh windows
+  artifacts:
+    paths: [dist/]
+    expire_in: 30 days
+  rules:
+    - if: $HEARTH_RUNNER_WINDOWS == "true" && ($CI_COMMIT_TAG || $CI_COMMIT_BRANCH == "main")
+
+build-macos:
+  stage: build
+  needs: [audit]
+  tags: [macos]
+  image: null
+  cache: []
+  script: bash ci/desktop/package.sh macos
+  artifacts:
+    paths: [dist/]
+    expire_in: 30 days
+  rules:
+    - if: $HEARTH_RUNNER_MACOS == "true" && ($CI_COMMIT_TAG || $CI_COMMIT_BRANCH == "main")
+
+build-ios:
+  stage: build
+  needs: [audit]
+  tags: [macos]
+  image: null
+  cache: []
+  script:
+    - rustup target add aarch64-apple-ios
+    - bash ci/jobs/mobile-core.sh ios
+  artifacts:
+    paths: [dist/]
+    expire_in: 30 days
+  rules:
+    - if: $HEARTH_RUNNER_MACOS == "true" && ($CI_COMMIT_TAG || $CI_COMMIT_BRANCH == "main")
+
+helm-lint:
+  stage: build
+  needs: []
+  script: ci/jobs/helm-lint.sh
+  rules:
+    - changes: [services/**/*, deploy/helm/**/*, ci/jobs/helm-*.sh]
+
+.service-image:
+  stage: build
+  needs: []
+  image: docker:27.3.1-cli
+  services: [docker:27.3.1-dind]
+  variables:
+    DOCKER_TLS_CERTDIR: "/certs"
+    IMAGE_REGISTRY: $CI_REGISTRY
+    IMAGE_PREFIX: $CI_PROJECT_PATH
+  id_tokens:
+    SIGSTORE_ID_TOKEN:
+      aud: sigstore
+  cache: []
+  before_script:
+    - apk add --no-cache bash git cosign
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
+  script:
+    - |
+      if [ "$CI_COMMIT_BRANCH" = "main" ] && [ "$CI_PIPELINE_SOURCE" = "push" ]; then export IMAGE_PUSH=true; fi
+      bash ci/jobs/services-image.sh "$SERVICE"
+  rules:
+    - changes: [services/**/*, ci/jobs/services-image.sh]
+
+service-image:
+  extends: .service-image
+  parallel:
+    matrix:
+      - SERVICE: [sync-relay, key-directory, release-service, admin-cp]
+
+# ---- Stage: sign -----------------------------------------------------------------
+sign:
+  stage: sign
+  extends: .on-main-or-tag
+  needs:
+    - job: build-linux
+    - job: build-android
+    - job: build-windows
+      optional: true
+    - job: build-macos
+      optional: true
+    - job: build-ios
+      optional: true
+  id_tokens:
+    SIGSTORE_ID_TOKEN:
+      aud: sigstore
+  script:
+    - mkdir -p artifacts && cp dist/* artifacts/
+    - ci/jobs/sign.sh artifacts
+  artifacts:
+    paths: [artifacts/]
+    expire_in: 90 days
+
+# ---- Stage: publish --------------------------------------------------------------
+publish-beta:
+  stage: publish
+  extends: .on-main-push
+  needs: [sign]
+  environment: { name: beta }
+  resource_group: release
+  script: ci/jobs/release-publish.sh beta artifacts
+
+publish-stable:
+  stage: publish
+  needs: [publish-beta, sign]
+  environment: { name: production }
+  resource_group: release
+  script: ci/jobs/release-publish.sh stable artifacts
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push"
+      when: manual
+
+deploy-staging:
+  stage: publish
+  needs: [helm-lint, service-image]
+  environment: { name: staging }
+  script: ci/jobs/helm-deploy.sh staging
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push"
+      changes: [services/**/*, deploy/helm/**/*]
+
+deploy-prod:
+  stage: publish
+  needs: [deploy-staging]
+  environment: { name: production }
+  script: ci/jobs/helm-deploy.sh prod
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push"
+      changes: [services/**/*, deploy/helm/**/*]
+      when: manual

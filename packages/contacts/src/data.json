@@ -1,0 +1,48 @@
+{
+  "seed": [
+    {
+      "id": "maria-okonkwo",
+      "name": "Maria Okonkwo",
+      "emails": ["maria@example.org"],
+      "phones": ["+44 20 7946 0011"],
+      "organization": "Hearth Suite board",
+      "address": "12 Kiln Row, Bristol",
+      "birthday": "1986-03-14",
+      "anniversary": "",
+      "notes": "Treasurer · key verified"
+    },
+    {
+      "id": "jon-alvarez",
+      "name": "Jon Alvarez",
+      "emails": ["jon@example.org"],
+      "phones": ["+1 415 555 0142"],
+      "organization": "Newsletter",
+      "address": "",
+      "birthday": "1990-11-02",
+      "anniversary": "",
+      "notes": "Volunteer"
+    },
+    {
+      "id": "lena-park",
+      "name": "Lena Park",
+      "emails": ["lena@example.org"],
+      "phones": [],
+      "organization": "Advisor",
+      "address": "",
+      "birthday": "",
+      "anniversary": "2015-06-20",
+      "notes": ""
+    },
+    {
+      "id": "sam-idris",
+      "name": "Sam Idris",
+      "emails": ["sam@example.org"],
+      "phones": ["+44 7700 900123"],
+      "organization": "",
+      "address": "",
+      "birthday": "1979-09-30",
+      "anniversary": "",
+      "notes": "Member"
+    }
+  ]
+}

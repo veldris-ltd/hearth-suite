@@ -1,0 +1,12 @@
+{
+  "name": "@hearth/core-client",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Typed TypeScript client for the Hearth Suite core FFI/WASM bindings.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "typecheck": "tsc --build"
+  }
+}

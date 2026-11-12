@@ -1,0 +1,57 @@
+/*
+ * Open-licence type (Hearth Suite v1.0): Literata (serif, brand & document craft),
+ * Spline Sans (UI), Spline Sans Mono (code). All SIL OFL 1.1, so free to
+ * vendor with an open-source release.
+ *
+ * All faces are now vendored under assets/fonts/ (each with its OFL text):
+ *   Literata.woff2          (normal, variable weight 400–700)
+ *   Literata-Italic.woff2   (italic, variable weight 400–700)
+ *   SplineSans.woff2        (UI)
+ *   SplineSansMono.woff2    (code)
+ * The @font-face below still prefer local() if the family is installed, and the
+ * token fallbacks in tokens.css (Georgia for serif, system monospace for code)
+ * remain as a final safety net, but display/code text now renders in-brand
+ * without any system fonts present.
+ */
+
+/* ---- Literata (serif · brand & document craft) ---- */
+@font-face {
+  font-family: "Literata";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src:
+    local("Literata"),
+    url("../assets/fonts/Literata.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Literata";
+  font-style: italic;
+  font-weight: 400 700;
+  font-display: swap;
+  src:
+    local("Literata Italic"),
+    url("../assets/fonts/Literata-Italic.woff2") format("woff2");
+}
+
+/* ---- Spline Sans (UI), vendored ---- */
+@font-face {
+  font-family: "Spline Sans";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src:
+    local("Spline Sans"),
+    url("../assets/fonts/SplineSans.woff2") format("woff2");
+}
+
+/* ---- Spline Sans Mono (code) ---- */
+@font-face {
+  font-family: "Spline Sans Mono";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src:
+    local("Spline Sans Mono"),
+    url("../assets/fonts/SplineSansMono.woff2") format("woff2");
+}

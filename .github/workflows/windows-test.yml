@@ -1,0 +1,158 @@
+# Windows test client build (P12.1 and P12.2; AC-WIN-1, AC-WIN-3, AC-WIN-4;
+# ADR-HS-007, ADR-HS-010).
+#
+# Manual only. Builds the MSI and NSIS installers through the same
+# ci/desktop/package.sh path as `just desktop`, checks them and keeps them for
+# 14 days. It lives in its own workflow so a test build does not start the full
+# ci.yml release matrix.
+#
+# channel=test  unsigned unless the test certificate is provisioned; no updater.
+# channel=beta  test-signed, versioned 0.1.<run number>, pinned to the beta
+#               updater and TUF keys, with signed feed metadata; publish=true
+#               uploads it to the beta feed.
+#
+# Configuration lives in the `beta` environment (see docs/contributing/windows-build.md):
+#   secrets  TAURI_SIGNING_PRIVATE_KEY, TAURI_SIGNING_PRIVATE_KEY_PASSWORD,
+#            HEARTH_RELEASE_ROLE_SEED, HEARTH_WIN_TEST_PFX_B64,
+#            HEARTH_WIN_TEST_PFX_PASSWORD, FEED_SSH_KEY
+#   vars     HEARTH_FEED_URL, HEARTH_BETA_ROOT_KEY_ID, HEARTH_BETA_ROOT_PUBKEY_B64,
+#            HEARTH_BETA_UPDATER_PUBKEY, FEED_HOST, FEED_USER, FEED_PATH,
+#            FEED_PORT, FEED_KNOWN_HOSTS
+name: windows-test
+
+on:
+  workflow_dispatch:
+    inputs:
+      channel:
+        description: test (unsigned updater, no feed) or beta (signed feed build)
+        type: choice
+        options: [test, beta]
+        default: test
+      publish:
+        description: Publish a beta build to the beta feed
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: windows-test-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  windows-test-build:
+    name: windows test build (${{ inputs.channel }})
+    runs-on: windows-latest
+    timeout-minutes: 90
+    environment: beta
+    env:
+      # Step `if:` cannot read secrets; expose only whether the certificate exists.
+      HAVE_TEST_PFX: ${{ secrets.HEARTH_WIN_TEST_PFX_B64 != '' }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: ./.github/actions/setup
+        with:
+          rust-targets: x86_64-pc-windows-msvc
+      - name: Check beta configuration
+        if: inputs.channel == 'beta'
+        env:
+          HAVE_UPDATER_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY != '' }}
+          HAVE_ROLE_SEED: ${{ secrets.HEARTH_RELEASE_ROLE_SEED != '' }}
+          HEARTH_FEED_URL: ${{ vars.HEARTH_FEED_URL }}
+          HEARTH_BETA_ROOT_KEY_ID: ${{ vars.HEARTH_BETA_ROOT_KEY_ID }}
+          HEARTH_BETA_ROOT_PUBKEY_B64: ${{ vars.HEARTH_BETA_ROOT_PUBKEY_B64 }}
+          HEARTH_BETA_UPDATER_PUBKEY: ${{ vars.HEARTH_BETA_UPDATER_PUBKEY }}
+        run: |
+          missing=0
+          for flag in HAVE_UPDATER_KEY HAVE_ROLE_SEED HAVE_TEST_PFX; do
+            [ "${!flag}" = "true" ] || { echo "::error::beta secret missing (${flag#HAVE_})"; missing=1; }
+          done
+          for var in HEARTH_FEED_URL HEARTH_BETA_ROOT_KEY_ID HEARTH_BETA_ROOT_PUBKEY_B64 HEARTH_BETA_UPDATER_PUBKEY; do
+            [ -n "${!var}" ] || { echo "::error::beta variable $var is not set"; missing=1; }
+          done
+          exit $missing
+      - name: Build Windows installers (Tauri)
+        env:
+          HEARTH_UPDATE_CHANNEL: ${{ inputs.channel }}
+          HEARTH_APP_VERSION: ${{ inputs.channel == 'beta' && format('0.1.{0}', github.run_number) || '' }}
+          HEARTH_BUILD_VERSION: ${{ inputs.channel == 'beta' && github.run_number || '' }}
+          HEARTH_UPDATE_URL: ${{ inputs.channel == 'beta' && vars.HEARTH_FEED_URL || '' }}
+          HEARTH_UPDATER_PUBKEY: ${{ inputs.channel == 'beta' && vars.HEARTH_BETA_UPDATER_PUBKEY || '' }}
+          HEARTH_ROOT_KEY_ID: ${{ inputs.channel == 'beta' && vars.HEARTH_BETA_ROOT_KEY_ID || '' }}
+          HEARTH_ROOT_PUBKEY_B64: ${{ inputs.channel == 'beta' && vars.HEARTH_BETA_ROOT_PUBKEY_B64 || '' }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ inputs.channel == 'beta' && secrets.TAURI_SIGNING_PRIVATE_KEY || '' }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ inputs.channel == 'beta' && secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD || '' }}
+          HEARTH_WIN_SIGN_MODE: ${{ secrets.HEARTH_WIN_TEST_PFX_B64 != '' && 'test' || '' }}
+          HEARTH_WIN_TEST_PFX_B64: ${{ secrets.HEARTH_WIN_TEST_PFX_B64 }}
+          HEARTH_WIN_TEST_PFX_PASSWORD: ${{ secrets.HEARTH_WIN_TEST_PFX_PASSWORD }}
+        run: |
+          # Empty strings would read as configured values to option_env!; unset them.
+          for var in HEARTH_APP_VERSION HEARTH_BUILD_VERSION HEARTH_UPDATE_URL HEARTH_UPDATER_PUBKEY \
+            HEARTH_ROOT_KEY_ID HEARTH_ROOT_PUBKEY_B64 HEARTH_WIN_SIGN_MODE; do
+            if [ -z "${!var:-}" ]; then unset "$var"; fi
+          done
+          ci/desktop/package.sh windows
+      - name: Check installers against AC-WIN-1
+        env:
+          HEARTH_DIST_DIR: ${{ github.workspace }}/dist
+        run: node --test apps/desktop/tests/ac_win_1.test.mjs
+      - name: ac_win_3 verify test signatures
+        if: env.HAVE_TEST_PFX == 'true'
+        shell: pwsh
+        env:
+          HEARTH_WIN_TEST_PFX_B64: ${{ secrets.HEARTH_WIN_TEST_PFX_B64 }}
+          HEARTH_WIN_TEST_PFX_PASSWORD: ${{ secrets.HEARTH_WIN_TEST_PFX_PASSWORD }}
+        run: |
+          $ErrorActionPreference = "Stop"
+          # Trust the test certificate on this runner only, as a tester's machine would.
+          $cert = [System.Security.Cryptography.X509Certificates.X509Certificate2]::new(
+            [Convert]::FromBase64String($env:HEARTH_WIN_TEST_PFX_B64), $env:HEARTH_WIN_TEST_PFX_PASSWORD)
+          $cer = Join-Path $env:RUNNER_TEMP "hearth-test-signing.cer"
+          [IO.File]::WriteAllBytes($cer, $cert.Export("Cert"))
+          Import-Certificate -FilePath $cer -CertStoreLocation Cert:\LocalMachine\Root | Out-Null
+          $signtool = Get-ChildItem "${env:ProgramFiles(x86)}\Windows Kits\10\bin" -Recurse -Filter signtool.exe |
+            Where-Object { $_.FullName -match "\\x64\\" } | Sort-Object FullName -Descending | Select-Object -First 1
+          foreach ($file in Get-ChildItem dist -Include *.msi, *.exe -Recurse) {
+            & $signtool.FullName verify /pa /v $file.FullName
+            if ($LASTEXITCODE -ne 0) { throw "ac_win_3: $($file.Name) does not verify" }
+            $sig = Get-AuthenticodeSignature $file.FullName
+            if ($sig.Status -ne "Valid") { throw "ac_win_3: $($file.Name) status $($sig.Status)" }
+            if ($sig.SignerCertificate.Thumbprint -ne $cert.Thumbprint) { throw "ac_win_3: $($file.Name) signed by another certificate" }
+          }
+      - name: Signed feed metadata (TUF targets + Tauri manifest)
+        if: inputs.channel == 'beta'
+        env:
+          HEARTH_RELEASE_ROLE_SEED: ${{ secrets.HEARTH_RELEASE_ROLE_SEED }}
+          HEARTH_ROOT_KEY_ID: ${{ vars.HEARTH_BETA_ROOT_KEY_ID }}
+          HEARTH_RELEASE_VERSION: ${{ github.run_number }}
+          HEARTH_FEED_URL: ${{ vars.HEARTH_FEED_URL }}
+        run: |
+          ci/tuf/generate-metadata.sh dist
+          node ci/tuf/tauri-manifest.mjs --dir dist --version "0.1.$HEARTH_RELEASE_VERSION" \
+            --base-url "$HEARTH_FEED_URL" --channel beta
+      - name: Publish to the beta feed
+        if: inputs.channel == 'beta' && inputs.publish
+        env:
+          FEED_HOST: ${{ vars.FEED_HOST }}
+          FEED_USER: ${{ vars.FEED_USER }}
+          FEED_PATH: ${{ vars.FEED_PATH }}
+          FEED_PORT: ${{ vars.FEED_PORT }}
+          FEED_KNOWN_HOSTS: ${{ vars.FEED_KNOWN_HOSTS }}
+          FEED_SSH_KEY: ${{ secrets.FEED_SSH_KEY }}
+        run: ci/jobs/feed-publish.sh dist beta
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: hearth-suite-windows-${{ inputs.channel }}-${{ github.run_number }}
+          path: |
+            dist/*.msi
+            dist/*.exe
+            dist/*.sig
+            dist/*.sha256
+            dist/*.json
+          if-no-files-found: error
+          retention-days: 14

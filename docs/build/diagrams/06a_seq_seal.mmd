@@ -1,0 +1,17 @@
+sequenceDiagram
+    actor User
+    participant UI as The Mantel (UI)
+    participant Core as Hearth Suite Core
+    participant Key as key-manager
+    participant Ident as Key Directory (opt-in)
+    participant Crypto as Crypto Module
+    User->>UI: Seal Bundle for "Maria"
+    UI->>Core: seal(bundle, [Maria])
+    Core->>Ident: fetch Maria PQ public key
+    Ident-->>Core: ML-KEM public key (or via QR/contact)
+    Core->>Crypto: generate content key (AES-256)
+    Core->>Crypto: ML-KEM encapsulate to each recipient
+    Crypto-->>Core: wrapped content keys + sealed payload
+    Core->>Key: sign manifest (ML-DSA)
+    Core-->>UI: Bundle sealed ("Only you & Maria")
+    UI-->>User: Sealed status shown

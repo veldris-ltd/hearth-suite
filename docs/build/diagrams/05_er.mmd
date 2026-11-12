@@ -1,0 +1,61 @@
+erDiagram
+    BUNDLE ||--o{ DOCUMENT : contains
+    BUNDLE ||--o{ SEAL_GRANT : "sealed for"
+    DOCUMENT ||--o{ VERSION : "has history"
+    RECORD_TABLE ||--o{ RECORD_ROW : contains
+    RECORD_TABLE ||--o{ RECORD_FIELD : defines
+    IDENTITY ||--o{ SEAL_GRANT : "key used"
+    IDENTITY ||--o{ DEVICE : owns
+    BUNDLE {
+        uuid id PK
+        string title
+        blob manifest
+        bool sealed
+        timestamp updated_at
+    }
+    DOCUMENT {
+        uuid id PK
+        uuid bundle_id FK
+        string type "writer|sheet|record|calendar"
+        blob content_encrypted
+    }
+    VERSION {
+        uuid id PK
+        uuid document_id FK
+        blob crdt_state
+        timestamp created_at
+    }
+    RECORD_TABLE {
+        uuid id PK
+        uuid bundle_id FK
+        string name
+    }
+    RECORD_FIELD {
+        uuid id PK
+        uuid table_id FK
+        string name
+        string datatype
+    }
+    RECORD_ROW {
+        uuid id PK
+        uuid table_id FK
+        json values
+    }
+    IDENTITY {
+        uuid id PK
+        blob pq_public_key
+        blob pq_private_key_encrypted
+        string recovery_phrase_hash
+    }
+    DEVICE {
+        uuid id PK
+        uuid identity_id FK
+        string platform
+        timestamp paired_at
+    }
+    SEAL_GRANT {
+        uuid id PK
+        uuid bundle_id FK
+        uuid identity_id FK
+        blob wrapped_content_key
+    }

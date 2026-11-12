@@ -1,0 +1,39 @@
+%%{init: {'theme':'neutral'}}%%
+flowchart TB
+    subgraph dev["End-user devices"]
+        desk["Desktop app\n(Win/macOS/Linux) Tauri bundle"]
+        mob["Mobile app\n(iOS/Android) store + sideload"]
+    end
+    subgraph cloud["Veldris Cloud (optional, self-hostable) - Kubernetes"]
+        subgraph pub["Ingress"]
+            lb["TLS Load Balancer / Gateway"]
+        end
+        subgraph svc["Services namespace"]
+            relay["sync-relay (HPA)"]
+            ident["key-directory"]
+            rel["release-service (TUF)"]
+            admincp["admin-cp"]
+        end
+        subgraph data["Data namespace"]
+            pg[("Postgres (HA)")]
+            obj[("S3-compatible object store")]
+            secrets["Secrets (Vault/KMS)"]
+        end
+    end
+    cdn["CDN\nsigned release artifacts + model mirror"]:::external
+    desk -->|HTTPS opt-in| lb
+    mob -->|HTTPS opt-in| lb
+    desk -->|fetch updates| cdn
+    mob -->|fetch updates| cdn
+    lb --> relay
+    lb --> ident
+    lb --> rel
+    lb --> admincp
+    relay --> obj
+    relay --> pg
+    ident --> pg
+    admincp --> pg
+    admincp --> obj
+    rel --> obj
+    svc --> secrets
+    classDef external fill:#999999,color:#fff

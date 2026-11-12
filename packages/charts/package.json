@@ -1,0 +1,13 @@
+{
+  "name": "@hearth/charts",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Hearth Suite charts, first-class chart objects with a pure SVG renderer, shared by Sheets and Writer.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "typecheck": "tsc --build"
+  }
+}

@@ -1,0 +1,53 @@
+#Claude
+.claude/
+
+# Rust
+/target/
+**/*.rs.bk
+*.pdb
+# Local-only Cargo override (e.g. target-dir on a local disk); machine-specific.
+/.cargo/config.toml
+
+# Node / pnpm
+node_modules/
+dist/
+build/
+# ...but docs/build is documentation, not build output, keep it tracked
+!docs/build/
+!docs/build/**
+*.tsbuildinfo
+.pnpm-store/
+npm-debug.log*
+pnpm-debug.log*
+# Vite dev/optimize cache
+**/.vite/
+
+# Tauri / native build output
+src-tauri/target/
+*.app
+*.dmg
+*.msi
+*.AppImage
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.swp
+
+# Coverage output (c8 / llvm-cov)
+coverage/
+*.lcov
+lcov*.info
+
+
+# Python bytecode
+__pycache__/
+*.pyc

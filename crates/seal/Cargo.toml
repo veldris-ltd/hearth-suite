@@ -1,0 +1,32 @@
+[package]
+name = "hearth-seal"
+description = "Post-quantum Seal for Hearth Suite, hybrid X25519+ML-KEM, ML-DSA/SLH-DSA signatures, AEAD content."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+publish = false
+
+[dependencies]
+aes-gcm = "0.10"
+getrandom = "0.3.4"
+hkdf = "0.13.0"
+ml-dsa = "0.1"
+ml-kem = "0.3"
+rand_core = "0.10"
+sha2 = "0.11.1"
+# Release candidate: no stable upstream exists yet. Used only for the archival
+# signature option (the primary path is ML-DSA-65). Formally accepted with a
+# re-review-on-stable trigger, see docs/security/crypto-audit-package/review-record.md.
+slh-dsa = "0.2.0-rc.5"
+thiserror = "2.0.18"
+x25519-dalek = { version = "2", features = ["static_secrets"] }
+
+[lints]
+workspace = true
+
+[dev-dependencies]
+hex = "0.4.3"
+serde_json = "1"

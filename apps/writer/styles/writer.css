@@ -1,0 +1,1120 @@
+/*
+ * Hearth Suite Writer layout: a centred writing column with a collaboration presence
+ * bar and status meta, beside a right panel that toggles between Ember and
+ * version history. A Focus mode lets the chrome recede. Token-driven; themes
+ * with the system.
+ */
+
+.hb-writer {
+  display: grid;
+  grid-template-columns: 1fr 20rem;
+  grid-template-areas:
+    "toolbar toolbar"
+    "surface ember"
+    "seal seal";
+  block-size: 100%;
+  font-family: var(--hb-font-sans);
+  color: var(--hb-color-text);
+  background: var(--hb-color-bg);
+}
+
+/* The chrome stacks a standard menu bar above a single formatting ribbon. */
+.hb-writer__toolbar {
+  grid-area: toolbar;
+  display: flex;
+  flex-direction: column;
+  background: var(--hb-color-surface-sunken);
+  border-bottom: 1px solid var(--hb-color-border);
+}
+
+/* ---- Menu bar (File · Edit · View · Insert · Format · Tools) ------------- */
+.hb-writer__menubar {
+  display: flex;
+  align-items: stretch;
+  gap: var(--hb-space-1);
+  padding: 0 var(--hb-space-3);
+  border-bottom: 1px solid var(--hb-color-border);
+}
+.hb-writer__menu {
+  position: relative;
+}
+.hb-writer__menu-btn {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--hb-color-text);
+  font: inherit;
+  font-size: var(--hb-text-body-sm);
+  padding: var(--hb-space-2) var(--hb-space-3);
+  cursor: pointer;
+  border-radius: var(--hb-radius-sm) var(--hb-radius-sm) 0 0;
+}
+.hb-writer__menu-btn:hover,
+.hb-writer__menu.is-open .hb-writer__menu-btn {
+  background: var(--hb-color-surface);
+  color: var(--hb-color-primary);
+}
+.hb-writer__menu-pop {
+  position: absolute;
+  inset-block-start: 100%;
+  inset-inline-start: 0;
+  z-index: 20;
+  min-inline-size: 13rem;
+  padding: var(--hb-space-1);
+  background: var(--hb-color-surface);
+  border: 1px solid var(--hb-color-border);
+  border-radius: var(--hb-radius-sm);
+  box-shadow: var(--hb-shadow-2, 0 6px 20px rgb(0 0 0 / 18%));
+}
+.hb-writer__menu-pop[hidden] {
+  display: none;
+}
+.hb-writer__menu-item {
+  display: flex;
+  align-items: center;
+  gap: var(--hb-space-2);
+  inline-size: 100%;
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--hb-color-text);
+  font: inherit;
+  font-size: var(--hb-text-body-sm);
+  text-align: start;
+  padding: var(--hb-space-2) var(--hb-space-2);
+  border-radius: var(--hb-radius-sm);
+  cursor: pointer;
+}
+.hb-writer__menu-item:hover {
+  background: var(--hb-color-surface-sunken);
+}
+.hb-writer__menu-check {
+  inline-size: 1rem;
+  flex: 0 0 1rem;
+  color: var(--hb-color-primary);
+  font-size: var(--hb-text-body-sm);
+}
+.hb-writer__menu-sep {
+  block-size: 1px;
+  margin: var(--hb-space-1) var(--hb-space-2);
+  background: var(--hb-color-border);
+}
+
+/* ---- Formatting ribbon (single bar) ------------------------------------- */
+.hb-writer__ribbon {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--hb-space-2);
+  padding: var(--hb-space-2) var(--hb-space-5);
+}
+/* Dropdowns sit inline in the ribbon, not as full-width bars. */
+.hb-writer__ribbon .hb-select {
+  inline-size: auto;
+  width: auto;
+  min-inline-size: 6rem;
+}
+/* Compact formatting buttons. */
+.hb-writer__tool {
+  min-height: 2rem;
+  min-inline-size: 2rem;
+  padding: var(--hb-space-1) var(--hb-space-2);
+}
+.hb-writer__b {
+  font-weight: var(--hb-weight-bold);
+}
+.hb-writer__i {
+  font-style: italic;
+}
+.hb-writer__u {
+  text-decoration: underline;
+}
+.hb-writer__s {
+  text-decoration: line-through;
+}
+.hb-writer__colour {
+  inline-size: 2rem;
+  block-size: 2rem;
+  padding: 0;
+  border: 1px solid var(--hb-color-border);
+  border-radius: var(--hb-radius-sm);
+  background: var(--hb-color-surface);
+  cursor: pointer;
+}
+.hb-writer__sep {
+  inline-size: 1px;
+  align-self: stretch;
+  margin-inline: var(--hb-space-1);
+  background: var(--hb-color-border);
+}
+
+/* Find & replace bar. */
+.hb-writer__find {
+  grid-area: surface;
+}
+.hb-writer__find[hidden] {
+  display: none;
+}
+.hb-writer__find {
+  display: flex;
+  align-items: center;
+  gap: var(--hb-space-2);
+  flex-wrap: wrap;
+  padding: var(--hb-space-2) 0;
+  margin-block-end: var(--hb-space-2);
+  border-block-end: 1px solid var(--hb-color-border);
+}
+.hb-writer__find .hb-input {
+  inline-size: auto;
+  flex: 1;
+  min-inline-size: 8rem;
+}
+.hb-writer__find-status {
+  color: var(--hb-color-text-muted);
+  font-size: var(--hb-text-body-sm);
+}
+.hb-writer__find-close {
+  border: none;
+  background: transparent;
+  color: var(--hb-color-text-muted);
+  font-size: var(--hb-text-body-lg);
+  line-height: 1;
+  cursor: pointer;
+}
+
+/* In-surface find highlighting (CSS Custom Highlight API, W17). */
+::highlight(hb-find) {
+  background-color: color-mix(in srgb, var(--hb-color-warning) 45%, transparent);
+}
+::highlight(hb-find-current) {
+  background-color: var(--hb-color-warning);
+  color: var(--hb-color-text-on-warning, inherit);
+}
+
+/* Live statistics status bar. */
+.hb-writer__stats {
+  margin-block-start: var(--hb-space-3);
+  padding-block-start: var(--hb-space-2);
+  border-block-start: 1px solid var(--hb-color-border);
+  color: var(--hb-color-text-muted);
+  font-size: var(--hb-text-caption);
+}
+
+/* Boxed block (borders & shading, W6). */
+.hb-writer__boxed {
+  border: 1px solid var(--hb-color-border);
+  border-radius: var(--hb-radius-md);
+  background: var(--hb-color-surface-sunken);
+}
+
+/* Margin note / comment (Note-It heir, W12). */
+.hb-writer__note {
+  background: color-mix(in srgb, var(--hb-color-warning) 22%, transparent);
+  border-block-end: 2px dotted var(--hb-color-warning);
+  cursor: help;
+}
+
+/* Inserted shape (W12). */
+.hb-writer__shape {
+  vertical-align: middle;
+  margin-inline: var(--hb-space-1);
+}
+
+/* Display text (the WordArt heir, W12): a big, accented headline in the brand
+   display face. Plain editable text — styled by tokens, not an OLE object. */
+.hb-writer__display {
+  display: inline-block;
+  font-family: var(--hb-font-serif);
+  font-size: var(--hb-text-h1, 2rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  background: linear-gradient(
+    90deg,
+    var(--hb-color-primary),
+    color-mix(in srgb, var(--hb-color-primary) 55%, var(--hb-color-accent, var(--hb-color-primary)))
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  padding-inline: var(--hb-space-1);
+}
+
+/* AutoCorrect rules editor (W18). Reuses the .hb-print__backdrop overlay. */
+.hb-writer__rules {
+  margin: auto;
+  inline-size: min(34rem, 92vw);
+  max-block-size: 80vh;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--hb-space-3);
+  padding: var(--hb-space-6);
+  background: var(--hb-color-surface);
+  border: 1px solid var(--hb-color-border);
+  border-radius: var(--hb-radius-lg, 12px);
+  box-shadow: var(--hb-elev-3, 0 10px 40px rgba(0, 0, 0, 0.3));
+}
+.hb-writer__rules-title {
+  margin: 0;
+  font-family: var(--hb-font-serif);
+}
+.hb-writer__rules-hint {
+  margin: 0;
+  color: var(--hb-color-text-muted);
+  font-size: var(--hb-text-caption, 0.85rem);
+}
+.hb-writer__rules-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hb-space-2);
+}
+.hb-writer__rules-row {
+  display: flex;
+  align-items: center;
+  gap: var(--hb-space-2);
+}
+.hb-writer__rules-row .hb-input {
+  flex: 1 1 0;
+  min-inline-size: 0;
+}
+.hb-writer__rules-arrow {
+  color: var(--hb-color-text-muted);
+}
+.hb-writer__rules-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--hb-space-2);
+  margin-block-start: var(--hb-space-2);
+}
+
+/* Page view (W30): a paged look with margins and a soft shadow. */
+.hb-writer__doc--page .hb-writer__surface {
+  background: var(--hb-color-surface);
+  border: 1px solid var(--hb-color-border);
+  box-shadow: var(--hb-elev-2);
+  padding: var(--hb-space-10) var(--hb-space-8);
+  margin-block: var(--hb-space-4);
+}
+
+/* Image text wrap (W11). */
+.hb-writer__wrap-left {
+  float: inline-start;
+  margin: 0 var(--hb-space-3) var(--hb-space-2) 0;
+}
+.hb-writer__wrap-right {
+  float: inline-end;
+  margin: 0 0 var(--hb-space-2) var(--hb-space-3);
+}
+
+/* Footnote reference marker (W21). */
+.hb-writer__fnref {
+  color: var(--hb-color-primary);
+  font-weight: var(--hb-weight-semibold);
+}
+
+/* ---- Print-faithful preview (W9, W10, W21) ------------------------------ */
+.hb-print__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  background: rgba(33, 28, 24, 0.5);
+  overflow: auto;
+}
+.hb-print {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hb-space-4);
+  inline-size: 100%;
+  min-block-size: 100%;
+  padding: var(--hb-space-4);
+}
+.hb-print__setup {
+  position: sticky;
+  inset-block-start: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--hb-space-2);
+  flex-wrap: wrap;
+  padding: var(--hb-space-3);
+  border-radius: var(--hb-radius-md);
+  background: var(--hb-color-surface);
+  box-shadow: var(--hb-elev-2);
+}
+.hb-print__setup .hb-input {
+  inline-size: auto;
+  flex: 1;
+  min-inline-size: 10rem;
+}
+.hb-print__setup .hb-select {
+  inline-size: auto;
+  width: auto;
+}
+.hb-print__pages {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--hb-space-5);
+}
+.hb-print__page {
+  inline-size: min(50rem, 92vw);
+  aspect-ratio: 1 / var(--hb-page-ratio, 1.414);
+  padding: var(--hb-page-margin, 8%);
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  color: #211c18;
+  box-shadow: var(--hb-elev-3);
+  font-family: var(--hb-font-serif);
+}
+.hb-print__header,
+.hb-print__footer {
+  flex: 0 0 auto;
+  color: #574e46;
+  font-family: var(--hb-font-sans);
+  font-size: var(--hb-text-body-sm);
+}
+.hb-print__header {
+  border-block-end: 1px solid #e2d8cc;
+  padding-block-end: var(--hb-space-2);
+  margin-block-end: var(--hb-space-3);
+}
+.hb-print__footer {
+  border-block-start: 1px solid #e2d8cc;
+  padding-block-start: var(--hb-space-2);
+  margin-block-start: var(--hb-space-3);
+  text-align: center;
+}
+.hb-print__body {
+  flex: 1;
+  overflow: hidden;
+}
+.hb-print__footnotes {
+  flex: 0 0 auto;
+  border-block-start: 1px solid #e2d8cc;
+  padding-block-start: var(--hb-space-2);
+  margin-block-start: var(--hb-space-2);
+  font-family: var(--hb-font-sans);
+  font-size: var(--hb-text-caption);
+  color: #574e46;
+}
+
+/* Print: show only the paged sheets, at real size, faithful to the preview. */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .hb-print__pages,
+  .hb-print__pages * {
+    visibility: visible;
+  }
+  .hb-print__backdrop {
+    position: static;
+    background: none;
+    overflow: visible;
+  }
+  .hb-print__setup {
+    display: none;
+  }
+  .hb-print__page {
+    inline-size: auto;
+    box-shadow: none;
+    break-after: page;
+  }
+  /* Mailings (letters, envelopes, labels) print holder. */
+  .hb-mailings-print,
+  .hb-mailings-print * {
+    visibility: visible;
+  }
+  .hb-mailings-print {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+  }
+  .hb-mailings-print__page {
+    break-after: page;
+    box-shadow: none;
+  }
+}
+
+/* The document column: presence, status meta, then the writing surface. */
+.hb-writer__doc {
+  grid-area: surface;
+  display: flex;
+  flex-direction: column;
+  inline-size: 100%;
+  min-inline-size: 0;
+  max-inline-size: 46rem;
+  margin-inline: auto;
+  padding: var(--hb-space-6);
+  gap: var(--hb-space-3);
+  overflow: auto;
+}
+
+/* Collaboration presence bar. */
+.hb-writer__presence {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--hb-space-3);
+  padding: var(--hb-space-2) var(--hb-space-3);
+  border-radius: var(--hb-radius-md);
+  background: color-mix(in srgb, var(--hb-color-accent) 8%, var(--hb-color-surface));
+  font-size: var(--hb-text-body-sm);
+  flex-wrap: wrap;
+}
+.hb-writer__presence-who {
+  display: flex;
+  align-items: center;
+  gap: var(--hb-space-2);
+}
+.hb-writer__avatars {
+  display: inline-flex;
+}
+.hb-writer__avatars .hb-writer__avatar:not(:first-child) {
+  margin-inline-start: -8px;
+}
+.hb-writer__avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 1.6rem;
+  block-size: 1.6rem;
+  border-radius: var(--hb-radius-pill);
+  border: 2px solid var(--hb-color-surface);
+  background: var(--hb-color-accent);
+  color: var(--hb-color-text-on-primary);
+  font-size: var(--hb-text-caption);
+  font-weight: var(--hb-weight-semibold);
+}
+.hb-writer__avatar.is-you {
+  background: var(--hb-color-primary);
+  color: var(--hb-color-text-on-primary);
+}
+.hb-writer__presence-text {
+  font-weight: var(--hb-weight-medium);
+}
+.hb-writer__presence-chip {
+  padding: 1px var(--hb-space-2);
+  border: 1px solid var(--hb-color-border);
+  border-radius: var(--hb-radius-pill);
+  background: var(--hb-color-surface);
+  color: var(--hb-color-text-muted);
+  font-size: var(--hb-text-caption);
+}
+.hb-writer__e2e {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--hb-space-1);
+  color: var(--hb-color-accent);
+}
+.hb-writer__shield {
+  flex: 0 0 auto;
+}
+
+.hb-writer__doc-meta {
+  margin: 0;
+  color: var(--hb-color-text-muted);
+  font-size: var(--hb-text-body-sm);
+}
+
+/* Offline dictionary & thesaurus popover. */
+.hb-define {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hb-space-2);
+  padding: var(--hb-space-4);
+  border: 1px solid var(--hb-color-border);
+  border-radius: var(--hb-radius-lg);
+  background: var(--hb-color-surface);
+  box-shadow: var(--hb-elev-2);
+  font-family: var(--hb-font-sans);
+}
+.hb-define__head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--hb-space-2);
+}
+.hb-define__word {
+  font-family: var(--hb-font-serif);
+  font-size: var(--hb-text-body-lg);
+  font-weight: var(--hb-weight-semibold);
+}
+.hb-define__pos {
+  color: var(--hb-color-text-muted);
+  font-size: var(--hb-text-body-sm);
+  font-style: italic;
+}
+.hb-define__close {
+  margin-inline-start: auto;
+  border: none;
+  background: transparent;
+  color: var(--hb-color-text-muted);
+  font-size: var(--hb-text-body-lg);
+  line-height: 1;
+  cursor: pointer;
+}
+.hb-define__defs {
+  margin: 0;
+  padding-inline-start: var(--hb-space-5);
+  font-size: var(--hb-text-body);
+}
+.hb-define__defs li {
+  margin-block: 2px;
+}
+.hb-define__empty,
+.hb-define__note {
+  margin: 0;
+  color: var(--hb-color-text-muted);
+  font-size: var(--hb-text-body-sm);
+}
+.hb-define__label {
+  margin-block-start: var(--hb-space-1);
+  color: var(--hb-color-text-muted);
+  font-size: var(--hb-text-caption);
+  font-weight: var(--hb-weight-semibold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.hb-define__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--hb-space-1);
+}
+.hb-define__chip {
+  padding: 2px var(--hb-space-2);
+  border: 1px solid var(--hb-color-border);
+  border-radius: var(--hb-radius-pill);
+  background: var(--hb-color-surface-sunken);
+  color: var(--hb-color-text);
+  font-size: var(--hb-text-body-sm);
+  cursor: pointer;
+}
+.hb-define__chip:hover {
+  border-color: var(--hb-color-primary);
+  color: var(--hb-color-primary);
+}
+.hb-define__chip--static,
+.hb-define__chips--muted .hb-define__chip {
+  cursor: default;
+  color: var(--hb-color-text-muted);
+}
+.hb-define__ember {
+  font-size: var(--hb-text-body-sm);
+}
+.hb-define__ember .hb-writer__ember-text {
+  white-space: pre-wrap;
+}
+
+/* The page: a calm writing surface. */
+.hb-writer__surface {
+  inline-size: 100%;
+  min-inline-size: 0;
+  /* v1.0 paper measure: a ~580px centred writing column under a full-width toolbar. */
+  max-inline-size: 580px;
+  margin-inline: auto;
+  min-block-size: 16rem;
+  font-family: var(--hb-font-serif);
+  font-size: var(--hb-text-body-lg);
+  line-height: var(--hb-leading-normal);
+}
+.hb-writer__surface:focus-visible {
+  outline: none;
+}
+.hb-writer__surface h1,
+.hb-writer__surface h2 {
+  font-family: var(--hb-font-serif);
+}
+.hb-writer__surface img {
+  max-inline-size: 100%;
+  border-radius: var(--hb-radius-md);
+}
+
+/* Right panel: Ember (default) or version history. */
+.hb-writer__ember,
+.hb-writer__history {
+  grid-area: ember;
+  display: flex;
+  flex-direction: column;
+  gap: var(--hb-space-2);
+  padding: var(--hb-space-4);
+  border-inline-start: 1px solid var(--hb-color-border);
+  background: var(--hb-color-surface);
+  overflow: auto;
+}
+.hb-writer__ember-output {
+  margin-block-start: var(--hb-space-2);
+  font-size: var(--hb-text-body-sm);
+}
+.hb-writer__ember-text {
+  white-space: pre-wrap;
+}
+
+/* Version history timeline. */
+.hb-writer__history-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.hb-writer__history-title {
+  font-size: var(--hb-text-caption);
+  font-weight: var(--hb-weight-semibold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--hb-color-text-muted);
+}
+.hb-writer__history-close {
+  border: none;
+  background: transparent;
+  color: var(--hb-color-text-muted);
+  font-size: var(--hb-text-body-lg);
+  line-height: 1;
+  cursor: pointer;
+}
+.hb-writer__timeline {
+  list-style: none;
+  margin: var(--hb-space-2) 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+.hb-writer__rev {
+  display: flex;
+  gap: var(--hb-space-3);
+  padding-block: var(--hb-space-2);
+  position: relative;
+}
+.hb-writer__rev:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  inset-block: 1.4rem -0.2rem;
+  inset-inline-start: 5px;
+  inline-size: 2px;
+  background: var(--hb-color-border);
+}
+.hb-writer__rev-dot {
+  inline-size: 12px;
+  block-size: 12px;
+  margin-block-start: 4px;
+  flex: 0 0 auto;
+  border-radius: var(--hb-radius-pill);
+  border: 2px solid var(--hb-color-border);
+  background: var(--hb-color-surface);
+  z-index: 1;
+}
+.hb-writer__rev:first-child .hb-writer__rev-dot {
+  background: var(--hb-color-primary);
+  border-color: var(--hb-color-primary);
+}
+.hb-writer__rev.is-sealed .hb-writer__rev-dot {
+  background: var(--hb-color-accent);
+  border-color: var(--hb-color-accent);
+}
+.hb-writer__rev-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.hb-writer__rev-at {
+  font-weight: var(--hb-weight-semibold);
+  font-size: var(--hb-text-body-sm);
+}
+.hb-writer__rev-line {
+  display: flex;
+  align-items: center;
+  gap: var(--hb-space-1);
+  color: var(--hb-color-text-muted);
+  font-size: var(--hb-text-body-sm);
+}
+.hb-writer__rev-line .hb-writer__shield {
+  color: var(--hb-color-accent);
+}
+.hb-writer__rev .hb-btn {
+  align-self: flex-start;
+  min-height: auto;
+  padding: 2px 0;
+}
+.hb-writer__history-note {
+  margin-block-start: auto;
+  padding: var(--hb-space-3);
+  border-radius: var(--hb-radius-md);
+  background: var(--hb-color-surface-sunken);
+  color: var(--hb-color-text-muted);
+  font-size: var(--hb-text-caption);
+}
+
+.hb-writer__seal {
+  grid-area: seal;
+  display: flex;
+  align-items: center;
+  gap: var(--hb-space-3);
+  padding: var(--hb-space-2) var(--hb-space-5);
+  border-top: 1px solid var(--hb-color-border);
+  color: var(--hb-color-text-muted);
+}
+
+/* Distraction-free: hide chrome until the user asks for it. */
+.hb-writer--focus {
+  grid-template-columns: 1fr;
+  grid-template-areas:
+    "toolbar"
+    "surface"
+    "seal";
+}
+.hb-writer--focus .hb-writer__toolbar {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--hb-dur-fast) var(--hb-ease-standard);
+}
+.hb-writer--focus .hb-writer__toolbar:hover,
+.hb-writer--focus .hb-writer__toolbar:focus-within {
+  opacity: 1;
+  pointer-events: auto;
+}
+.hb-writer--focus .hb-writer__ember,
+.hb-writer--focus .hb-writer__history {
+  display: none;
+}
+
+@media (max-width: 720px) {
+  .hb-writer {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "toolbar"
+      "surface"
+      "ember"
+      "seal";
+  }
+  .hb-writer__ember,
+  .hb-writer__history {
+    border-inline-start: none;
+    border-top: 1px solid var(--hb-color-border);
+  }
+}
+
+/* ---- Mailings: merge, envelopes & labels (W19/W20) ----------------------- */
+.hb-mailings .hb-mailings__card,
+.hb-fieldpick .hb-fieldpick__card {
+  display: flex;
+  flex-direction: column;
+  inline-size: min(56rem, 94vw);
+  max-block-size: 88vh;
+  background: var(--hb-color-surface);
+  border: 1px solid var(--hb-color-border);
+  border-radius: var(--hb-radius-md, 12px);
+  box-shadow: var(--hb-shadow-2, 0 16px 48px rgb(0 0 0 / 28%));
+  overflow: hidden;
+}
+.hb-mailings__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--hb-space-4) var(--hb-space-5);
+  border-bottom: 1px solid var(--hb-color-border);
+}
+.hb-mailings__title {
+  margin: 0;
+  font-family: var(--hb-font-serif, var(--hb-font-sans));
+  font-size: var(--hb-text-body-lg, 1.125rem);
+  color: var(--hb-color-text);
+}
+.hb-mailings__close {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--hb-color-text-muted, var(--hb-color-text));
+  cursor: pointer;
+}
+.hb-mailings__body {
+  padding: var(--hb-space-5);
+  overflow: auto;
+}
+.hb-mailings__cols {
+  display: grid;
+  grid-template-columns: 18rem 1fr;
+  gap: var(--hb-space-5);
+  align-items: start;
+}
+.hb-mailings__controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hb-space-3);
+}
+.hb-mailings__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hb-space-1);
+}
+.hb-mailings__label {
+  font-size: var(--hb-text-body-sm);
+  font-weight: var(--hb-weight-medium, 600);
+  color: var(--hb-color-text);
+}
+.hb-mailings__hint {
+  font-size: var(--hb-text-body-sm);
+  color: var(--hb-color-text-muted, var(--hb-color-text));
+}
+.hb-mailings__textarea {
+  font: inherit;
+  font-size: var(--hb-text-body-sm);
+  padding: var(--hb-space-2);
+  border: 1px solid var(--hb-color-border);
+  border-radius: var(--hb-radius-sm);
+  background: var(--hb-color-surface);
+  color: var(--hb-color-text);
+  resize: vertical;
+}
+.hb-mailings__check {
+  display: flex;
+  align-items: center;
+  gap: var(--hb-space-2);
+  font-size: var(--hb-text-body-sm);
+}
+.hb-mailings__pager {
+  display: flex;
+  align-items: center;
+  gap: var(--hb-space-2);
+  margin-top: var(--hb-space-2);
+}
+.hb-mailings__count {
+  font-size: var(--hb-text-body-sm);
+  color: var(--hb-color-text-muted, var(--hb-color-text));
+}
+.hb-mailings__preview {
+  min-block-size: 18rem;
+  max-block-size: 60vh;
+  padding: var(--hb-space-4);
+  background: var(--hb-color-surface-sunken);
+  border: 1px solid var(--hb-color-border);
+  border-radius: var(--hb-radius-sm);
+  overflow: auto;
+}
+.hb-mailings__preview--canvas {
+  display: flex;
+  justify-content: center;
+}
+.hb-mailings__scale {
+  zoom: 0.5;
+}
+.hb-mailings__doc {
+  background: var(--hb-color-surface);
+  padding: var(--hb-space-5);
+  border-radius: var(--hb-radius-sm);
+  font-family: var(--hb-font-sans);
+  color: var(--hb-color-text);
+}
+.hb-mailings__doc p {
+  margin: 0 0 var(--hb-space-2);
+}
+.hb-mailings__foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--hb-space-2);
+  padding: var(--hb-space-4) var(--hb-space-5);
+  border-top: 1px solid var(--hb-color-border);
+}
+.hb-mailings__primary {
+  background: var(--hb-color-primary);
+  color: var(--hb-color-on-accent, #fff);
+  border-color: var(--hb-color-primary);
+}
+
+/* Envelope: a real-mm sheet with return + recipient blocks. */
+.hb-envelope {
+  position: relative;
+  box-sizing: border-box;
+  background: #fff;
+  color: #111;
+  border: 1px solid var(--hb-color-border);
+  font-family: var(--hb-font-sans);
+}
+.hb-envelope--print {
+  border: none;
+}
+.hb-envelope__return {
+  position: absolute;
+  inset-block-start: 10mm;
+  inset-inline-start: 10mm;
+  font-size: 10pt;
+  line-height: 1.3;
+}
+.hb-envelope__to {
+  position: absolute;
+  inset-block-start: 45%;
+  inset-inline-start: 45%;
+  font-size: 12pt;
+  line-height: 1.4;
+}
+
+/* Label sheet: a real-mm page with absolutely-positioned label cells. */
+.hb-label-sheet {
+  position: relative;
+  box-sizing: border-box;
+  background: #fff;
+  color: #111;
+  border: 1px solid var(--hb-color-border);
+  font-family: var(--hb-font-sans);
+}
+.hb-label-sheet--print {
+  border: none;
+}
+.hb-label-cell {
+  position: absolute;
+  box-sizing: border-box;
+  padding: 3mm 4mm;
+  font-size: 10pt;
+  line-height: 1.3;
+  overflow: hidden;
+}
+
+/* Insert-merge-field picker. */
+.hb-fieldpick .hb-fieldpick__card {
+  inline-size: min(22rem, 90vw);
+}
+.hb-fieldpick__title {
+  margin: 0;
+  padding: var(--hb-space-4) var(--hb-space-5) 0;
+  font-family: var(--hb-font-serif, var(--hb-font-sans));
+  font-size: var(--hb-text-body-lg, 1.125rem);
+}
+.hb-fieldpick__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hb-space-1);
+  padding: var(--hb-space-3) var(--hb-space-4) var(--hb-space-4);
+  overflow: auto;
+}
+.hb-fieldpick__item {
+  appearance: none;
+  text-align: start;
+  font: inherit;
+  font-size: var(--hb-text-body-sm);
+  padding: var(--hb-space-2) var(--hb-space-3);
+  border: 1px solid var(--hb-color-border);
+  border-radius: var(--hb-radius-sm);
+  background: var(--hb-color-surface);
+  color: var(--hb-color-text);
+  cursor: pointer;
+}
+.hb-fieldpick__item:hover {
+  background: var(--hb-color-surface-sunken);
+}
+.hb-fieldpick__item.is-used {
+  color: var(--hb-color-text-muted, var(--hb-color-text));
+}
+
+@media (max-width: 720px) {
+  .hb-mailings__cols {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---- Embedded charts (X7) ----------------------------------------------- */
+.hb-writer__chart {
+  margin: var(--hb-space-4) 0;
+  padding: var(--hb-space-3);
+  border: 1px solid var(--hb-color-border);
+  border-radius: var(--hb-radius-md);
+  background: var(--hb-color-surface);
+  max-inline-size: 30rem;
+  color: var(--hb-color-text);
+}
+.hb-writer__chart .hb-chart {
+  display: block;
+  inline-size: 100%;
+  height: auto;
+}
+
+/* Insert Chart dialog. */
+.hb-chartins .hb-chartins__card {
+  inline-size: min(48rem, 94vw);
+  max-block-size: 90vh;
+  display: flex;
+  flex-direction: column;
+  gap: var(--hb-space-4);
+  padding: var(--hb-space-5);
+  background: var(--hb-color-surface);
+  border: 1px solid var(--hb-color-border);
+  border-radius: var(--hb-radius-md);
+  box-shadow: var(--hb-shadow-2, 0 16px 48px rgb(0 0 0 / 28%));
+  overflow: auto;
+}
+.hb-chartins__title {
+  margin: 0;
+  font-family: var(--hb-font-serif, var(--hb-font-sans));
+  font-size: var(--hb-text-body-lg, 1.125rem);
+}
+.hb-chartins__cols {
+  display: grid;
+  grid-template-columns: 18rem 1fr;
+  gap: var(--hb-space-4);
+  align-items: start;
+}
+.hb-chartins__fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hb-space-3);
+}
+.hb-chartins__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hb-space-1);
+}
+.hb-chartins__label {
+  font-size: var(--hb-text-body-sm);
+  font-weight: var(--hb-weight-medium);
+}
+.hb-chartins__data {
+  font: inherit;
+  font-family: var(--hb-font-mono);
+  font-size: var(--hb-text-body-sm);
+  padding: var(--hb-space-2);
+  border: 1px solid var(--hb-color-border);
+  border-radius: var(--hb-radius-sm);
+  background: var(--hb-color-surface);
+  color: var(--hb-color-text);
+  resize: vertical;
+}
+.hb-chartins__note {
+  margin: 0;
+  font-size: var(--hb-text-body-sm);
+  color: var(--hb-color-text-muted);
+}
+.hb-chartins__preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-block-size: 14rem;
+  padding: var(--hb-space-3);
+  background: var(--hb-color-surface-sunken);
+  border-radius: var(--hb-radius-sm);
+  color: var(--hb-color-text);
+}
+.hb-chartins__foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--hb-space-2);
+}
+.hb-chartins__primary {
+  background: var(--hb-color-primary);
+  color: var(--hb-color-on-accent, #fff);
+  border-color: var(--hb-color-primary);
+}
+@media (max-width: 640px) {
+  .hb-chartins__cols {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* DSG-S1: tint the editor chrome with the writer module accent. */
+.hb-writer {
+  --hb-color-primary: var(--hb-color-writer);
+  --hb-color-primary-hover: color-mix(in srgb, var(--hb-color-writer) 88%, #000);
+  --hb-color-primary-active: color-mix(in srgb, var(--hb-color-writer) 76%, #000);
+  --hb-color-primary-subtle: var(--hb-color-writer-bg);
+  --hb-color-primary-subtle-text: var(--hb-color-writer);
+}

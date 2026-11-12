@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist"
+  },
+  "include": ["src/**/*.ts", "src/**/*.d.mts"],
+  "references": [
+    { "path": "../../packages/charts" },
+    { "path": "../../packages/core-client" },
+    { "path": "../../packages/design-system" },
+    { "path": "../../packages/lexicon" }
+  ]
+}

@@ -1,0 +1,53 @@
+# Self-host the Hearth Suite sync relay with no Veldris infrastructure (AC-RELAY-4).
+#
+#   docker compose -f services/sync-relay/docker-compose.yml up --build
+#
+# Brings up the relay, a Postgres for metadata, and MinIO (S3-compatible) for the
+# opaque blob bytes. The relay never sees content, only ciphertext and metadata.
+#
+# No default passwords: set them first, for example in a `.env` file next to
+# this compose file (never commit it). Use URL-safe values:
+#   POSTGRES_PASSWORD=$(openssl rand -hex 24)
+#   MINIO_ROOT_PASSWORD=$(openssl rand -hex 24)
+# Compose refuses to start while a required password is unset.
+services:
+  relay:
+    build:
+      context: ../..
+      dockerfile: services/sync-relay/Dockerfile
+    environment:
+      DATABASE_URL: postgres://hearth:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}@postgres:5432/relay
+      OBJECT_STORE_URL: s3://hearth-blobs
+      AWS_ENDPOINT_URL: http://minio:9000
+      AWS_ACCESS_KEY_ID: ${MINIO_ROOT_USER:-hearth}
+      AWS_SECRET_ACCESS_KEY: ${MINIO_ROOT_PASSWORD:?set MINIO_ROOT_PASSWORD}
+      AWS_ALLOW_HTTP: "true"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+      - minio
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: hearth
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+      POSTGRES_DB: relay
+    volumes:
+      - relay-pg:/var/lib/postgresql/data
+
+  minio:
+    image: minio/minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-hearth}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?set MINIO_ROOT_PASSWORD}
+    ports:
+      - "127.0.0.1:9001:9001" # console on this host only
+    volumes:
+      - relay-blobs:/data
+
+volumes:
+  relay-pg:
+  relay-blobs:

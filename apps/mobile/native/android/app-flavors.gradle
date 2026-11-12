@@ -1,0 +1,61 @@
+// Android product flavours + native-plugin dependencies for Hearth Suite (AC-MOB-4).
+//
+// Applied (not hand-merged) into `android/app/build.gradle` by
+// `ci/mobile/apply-native.sh` after `npx cap add android`, via a single
+// `apply from: "hearth-flavors.gradle"` line. Two flavours share all code and
+// assets; they differ only in distribution:
+//
+//   play, Google Play build (.aab), may include Play-only integrations.
+//   foss, fully free build for F-Droid / direct sideload (.apk), with NO
+//           proprietary dependencies or services, reproducible-friendly.
+//
+// The on-device AI weights are always a user-initiated, Wi-Fi-gated download
+// (never bundled), so the FOSS build ships no non-free binaries.
+
+android {
+    flavorDimensions += "distribution"
+
+    // Release signing from the runner's environment (the upload key is a CI
+    // secret, never committed). Unset locally -> the release build is left
+    // unsigned for inspection.
+    signingConfigs {
+        release {
+            def ksPath = System.getenv("HEARTH_ANDROID_KEYSTORE")
+            if (ksPath) {
+                storeFile file(ksPath)
+                storePassword System.getenv("HEARTH_ANDROID_KEYSTORE_PASSWORD")
+                keyAlias System.getenv("HEARTH_ANDROID_KEY_ALIAS")
+                keyPassword System.getenv("HEARTH_ANDROID_KEY_PASSWORD")
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            if (System.getenv("HEARTH_ANDROID_KEYSTORE")) {
+                signingConfig signingConfigs.release
+            }
+        }
+    }
+
+    productFlavors {
+        play {
+            dimension "distribution"
+            // Default applicationId; Play listing.
+        }
+        foss {
+            dimension "distribution"
+            applicationIdSuffix ".foss"
+            versionNameSuffix "-foss"
+            buildConfigField "boolean", "FOSS", "true"
+        }
+    }
+}
+
+// Dependencies the native plugins need: Keystore-backed seed storage
+// (HearthCorePlugin) and the biometric prompt (BiometricPlugin). Both are
+// AndroidX (free), so the FOSS flavour stays clean.
+dependencies {
+    implementation "androidx.security:security-crypto:1.1.0-alpha06"
+    implementation "androidx.biometric:biometric:1.1.0"
+}

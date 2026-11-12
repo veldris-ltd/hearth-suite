@@ -1,0 +1,36 @@
+# Self-host the Hearth Suite release/update service (no Veldris infrastructure).
+#
+#   docker compose -f services/release-service/docker-compose.yml up --build
+#
+# Serves TUF-signed metadata per channel; artifacts are served from MinIO (a
+# stand-in CDN). Provision the root key + publish token via the environment.
+#
+# No default passwords: set them first, for example in a `.env` file next to
+# this compose file (never commit it). Use URL-safe values:
+#   MINIO_ROOT_PASSWORD=$(openssl rand -hex 24)
+# Compose refuses to start while MINIO_ROOT_PASSWORD is unset.
+services:
+  release-service:
+    build:
+      context: ../..
+      dockerfile: services/release-service/Dockerfile
+    environment:
+      HEARTH_ROOT_KEY_ID: hearth-root-2026
+      HEARTH_ROOT_PUBKEY_B64: "" # set to the ML-DSA root verifying key (base64)
+      HEARTH_PUBLISH_TOKEN: "" # bearer token the CI signing step presents
+    ports:
+      - "8082:8080"
+
+  minio:
+    image: minio/minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-hearth}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?set MINIO_ROOT_PASSWORD}
+    ports:
+      - "127.0.0.1:9002:9001" # console on this host only
+    volumes:
+      - release-artifacts:/data
+
+volumes:
+  release-artifacts:

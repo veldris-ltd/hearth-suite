@@ -1,0 +1,76 @@
+{
+  "uid": "hearth-relay-health",
+  "title": "Hearth Suite, Relay health",
+  "tags": ["hearth", "relay"],
+  "timezone": "utc",
+  "schemaVersion": 39,
+  "refresh": "30s",
+  "time": { "from": "now-6h", "to": "now" },
+  "templating": {
+    "list": [
+      {
+        "name": "instance",
+        "type": "query",
+        "datasource": "Prometheus",
+        "query": "label_values(hearth_relay_up, instance)",
+        "includeAll": true,
+        "multi": true
+      }
+    ]
+  },
+  "panels": [
+    {
+      "id": 1,
+      "type": "stat",
+      "title": "Relay up",
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 0 },
+      "datasource": "Prometheus",
+      "targets": [
+        { "expr": "hearth_relay_up{instance=~\"$instance\"}", "legendFormat": "{{instance}}" }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "timeseries",
+      "title": "Bytes stored vs quota",
+      "gridPos": { "h": 8, "w": 12, "x": 6, "y": 0 },
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "hearth_relay_bytes_stored{instance=~\"$instance\"}",
+          "legendFormat": "stored {{instance}}"
+        },
+        {
+          "expr": "hearth_relay_quota_bytes{instance=~\"$instance\"}",
+          "legendFormat": "quota {{instance}}"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "timeseries",
+      "title": "Blobs stored",
+      "gridPos": { "h": 8, "w": 6, "x": 0, "y": 4 },
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "hearth_relay_blobs_stored{instance=~\"$instance\"}",
+          "legendFormat": "{{instance}}"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "timeseries",
+      "title": "Error rate (errors/requests)",
+      "gridPos": { "h": 8, "w": 18, "x": 0, "y": 12 },
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "rate(hearth_relay_errors_total{instance=~\"$instance\"}[5m]) / clamp_min(rate(hearth_relay_requests_total{instance=~\"$instance\"}[5m]), 1)",
+          "legendFormat": "{{instance}}"
+        }
+      ]
+    }
+  ]
+}

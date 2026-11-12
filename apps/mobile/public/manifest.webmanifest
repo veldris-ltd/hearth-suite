@@ -1,0 +1,27 @@
+{
+  "name": "Hearth Suite",
+  "short_name": "Hearth Suite",
+  "description": "Your work, your fire, yours alone.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F4EEE7",
+  "theme_color": "#B5531F",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="img" aria-label="Hearth Suite">
+  <title>Hearth Suite flame glyph</title>
+  <!-- Outer ember flame; inherits colour via currentColor (set to ember accent). -->
+  <path fill="currentColor" d="M12 2c2.6 3.1 4.3 5.6 4.3 8.6a4.3 4.3 0 0 1-2.2 3.8c.5-1 .4-2.1-.4-3.1.1 1.4-.6 2.4-1.8 3.2a4.4 4.4 0 0 1-4.2-4.4c0-1.4.6-2.7 1.7-3.8-.2 1 .1 1.8.9 2.4C9.7 6.9 10.3 4.4 12 2z"/>
+  <!-- Inner highlight. -->
+  <path fill="#fff" fill-opacity="0.32" d="M12 9.4c1 .9 1.5 1.9 1.5 3a2.6 2.6 0 0 1-3 2.5c1-.5 1.5-1.3 1.5-2.4 0-1-.3-2-1.3-3 .4-.04.85.04 1.3-.1z"/>
+</svg>

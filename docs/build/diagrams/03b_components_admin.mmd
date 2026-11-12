@@ -1,0 +1,24 @@
+%%{init: {'theme':'neutral'}}%%
+flowchart TB
+    subgraph admin["Admin Control Panel"]
+        adui["Admin UI\n[web framework]"]
+        adapi["Admin API\n[Rust/service]"]
+        authz["RBAC + audit\nadmin auth, action log"]
+        relaymgmt["Relay management\nquotas, blob lifecycle"]
+        relmgmt["Release management\nsign, publish, channels"]
+        keydir["Key directory ops\npublish/revoke PQ keys"]
+        obs["Observability views\nopt-in telemetry, health"]
+    end
+    metadb[("Operational DB")]
+    objstore[("Encrypted Object Store")]
+    adui --> adapi
+    adapi --> authz
+    adapi --> relaymgmt
+    adapi --> relmgmt
+    adapi --> keydir
+    adapi --> obs
+    authz --> metadb
+    relaymgmt --> objstore
+    relmgmt --> objstore
+    keydir --> metadb
+    obs --> metadb

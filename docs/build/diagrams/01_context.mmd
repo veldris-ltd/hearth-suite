@@ -1,0 +1,24 @@
+%%{init: {'theme':'neutral'}}%%
+flowchart TB
+    user["User (individual / family / micro-business)"]:::actor
+    admin["Veldris Operator (admin console)"]:::actor
+    contrib["OSS Contributor"]:::actor
+    hearth["Hearth Suite\nOpen-source, offline-first productivity suite\n(PQ-encrypted, on-device AI)"]:::system
+    models["Open model weights\n(Phi-3/4, Nemotron) - HF / mirror"]:::external
+    sync["Optional sync target\n(self-host / WebDAV / Veldris relay)"]:::external
+    update["Update / release channel\n(signed artifacts)"]:::external
+    vox["Vox Messenger (optional)\nsealed document share"]:::external
+    repo["Public Git forge\n(source, issues, CI)"]:::external
+
+    user -->|"creates, edits, seals documents (local)"| hearth
+    admin -->|"manages relay, releases, telemetry opt-in"| hearth
+    contrib -->|"PRs, builds"| repo
+    hearth -->|"one-time weight download (optional)"| models
+    hearth -->|"encrypted blobs (opt-in)"| sync
+    hearth -->|"checks signed updates"| update
+    hearth -->|"hand off sealed Bundle (opt-in)"| vox
+    repo -->|"signed release artifacts"| update
+
+    classDef actor fill:#08427B,color:#fff,stroke:#052E56
+    classDef system fill:#1168BD,color:#fff,stroke:#0B4884
+    classDef external fill:#999999,color:#fff,stroke:#6B6B6B

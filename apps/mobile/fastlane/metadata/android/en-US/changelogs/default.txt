@@ -1,0 +1,1 @@
+First public release: Writer, Sheets, Records and Calendar, fully offline, with one-tap end-to-end Seal and on-device AI.

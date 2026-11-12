@@ -1,0 +1,304 @@
+/*
+ * The Seal / sharing dialog. Reuses the design-system modal; calm and
+ * plain-language. Token-driven; themes with the system.
+ */
+
+.hb-seal__panel {
+  inline-size: 100%;
+  max-inline-size: 32rem;
+  max-block-size: 85vh;
+  overflow: auto;
+}
+
+.hb-seal__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hb-space-4);
+}
+
+.hb-seal__head {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--hb-space-3);
+}
+.hb-seal__head-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 2.5rem;
+  block-size: 2.5rem;
+  flex: 0 0 auto;
+  border-radius: var(--hb-radius-md);
+  background: var(--hb-color-sealed-bg);
+  color: var(--hb-color-sealed-icon);
+}
+.hb-seal__title {
+  margin: 0;
+  font-family: var(--hb-font-serif);
+  font-size: var(--hb-text-h3);
+  font-weight: var(--hb-weight-semibold);
+}
+.hb-seal__status {
+  margin: var(--hb-space-1) 0 0;
+  color: var(--hb-color-text-muted);
+}
+
+/* Your key card */
+.hb-seal__card {
+  display: flex;
+  gap: var(--hb-space-4);
+  align-items: center;
+}
+/* QR is the primary share visual: a white card with a quiet zone, scannable in
+   either theme. */
+.hb-seal__qr {
+  flex: 0 0 auto;
+  display: flex;
+  padding: var(--hb-space-2);
+  border-radius: var(--hb-radius-md);
+  background: #fff;
+  box-shadow: var(--hb-elev-1);
+}
+/* The identicon is a small secondary recognition glyph beside the title. */
+.hb-seal__matrix {
+  display: inline-flex;
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+  color: var(--hb-color-accent);
+}
+.hb-seal__card-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hb-space-1);
+  min-inline-size: 0;
+}
+.hb-seal__card-title {
+  display: flex;
+  align-items: center;
+  gap: var(--hb-space-2);
+  font-weight: var(--hb-weight-semibold);
+}
+.hb-seal__card-note {
+  margin: 0;
+  color: var(--hb-color-text-muted);
+  font-size: var(--hb-text-body-sm);
+}
+.hb-seal__keytext {
+  font-family: var(--hb-font-mono);
+  font-size: var(--hb-text-body-sm);
+  color: var(--hb-color-text);
+  overflow-wrap: anywhere;
+}
+
+/* Recipients */
+.hb-seal__section-label {
+  color: var(--hb-color-text-muted);
+  font-size: var(--hb-text-caption);
+  font-weight: var(--hb-weight-semibold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-block-end: var(--hb-space-2);
+}
+.hb-seal__empty {
+  margin: 0 0 var(--hb-space-3);
+  color: var(--hb-color-text-muted);
+  font-size: var(--hb-text-body-sm);
+}
+.hb-seal__list {
+  list-style: none;
+  margin: 0 0 var(--hb-space-3);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--hb-space-2);
+}
+.hb-seal__person {
+  display: flex;
+  align-items: center;
+  gap: var(--hb-space-3);
+}
+.hb-seal__person-body {
+  flex: 1;
+  min-inline-size: 0;
+}
+.hb-seal__person-key {
+  color: var(--hb-color-text-muted);
+  font-size: var(--hb-text-caption);
+  font-family: var(--hb-font-mono);
+}
+/* Recipient trust line: verified against the transparency log. */
+.hb-seal__verified {
+  display: flex;
+  align-items: center;
+  gap: var(--hb-space-1);
+  margin-block-start: 2px;
+  color: var(--hb-color-accent);
+  font-size: var(--hb-text-caption);
+}
+/* Inline link to the full key & transparency-log surface. */
+.hb-seal__verify-link {
+  margin-block-start: 2px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--hb-color-text-link);
+  font-size: var(--hb-text-caption);
+  text-decoration: underline;
+  cursor: pointer;
+}
+/* A rotated key pulls the row to the top so the warning block reads cleanly. */
+.hb-seal__person.is-changed {
+  align-items: flex-start;
+}
+/* Key-rotation alert (DSG-S6): warning state shown before sealing. */
+.hb-seal__rotation {
+  margin-block-start: var(--hb-space-2);
+  padding: var(--hb-space-3);
+  border: var(--hb-stroke-base, 1.5px) solid var(--hb-color-warning);
+  border-radius: var(--hb-radius-md);
+  background: var(--hb-color-warning-bg);
+  color: var(--hb-color-warning-text);
+}
+.hb-seal__rotation-head {
+  display: flex;
+  align-items: center;
+  gap: var(--hb-space-1);
+  font-size: var(--hb-text-body-sm);
+}
+.hb-seal__rotation-head svg {
+  color: var(--hb-color-warning);
+  flex: 0 0 auto;
+}
+.hb-seal__rotation-body {
+  margin-block: var(--hb-space-1) var(--hb-space-2);
+  font-size: var(--hb-text-caption);
+}
+.hb-seal__rotation-actions {
+  display: flex;
+  gap: var(--hb-space-2);
+  flex-wrap: wrap;
+}
+.hb-seal__remove {
+  border: none;
+  background: transparent;
+  color: var(--hb-color-text-muted);
+  font-size: var(--hb-text-body-lg);
+  line-height: 1;
+  cursor: pointer;
+}
+.hb-seal__remove:hover {
+  color: var(--hb-color-danger);
+}
+.hb-seal__add {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hb-space-2);
+}
+.hb-seal__scan {
+  display: flex;
+  align-items: center;
+  gap: var(--hb-space-2);
+  flex-wrap: wrap;
+}
+.hb-seal__hint {
+  color: var(--hb-color-text-muted);
+  font-size: var(--hb-text-caption);
+}
+.hb-seal__add-row {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr auto;
+  gap: var(--hb-space-2);
+  align-items: center;
+}
+
+.hb-seal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--hb-space-3);
+}
+.hb-seal__done {
+  align-items: center;
+  text-align: center;
+}
+
+@media (max-width: 480px) {
+  .hb-seal__add-row {
+    grid-template-columns: 1fr;
+  }
+  .hb-seal__card {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+/* ── Key-verification surface (DSG-S6) ──────────────────────────────────── */
+.hb-verify__card {
+  inline-size: min(28rem, calc(100vw - 2rem));
+}
+/* Verified-contact fingerprint card. */
+.hb-verify__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--hb-space-1);
+  padding: 2px var(--hb-space-2);
+  border-radius: var(--hb-radius-pill);
+  background: var(--hb-color-sealed-bg);
+  color: var(--hb-color-sealed-text);
+  font-size: var(--hb-text-caption);
+}
+.hb-verify__badge svg {
+  color: var(--hb-color-sealed-icon);
+}
+.hb-verify__fp {
+  margin-block: var(--hb-space-3);
+  padding: var(--hb-space-3);
+  border: var(--hb-stroke-hair, 1px) solid var(--hb-color-border);
+  border-radius: var(--hb-radius-md);
+  background: var(--hb-color-surface-sunken);
+  font-family: var(--hb-font-mono);
+  font-size: var(--hb-text-body-lg);
+  letter-spacing: 0.06em;
+  line-height: 1.6;
+  word-spacing: 0.25em;
+  overflow-wrap: anywhere;
+}
+.hb-verify__note {
+  color: var(--hb-color-text-muted);
+  font-size: var(--hb-text-body-sm);
+}
+.hb-verify__label {
+  margin-block-start: var(--hb-space-4);
+  margin-block-end: var(--hb-space-2);
+  font-weight: var(--hb-weight-semibold);
+  font-size: var(--hb-text-body-sm);
+}
+/* Append-only transparency-log list. */
+.hb-verify__log {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+.hb-verify__entry {
+  display: flex;
+  gap: var(--hb-space-2);
+  padding: var(--hb-space-2) 0;
+  border-block-start: var(--hb-stroke-hair, 1px) solid var(--hb-color-border);
+}
+.hb-verify__entry:first-child {
+  border-block-start: none;
+}
+.hb-verify__entry-icon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  color: var(--hb-color-accent);
+  margin-block-start: 2px;
+}
+.hb-verify__entry-detail {
+  font-size: var(--hb-text-body-sm);
+}
+.hb-verify__entry-at {
+  color: var(--hb-color-text-muted);
+  font-size: var(--hb-text-caption);
+}

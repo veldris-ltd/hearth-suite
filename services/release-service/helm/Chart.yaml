@@ -1,0 +1,6 @@
+apiVersion: v2
+name: hearth-release-service
+description: TUF-signed release/update metadata service with channels (self-hostable).
+type: application
+version: 0.1.0
+appVersion: "0.0.0"

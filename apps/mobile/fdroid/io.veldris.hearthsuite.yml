@@ -1,0 +1,40 @@
+# F-Droid build recipe for the Hearth Suite Android client (AC-MOB-4).
+#
+# Submitted to the fdroiddata repository (or used with a self-hosted F-Droid
+# repo). Builds the `foss` flavour from source with no proprietary dependencies;
+# the AI model weights are a user-initiated, Wi-Fi-gated download, so nothing
+# non-free is shipped in the APK.
+Categories:
+  - Office
+  - Writing
+License: Apache-2.0
+AuthorName: Veldris Ltd.
+SourceCode: https://github.com/veldris-ltd/hearth-suite
+IssueTracker: https://github.com/veldris-ltd/hearth-suite/issues
+Name: Hearth Suite
+
+RepoType: git
+Repo: https://github.com/veldris-ltd/hearth-suite.git
+
+Builds:
+  - versionName: "0.0.0"
+    versionCode: 1
+    commit: v0.0.0
+    sudo:
+      - apt-get update
+      - apt-get install -y rustup nodejs npm
+    init:
+      - rustup target add aarch64-linux-android armv7-linux-androideabi
+      - npm install -g pnpm
+    subdir: apps/mobile/android/app
+    gradle:
+      - foss
+    prebuild:
+      - pnpm install --frozen-lockfile
+      - pnpm --filter "@hearth/mobile..." build
+      - pnpm --filter @hearth/mobile exec cap sync android
+
+AutoUpdateMode: Version v%v
+UpdateCheckMode: Tags
+CurrentVersion: "0.0.0"
+CurrentVersionCode: 1

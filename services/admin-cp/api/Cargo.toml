@@ -1,0 +1,35 @@
+# The Admin Control Panel API service. NOT a member of the root Cargo workspace
+# (see the root Cargo.toml `exclude`): it pulls a web-server + WebAuthn stack
+# (axum, tokio, webauthn-rs) that should not gate the toolchain-light core
+# checks. It depends on the in-workspace `hearth-admin-core` domain logic by path
+# and is built into a container image by `.github/workflows/services.yml`.
+[package]
+name = "hearth-admin-cp"
+version = "0.0.0"
+edition = "2021"
+rust-version = "1.82"
+description = "Hearth Suite Admin Control Panel API (operator console for the optional cloud)."
+license = "Apache-2.0"
+authors = ["Veldris Ltd."]
+publish = false
+
+[[bin]]
+name = "hearth-admin-cp"
+path = "src/main.rs"
+
+[dependencies]
+hearth-admin-core = { path = "../../../crates/admin-core" }
+hearth-release = { path = "../../../crates/release" }
+hearth-seal = { path = "../../../crates/seal" }
+hearth-observability = { path = "../../../crates/observability" }
+axum = "0.7"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["json", "env-filter"] }
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "signal"] }
+tower-http = { version = "0.6", features = ["fs", "trace", "set-header"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+webauthn-rs = { version = "0.5", features = ["danger-allow-state-serialisation", "conditional-ui"] }
+uuid = { version = "1", features = ["v4"] }
+url = "2"
+base64 = "0.22"

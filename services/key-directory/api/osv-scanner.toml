@@ -1,0 +1,42 @@
+# osv-scanner exceptions for this lockfile. Each entry states why the finding
+# does not apply and expires so it is re-reviewed (RUSTSEC is also checked by
+# `cargo audit` in ci/jobs/audit.sh).
+
+[[IgnoredVulns]]
+id = "RUSTSEC-2023-0071"
+ignoreUntil = 2027-04-30
+reason = """
+rsa (Marvin timing attack, no fixed release) is listed in Cargo.lock only because
+sqlx declares its MySQL driver as an optional dependency. This service enables
+sqlx's "postgres" backend only; `cargo tree -i rsa` is empty, so rsa is never
+compiled into the binary.
+"""
+
+[[IgnoredVulns]]
+id = "GHSA-c38w-74pg-36hr"
+ignoreUntil = 2027-04-30
+reason = "GHSA alias of RUSTSEC-2023-0071; see that entry."
+
+[[IgnoredVulns]]
+id = "GHSA-qwgh-2vcv-g2f7"
+ignoreUntil = 2027-01-31
+reason = """
+block-buffer 0.10.4: a panic inside the compression callback, caught with
+catch_unwind, can leave the buffer cursor invalid (fixed in 0.12.1). Hearth
+Suite's own crates now use block-buffer 0.12.1. This lockfile keeps 0.10.4 only
+through sqlx-core and sqlx-postgres 0.8. Their callbacks are the sha2 and md-5
+compression functions, which cannot panic. sqlx 0.9 still uses sha2 0.10.
+Re-review when sqlx moves to the digest 0.11 crates.
+"""
+
+[[IgnoredVulns]]
+id = "RUSTSEC-2026-0459"
+ignoreUntil = 2027-04-30
+reason = """
+libsqlite3-sys 0.30.1 (bundled C SQLite, CVE-2026-119375; fixed in 0.39.0) is
+listed in Cargo.lock only because sqlx 0.8 declares its SQLite driver as an
+optional dependency. This service enables sqlx's "postgres" backend only;
+`cargo tree -i libsqlite3-sys` and `cargo tree -i sqlx-sqlite` are empty, so
+SQLite is never compiled into the binary. Hearth Suite's own crates use
+libsqlite3-sys 0.39.1 through rusqlite 0.41.
+"""

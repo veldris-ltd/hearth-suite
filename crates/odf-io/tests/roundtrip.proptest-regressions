@@ -1,0 +1,10 @@
+# Seeds for failure cases proptest has generated in the past. It is
+# automatically read and these particular cases re-run before any
+# novel cases are generated.
+#
+# It is recommended to check this file in to source control so that
+# everyone who runs the test benefits from these saved cases.
+cc 6a6e51dea9bdb6179e58d9c00ddf141e15b2c7a96ab38b3ac5e8421b0f08b5e2 # shrinks to doc = TextDocument { blocks: [Heading { level: 1, spans: [Span { text: "<", bold: false, italic: false }] }] }
+cc 4757096adc41729e43aabd07f3c8aba132f89596e853abafac8c4931710cec07 # shrinks to doc = TextDocument { blocks: [Heading { level: 1, spans: [Span { text: "<", bold: false, italic: false }] }] }
+cc ee6b064dc5a30452890feabcf3c94947aee83d5e7583438827ce18dc8a64baf0 # shrinks to doc = Spreadsheet { sheets: [Sheet { name: "A", rows: [Row { cells: [Text("&")] }] }] }
+cc e49c6a7acd076feca8f29a4956155bc55ed3437cb925682e2cc2464d40ffac0d # shrinks to doc = Spreadsheet { sheets: [Sheet { name: "A", rows: [Row { cells: [Text(">")] }] }] }

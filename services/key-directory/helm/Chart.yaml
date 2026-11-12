@@ -1,0 +1,6 @@
+apiVersion: v2
+name: hearth-key-directory
+description: Public-key directory with an append-only transparency log (self-hostable).
+type: application
+version: 0.1.0
+appVersion: "0.0.0"

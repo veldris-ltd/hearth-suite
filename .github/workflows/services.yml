@@ -1,0 +1,107 @@
+# Hearth Suite optional-cloud service images.
+#
+# Separate from the client pipeline (ci.yml). Job logic lives in ci/jobs/
+# (helm-lint.sh, services-image.sh, helm-deploy.sh), shared with .gitlab-ci.yml. Mirrors the lower branch of
+# diagram 09_cicd: build service images -> deploy staging (k8s) -> approval
+# -> deploy prod (k8s). Images are signed and SBOM-attested before deploy.
+#
+# Services (all optional / self-hostable, implemented in P3.x):
+#   sync-relay, zero-knowledge encrypted-blob store
+#   key-directory, publishes PQ public keys (transparency log)
+#   release-service, TUF-signed release metadata + channels
+#   admin-cp, operator console (RBAC + audit)
+name: services
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "services/**"
+      - "deploy/helm/**"
+      - ".github/workflows/services.yml"
+  pull_request:
+    branches: ["main"]
+    paths:
+      - "services/**"
+      - "deploy/helm/**"
+      - ".github/workflows/services.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: services-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  REGISTRY: ghcr.io
+  # Images are published under the public project name on every platform.
+  IMAGE_PREFIX: veldris-ltd/hearth-suite
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  lint-chart:
+    name: lint helm chart
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: azure/setup-helm@9bc31f4ebc9c6b171d7bfbaa5d006ae7abdb4310 # v5.0.1
+      - run: ci/jobs/helm-lint.sh
+
+  build-images:
+    name: build image (${{ matrix.service }})
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write # keyless image signing
+    strategy:
+      fail-fast: false
+      matrix:
+        service: [sync-relay, key-directory, release-service, admin-cp]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: sigstore/cosign-installer@398d4b0eeef1380460a10c8013a76f728fb906ac # v3
+      - name: Log in to registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4.7.0
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - run: ci/jobs/services-image.sh ${{ matrix.service }}
+        env:
+          IMAGE_REGISTRY: ${{ env.REGISTRY }}
+          IMAGE_PREFIX: ${{ env.IMAGE_PREFIX }}
+          IMAGE_PUSH: ${{ github.event_name != 'pull_request' }}
+
+  deploy-staging:
+    name: deploy staging (k8s)
+    needs: [lint-chart, build-images]
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: azure/setup-helm@9bc31f4ebc9c6b171d7bfbaa5d006ae7abdb4310 # v5.0.1
+      - run: ci/jobs/helm-deploy.sh staging
+        env:
+          KUBECONFIG_B64: ${{ secrets.STAGING_KUBECONFIG_B64 }}
+
+  deploy-prod:
+    name: deploy prod (k8s)
+    needs: deploy-staging
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    # `production` environment requires reviewer approval = the manual gate.
+    environment: production
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: azure/setup-helm@9bc31f4ebc9c6b171d7bfbaa5d006ae7abdb4310 # v5.0.1
+      - run: ci/jobs/helm-deploy.sh prod
+        env:
+          KUBECONFIG_B64: ${{ secrets.PROD_KUBECONFIG_B64 }}

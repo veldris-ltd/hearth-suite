@@ -1,0 +1,25 @@
+[package]
+name = "hearth-key-manager"
+description = "Local identity and key lifecycle for Hearth Suite, generation, storage, and recipient resolution."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+publish = false
+
+[dependencies]
+argon2 = "0.6.0"
+bip39 = "2"
+chacha20poly1305 = "0.10"
+getrandom = "0.3.4"
+hearth-seal = { version = "0.0.0", path = "../seal" }
+hex = "0.4.3"
+hkdf = "0.13.0"
+sha2 = "0.11.1"
+thiserror = "2.0.18"
+uuid = { version = "1.20.0", features = ["v4"] }
+
+[lints]
+workspace = true

@@ -1,0 +1,390 @@
+/*
+ * The Mantel layout. Calm, goal-oriented, left-aligned within the workspace
+ * content region; token-driven so it themes with the design system. Generous
+ * whitespace and progressive disclosure keep the default surface effortless. The
+ * layout reflows to a tighter single column on narrow (mobile) viewports.
+ */
+
+.hb-mantel {
+  max-inline-size: 56rem;
+  margin-inline: 0;
+  padding: var(--hb-space-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--hb-space-5);
+  font-family: var(--hb-font-sans);
+  color: var(--hb-color-text);
+}
+
+/* ---- Task Launcher tabs (Tasks · Programs · History) -------------------- */
+.hb-mantel__tabs {
+  display: flex;
+  gap: var(--hb-space-1);
+  border-block-end: 1px solid var(--hb-color-border);
+}
+.hb-mantel__panel {
+  min-block-size: 12rem;
+}
+
+/* Tasks: goal-phrased entries + a two-route chooser. */
+.hb-mantel__task-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+  gap: var(--hb-space-3);
+}
+.hb-mantel__task {
+  display: flex;
+  align-items: center;
+  gap: var(--hb-space-3);
+  padding: var(--hb-space-3) var(--hb-space-4);
+  border: 1px solid var(--hb-color-border);
+  border-radius: var(--hb-radius-lg);
+  background: var(--hb-color-surface);
+  box-shadow: var(--hb-elev-1);
+  color: var(--hb-color-text);
+  font-family: var(--hb-font-sans);
+  font-size: var(--hb-text-body);
+  text-align: start;
+  cursor: pointer;
+  transition: border-color var(--hb-dur-fast) var(--hb-ease-standard);
+}
+.hb-mantel__task:hover,
+.hb-mantel__task.is-open {
+  border-color: var(--hb-color-primary);
+}
+.hb-mantel__task-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 2rem;
+  block-size: 2rem;
+  flex: 0 0 auto;
+  border-radius: var(--hb-radius-md);
+  background: var(--hb-color-surface-sunken);
+  color: var(--hb-color-primary);
+}
+.hb-mantel__chooser {
+  margin-block-start: var(--hb-space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--hb-space-3);
+}
+.hb-mantel__chooser-title {
+  font-family: var(--hb-font-serif);
+  font-size: var(--hb-text-body-lg);
+  font-weight: var(--hb-weight-semibold);
+}
+.hb-mantel__chooser-ember {
+  display: flex;
+  gap: var(--hb-space-2);
+  flex-wrap: wrap;
+}
+.hb-mantel__chooser-ember .hb-input {
+  flex: 1;
+  min-inline-size: 12rem;
+}
+.hb-mantel__chooser-note {
+  margin: 0;
+  color: var(--hb-color-text-muted);
+  font-size: var(--hb-text-body-sm);
+}
+
+/* History: a filter + recent Bundle cards. */
+.hb-mantel__history-filter {
+  margin-block-end: var(--hb-space-3);
+  max-inline-size: 22rem;
+}
+
+/* Footer: browse templates + advanced disclosure. */
+.hb-mantel__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--hb-space-4);
+  flex-wrap: wrap;
+}
+
+/* ---- Template gallery --------------------------------------------------- */
+.hb-gallery__head {
+  display: flex;
+  align-items: center;
+  gap: var(--hb-space-3);
+}
+.hb-gallery__cats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--hb-space-1);
+}
+.hb-gallery__cat {
+  padding: var(--hb-space-1) var(--hb-space-3);
+  border: 1px solid var(--hb-color-border);
+  border-radius: var(--hb-radius-pill);
+  background: var(--hb-color-surface);
+  color: var(--hb-color-text-muted);
+  font-size: var(--hb-text-body-sm);
+  cursor: pointer;
+}
+.hb-gallery__cat.is-active {
+  background: var(--hb-color-surface-sunken);
+  color: var(--hb-color-primary);
+  font-weight: var(--hb-weight-semibold);
+  border-color: var(--hb-color-border);
+}
+.hb-gallery__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: var(--hb-space-4);
+}
+.hb-gallery__card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hb-space-1);
+}
+.hb-gallery__preview {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: var(--hb-space-3);
+  margin-block-end: var(--hb-space-2);
+  border-radius: var(--hb-radius-md);
+  background: var(--hb-color-surface-sunken);
+  min-block-size: 4.5rem;
+}
+.hb-gallery__preview-line {
+  block-size: 0.5rem;
+  border-radius: var(--hb-radius-sm);
+  background: var(--hb-color-border);
+  color: transparent;
+  font-size: 0;
+  inline-size: 70%;
+}
+.hb-gallery__preview-line:first-child {
+  inline-size: 90%;
+  background: var(--hb-color-text-muted);
+}
+.hb-gallery__card-name {
+  font-family: var(--hb-font-serif);
+  font-size: var(--hb-text-body-lg);
+  font-weight: var(--hb-weight-semibold);
+}
+.hb-gallery__card-cat {
+  color: var(--hb-color-text-muted);
+  font-size: var(--hb-text-caption);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.hb-gallery__card-desc {
+  margin: var(--hb-space-1) 0 var(--hb-space-2);
+  color: var(--hb-color-text-muted);
+  font-size: var(--hb-text-body-sm);
+  flex: 1;
+}
+
+/* ---- Greeting ----------------------------------------------------------- */
+.hb-mantel__header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hb-space-1);
+}
+.hb-mantel__greeting {
+  font-family: var(--hb-font-serif);
+  font-size: var(--hb-text-h2);
+  font-weight: var(--hb-weight-semibold);
+  line-height: var(--hb-leading-tight);
+  margin: 0;
+}
+.hb-mantel__subtitle {
+  margin: 0;
+  color: var(--hb-color-text-muted);
+  font-size: var(--hb-text-body);
+}
+
+/* ---- Universal search --------------------------------------------------- */
+.hb-mantel__search {
+  inline-size: 100%;
+}
+.hb-mantel__search .hb-search {
+  padding-block: var(--hb-space-1);
+  box-shadow: var(--hb-elev-1);
+}
+.hb-search__icon {
+  display: inline-flex;
+  color: var(--hb-color-text-muted);
+}
+.hb-search__hint {
+  flex: 0 0 auto;
+  padding: 2px var(--hb-space-2);
+  border: 1px solid var(--hb-color-border);
+  border-radius: var(--hb-radius-sm);
+  background: var(--hb-color-surface-sunken);
+  color: var(--hb-color-text-muted);
+  font-family: var(--hb-font-sans);
+  font-size: var(--hb-text-caption);
+}
+.hb-mantel__results {
+  list-style: none;
+  margin: var(--hb-space-2) 0 0;
+  padding: 0;
+}
+
+/* ---- Quick-create: one calm card per action. --------------------------- */
+.hb-mantel__quick {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--hb-space-3);
+}
+.hb-mantel__create {
+  display: flex;
+  align-items: center;
+  gap: var(--hb-space-3);
+  padding: var(--hb-space-3) var(--hb-space-3);
+  background: var(--hb-color-surface);
+  border: 1px solid var(--hb-color-border);
+  border-radius: var(--hb-radius-lg);
+  box-shadow: var(--hb-elev-1);
+  color: var(--hb-color-text);
+  font-family: var(--hb-font-sans);
+  font-size: var(--hb-text-body-sm);
+  font-weight: var(--hb-weight-medium);
+  text-align: start;
+  cursor: pointer;
+  transition:
+    border-color var(--hb-dur-fast) var(--hb-ease-standard),
+    box-shadow var(--hb-dur-fast) var(--hb-ease-standard),
+    transform var(--hb-dur-fast) var(--hb-ease-standard);
+}
+.hb-mantel__create-label {
+  white-space: nowrap;
+}
+.hb-mantel__create:hover {
+  border-color: var(--hb-color-primary);
+  box-shadow: var(--hb-elev-2);
+}
+.hb-mantel__create:active {
+  transform: translateY(1px);
+}
+.hb-mantel__create:focus-visible {
+  outline: var(--hb-size-focus-ring) solid var(--hb-color-ring);
+  outline-offset: 2px;
+}
+.hb-mantel__create-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 2rem;
+  block-size: 2rem;
+  flex: 0 0 auto;
+  border-radius: var(--hb-radius-md);
+  background: var(--hb-color-surface-sunken);
+  color: var(--hb-color-primary);
+}
+
+/* ---- Recent Bundles ----------------------------------------------------- */
+.hb-mantel__section-title {
+  margin: 0;
+  font-family: var(--hb-font-sans);
+  font-size: var(--hb-text-caption);
+  font-weight: var(--hb-weight-semibold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--hb-color-text-muted);
+}
+.hb-mantel__recent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hb-space-4);
+}
+.hb-mantel__recent-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--hb-space-4);
+}
+.hb-mantel__bundle {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hb-space-2);
+  inline-size: 100%;
+  text-align: start;
+  cursor: pointer;
+  transition:
+    border-color var(--hb-dur-fast) var(--hb-ease-standard),
+    box-shadow var(--hb-dur-fast) var(--hb-ease-standard);
+}
+.hb-mantel__bundle:hover {
+  border-color: var(--hb-color-primary);
+  box-shadow: var(--hb-elev-2);
+}
+.hb-mantel__bundle:focus-visible {
+  outline: var(--hb-size-focus-ring) solid var(--hb-color-ring);
+  outline-offset: 2px;
+}
+.hb-mantel__bundle-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--hb-space-2);
+}
+.hb-mantel__bundle-icon {
+  display: inline-flex;
+  color: var(--hb-color-primary);
+}
+.hb-mantel__bundle-title {
+  font-family: var(--hb-font-serif);
+  font-size: var(--hb-text-body-lg);
+  font-weight: var(--hb-weight-semibold);
+  color: var(--hb-color-text);
+}
+.hb-mantel__bundle-meta {
+  color: var(--hb-color-text-muted);
+  font-size: var(--hb-text-body-sm);
+}
+
+/* Status badges (Draft/Saved). Sealed uses .hb-seal-badge from components.css. */
+.hb-badge--draft {
+  background: var(--hb-color-surface-sunken);
+  color: var(--hb-color-text-muted);
+}
+.hb-badge--saved {
+  background: var(--hb-color-surface-sunken);
+  color: var(--hb-color-text);
+}
+
+/* ---- Advanced controls stay quiet until summoned (progressive disclosure). */
+.hb-mantel__advanced {
+  color: var(--hb-color-text-muted);
+}
+.hb-mantel__advanced summary {
+  cursor: pointer;
+  min-height: var(--hb-size-touch-target);
+  display: flex;
+  align-items: center;
+}
+.hb-mantel__advanced-body {
+  margin: var(--hb-space-2) 0 0;
+}
+
+/* ---- Responsive: mobile reflow. ---------------------------------------- */
+@media (max-width: 720px) {
+  .hb-mantel {
+    padding: var(--hb-space-6) var(--hb-space-4);
+    gap: var(--hb-space-6);
+  }
+  .hb-mantel__quick {
+    grid-template-columns: 1fr 1fr;
+  }
+  .hb-mantel__recent-list {
+    grid-template-columns: 1fr;
+  }
+  .hb-mantel__greeting {
+    font-size: var(--hb-text-h3);
+  }
+}
+
+@media (max-width: 420px) {
+  .hb-mantel__quick {
+    grid-template-columns: 1fr;
+  }
+}

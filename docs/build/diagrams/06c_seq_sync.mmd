@@ -1,0 +1,17 @@
+sequenceDiagram
+    actor User
+    participant Core as Hearth Suite Core
+    participant CRDT as crdt-sync
+    participant Crypto as Crypto Module
+    participant Relay as Sync Relay (zero-knowledge)
+    participant Obj as Encrypted Object Store
+    User->>Core: edit document (offline-first)
+    Core->>CRDT: apply local op, update state
+    Note over Core,Relay: Sync only if user opted in
+    Core->>Crypto: encrypt CRDT delta (content key)
+    Core->>Relay: PUT encrypted delta (auth token)
+    Relay->>Obj: store opaque blob (cannot read)
+    Relay-->>Core: ack + peer deltas (encrypted)
+    Core->>Crypto: decrypt peer deltas
+    Core->>CRDT: merge -> converged state
+    Core-->>User: changes merged

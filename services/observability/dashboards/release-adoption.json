@@ -1,0 +1,50 @@
+{
+  "uid": "hearth-release-adoption",
+  "title": "Hearth Suite, Release adoption",
+  "tags": ["hearth", "release"],
+  "timezone": "utc",
+  "schemaVersion": 39,
+  "refresh": "5m",
+  "time": { "from": "now-30d", "to": "now" },
+  "panels": [
+    {
+      "id": 1,
+      "type": "barchart",
+      "title": "Active installs by version (aggregate)",
+      "gridPos": { "h": 10, "w": 18, "x": 0, "y": 0 },
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "sum by (version) (hearth_release_active_installs)",
+          "legendFormat": "{{version}}"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "piechart",
+      "title": "Adoption by channel",
+      "gridPos": { "h": 10, "w": 6, "x": 18, "y": 0 },
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "sum by (channel) (hearth_release_active_installs)",
+          "legendFormat": "{{channel}}"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "timeseries",
+      "title": "Latest-version share over time",
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 10 },
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "max(hearth_release_active_installs) / clamp_min(sum(hearth_release_active_installs), 1)",
+          "legendFormat": "newest-version share"
+        }
+      ]
+    }
+  ]
+}

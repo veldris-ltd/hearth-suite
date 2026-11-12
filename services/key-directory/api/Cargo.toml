@@ -1,0 +1,30 @@
+# The key-directory service. NOT a workspace member (see root Cargo.toml
+# `exclude`): it pulls a web/DB stack provisioned only on the service runners. It
+# depends on the in-workspace `hearth-key-directory-core` (tested directory +
+# transparency-log logic) by path and is built by `.github/workflows/services.yml`.
+[package]
+name = "hearth-key-directory"
+version = "0.0.0"
+edition = "2021"
+rust-version = "1.82"
+description = "Hearth Suite key directory, publishes public PQ keys with an append-only transparency log."
+license = "Apache-2.0"
+authors = ["Veldris Ltd."]
+publish = false
+
+[[bin]]
+name = "hearth-key-directory"
+path = "src/main.rs"
+
+[dependencies]
+hearth-key-directory-core = { path = "../../../crates/key-directory-core" }
+hearth-observability = { path = "../../../crates/observability" }
+axum = "0.7"
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "signal"] }
+tower-http = { version = "0.6", features = ["trace", "set-header"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["json", "env-filter"] }
+sqlx = { version = "0.8", features = ["runtime-tokio-rustls", "postgres"] }
+base64 = "0.22"

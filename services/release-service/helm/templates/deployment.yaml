@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-release-service
+  labels:
+    app: hearth-release-service
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: hearth-release-service
+  template:
+    metadata:
+      labels:
+        app: hearth-release-service
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+      containers:
+        - name: release-service
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 8080
+          env:
+            - name: HEARTH_ROOT_KEY_ID
+              value: {{ .Values.config.rootKeyId | quote }}
+            - name: HEARTH_ROOT_PUBKEY_B64
+              value: {{ .Values.config.rootPubkeyB64 | quote }}
+            {{- if .Values.config.publishTokenSecret }}
+            - name: HEARTH_PUBLISH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.config.publishTokenSecret }}
+                  key: token
+            {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}

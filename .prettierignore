@@ -1,0 +1,23 @@
+# Build output and dependencies
+dist/
+build/
+node_modules/
+pnpm-lock.yaml
+
+# Tooling / agent worktrees and local state
+.claude/
+
+# Rust tree (formatted by rustfmt, not Prettier)
+target/
+crates/
+**/*.rs
+
+# Generated / authored docs and diagrams
+docs/
+
+# Licence text is kept verbatim
+LICENSE
+
+# Helm chart templates use Go templating (not valid YAML for Prettier)
+**/helm/templates/
+deploy/helm/*/templates/

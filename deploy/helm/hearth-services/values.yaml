@@ -1,0 +1,69 @@
+# Hearth Suite optional cloud services. All four are off-by-default for the user; this
+# chart is only for operators who choose to self-host them. TLS is terminated at
+# the ingress (see `ingress.tls`); the services speak plain HTTP inside the
+# cluster and emit HSTS so browsers enforce HTTPS once a certificate is present.
+
+image:
+  registry: ghcr.io
+  # Image repository prefix; the per-service image is <registry>/<prefix>/<name>.
+  prefix: veldris-ltd/hearth-suite
+  tag: latest
+  pullPolicy: IfNotPresent
+
+# Pod/container security context, matching the distroless, non-root (65532)
+# service images. Locked down by default.
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 65532
+  runAsGroup: 65532
+  fsGroup: 65532
+  seccompProfile:
+    type: RuntimeDefault
+containerSecurityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop: ["ALL"]
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: "1"
+    memory: 256Mi
+
+# A pre-created Secret holding the services' configuration env (token secrets,
+# the pinned release-root public key, WebAuthn RP config, DB/object-store URLs,
+# etc.). Mounted into every pod via envFrom. See README / self-hosting docs.
+existingSecret: hearth-services-secrets
+
+# Each service is an independent Deployment + Service. Disable any you do not run.
+services:
+  sync-relay:
+    enabled: true
+    replicas: 2
+    path: /relay
+  key-directory:
+    enabled: true
+    replicas: 2
+    path: /keydir
+  release-service:
+    enabled: true
+    replicas: 1
+    path: /releases
+  admin-cp:
+    enabled: true
+    replicas: 1
+    path: /ops
+
+# Ingress terminates TLS for the public services. Provide a certificate via
+# `tls.secretName` (e.g. issued by cert-manager) for HTTPS + HSTS to be effective.
+ingress:
+  enabled: true
+  className: nginx
+  host: hearth.example.com
+  annotations: {}
+  tls:
+    enabled: true
+    secretName: hearth-tls

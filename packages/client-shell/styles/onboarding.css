@@ -1,0 +1,122 @@
+/*
+ * First-run onboarding overlay. Reuses the design-system modal backdrop/panel;
+ * calm, centred, token-driven. Themes with the system.
+ */
+
+.hb-onboarding__panel {
+  inline-size: 100%;
+  max-inline-size: 30rem;
+  text-align: center;
+}
+
+.hb-onboarding__step {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hb-space-5);
+}
+.hb-onboarding__body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--hb-space-3);
+}
+.hb-onboarding__glyph {
+  color: var(--hb-color-primary);
+}
+.hb-onboarding__title {
+  margin: 0;
+  font-family: var(--hb-font-serif);
+  font-size: var(--hb-text-h2);
+  font-weight: var(--hb-weight-semibold);
+}
+.hb-onboarding__lede {
+  margin: 0;
+  color: var(--hb-color-text-muted);
+  line-height: var(--hb-leading-normal);
+}
+.hb-onboarding__fingerprint {
+  margin: 0;
+  font-family: var(--hb-font-mono);
+  font-size: var(--hb-text-body-sm);
+  color: var(--hb-color-text-muted);
+}
+
+.hb-onboarding__phrase-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hb-space-3);
+  inline-size: 100%;
+}
+.hb-onboarding__phrase {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--hb-space-2);
+}
+.hb-onboarding__word {
+  display: flex;
+  align-items: center;
+  gap: var(--hb-space-1);
+  padding: var(--hb-space-1) var(--hb-space-2);
+  border: 1px solid var(--hb-color-border);
+  border-radius: var(--hb-radius-sm);
+  background: var(--hb-color-surface);
+  font-size: var(--hb-text-body-sm);
+  text-align: start;
+}
+.hb-onboarding__word-n {
+  color: var(--hb-color-text-muted);
+  font-size: var(--hb-text-caption);
+  min-inline-size: 1.1rem;
+}
+
+.hb-onboarding__phrase-input {
+  inline-size: 100%;
+  resize: vertical;
+  padding: var(--hb-space-2) var(--hb-space-3);
+  border: 1px solid var(--hb-color-border);
+  border-radius: var(--hb-radius-sm);
+  background: var(--hb-color-surface);
+  color: var(--hb-color-text);
+  font-family: var(--hb-font-mono);
+  font-size: var(--hb-text-body-sm);
+  line-height: var(--hb-leading-normal);
+}
+.hb-onboarding__phrase-input:focus-visible {
+  outline: var(--hb-size-focus-ring) solid var(--hb-color-ring);
+  outline-offset: 2px;
+}
+.hb-onboarding__error {
+  color: var(--hb-color-danger-text);
+  font-size: var(--hb-text-body-sm);
+  margin: 0;
+}
+
+.hb-onboarding__actions {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--hb-space-3);
+}
+.hb-onboarding__actions .hb-btn {
+  flex: 1;
+}
+
+.hb-onboarding__dots {
+  display: flex;
+  justify-content: center;
+  gap: var(--hb-space-1);
+}
+.hb-onboarding__dot {
+  inline-size: 6px;
+  block-size: 6px;
+  border-radius: var(--hb-radius-pill);
+  background: var(--hb-color-border);
+}
+.hb-onboarding__dot.is-on {
+  background: var(--hb-color-primary);
+}
+
+@media (max-width: 480px) {
+  .hb-onboarding__phrase {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

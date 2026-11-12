@@ -1,0 +1,14 @@
+flowchart LR
+    push["Git push / PR"] --> lint["Lint + format\n(clippy, eslint)"]
+    lint --> test["Unit + integration tests"]
+    test --> e2e["E2E (client smoke)"]
+    e2e --> sbom["SBOM + dep audit\n(cargo audit, osv)"]
+    sbom --> build["Build matrix\nWin/macOS/Linux/iOS/Android"]
+    build --> sign["Sign artifacts\n(code signing + TUF)"]
+    sign --> rel_stage["Publish: beta channel"]
+    rel_stage --> approve{"Maintainer approval"}
+    approve -->|yes| rel_prod["Publish: stable channel"]
+    sign --> svcimg["Build service images"]
+    svcimg --> deploy_stg["Deploy: staging (k8s)"]
+    deploy_stg --> approve2{"Approval"}
+    approve2 -->|yes| deploy_prod["Deploy: prod (k8s)"]

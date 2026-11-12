@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" role="img" aria-label="Hearth Suite">
+  <title>Hearth Suite flame, two-tone</title>
+  <!-- Fixed ember fills (identical in light & dark by design): outer #CF6A2C, inner core #F0B988. -->
+  <path fill="#CF6A2C" d="M24 3.5 C26 12.8 33 18 37 24 C40.4 28.9 40.2 34.2 38 38.2 C35.3 43.1 30 45.8 24 45.8 C18 45.8 12.7 43.1 10 38.2 C7.8 34.2 7.6 28.9 11 24 C15 18 22 12.8 24 3.5 Z"/>
+  <path fill="#F0B988" d="M24 18 C25 23.5 29 26.6 31 30 C32.7 32.9 32.6 35.8 31 38 C29.4 40.2 26.9 41.4 24 41.4 C21.1 41.4 18.6 40.2 17 38 C15.4 35.8 15.3 32.9 17 30 C19 26.6 23 23.5 24 18 Z"/>
+</svg>

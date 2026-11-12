@@ -1,0 +1,22 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist"
+  },
+  "include": ["src/**/*.ts"],
+  "references": [
+    { "path": "../core-client" },
+    { "path": "../design-system" },
+    { "path": "../lexicon" },
+    { "path": "../contacts" },
+    { "path": "../charts" },
+    { "path": "../help" },
+    { "path": "../legacy" },
+    { "path": "../../apps/shell" },
+    { "path": "../../apps/writer" },
+    { "path": "../../apps/sheets" },
+    { "path": "../../apps/records" },
+    { "path": "../../apps/calendar" }
+  ]
+}

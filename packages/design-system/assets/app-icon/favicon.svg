@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="img" aria-label="Hearth Suite">
+  <title>Hearth Suite favicon, plain flame</title>
+  <!-- Plain flame in fixed ember (currentColor doesn't resolve in a favicon). The
+       keyhole detail simplifies away below 24px, so the favicon uses the plain mark. -->
+  <path fill="#D2692E" d="M12 2c2.6 3.1 4.3 5.6 4.3 8.6a4.3 4.3 0 0 1-2.2 3.8c.5-1 .4-2.1-.4-3.1.1 1.4-.6 2.4-1.8 3.2a4.4 4.4 0 0 1-4.2-4.4c0-1.4.6-2.7 1.7-3.8-.2 1 .1 1.8.9 2.4C9.7 6.9 10.3 4.4 12 2z"/>
+</svg>

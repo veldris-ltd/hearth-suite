@@ -1,0 +1,21 @@
+[package]
+name = "hearth-legacy-import"
+description = "Import legacy Microsoft Works .wps/.wks/.wdb files into Hearth Suite documents (libwps-backed)."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+publish = false
+
+[dependencies]
+cfb = "0.14.0"
+hearth-odf-io = { version = "0.0.0", path = "../odf-io" }
+
+[lints]
+workspace = true
+
+[dev-dependencies]
+tempfile = "3.27.0"
+proptest = "1.9.0"

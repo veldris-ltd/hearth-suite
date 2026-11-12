@@ -1,0 +1,35 @@
+name: Feature request
+description: Suggest an idea or improvement for Hearth Suite
+labels: ["enhancement", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the idea! Please keep Hearth Suite's principles in mind: local-first,
+        offline-first, privacy-first, on-device AI only, and open formats/licence.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: Describe the user need or pain point, not just the solution.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+  - type: checkboxes
+    id: principles
+    attributes:
+      label: Principles
+      options:
+        - label: This works offline / does not require an account or cloud by default.
+          required: true
+        - label: This does not send user content off the device without explicit, encrypted opt-in.
+          required: true

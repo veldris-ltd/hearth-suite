@@ -1,0 +1,15 @@
+apiVersion: v2
+name: hearth-services
+description: >-
+  The optional Hearth Suite cloud services: sync relay (zero-knowledge encrypted-blob
+  store), key directory (public-key transparency log), release service
+  (TUF-signed update metadata), and the Hearth Suite Ops admin console. All four are
+  optional; Hearth Suite is fully usable offline without any of them.
+type: application
+version: 0.1.0
+appVersion: "0.0.0"
+home: https://hearth-suite.app/
+sources:
+  - https://github.com/veldris-ltd/hearth-suite
+maintainers:
+  - name: Veldris Ltd.

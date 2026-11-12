@@ -1,0 +1,215 @@
+/*
+ * The workspace chrome: a calm, persistent left rail beside a content region,
+ * with a quiet brand/breadcrumb top bar and an "On your device" cue. Everything
+ * is token-driven, so it themes automatically (light/dark) with the design
+ * system. The rail is a slim icon column on desktop and collapses to a bottom
+ * bar on narrow (mobile) viewports.
+ */
+
+html,
+body,
+#app {
+  block-size: 100%;
+}
+body {
+  margin: 0;
+}
+
+.hb-app {
+  display: flex;
+  block-size: 100vh;
+  inline-size: 100%;
+  overflow: hidden;
+  background: var(--hb-color-bg);
+  color: var(--hb-color-text);
+  font-family: var(--hb-font-sans);
+}
+
+/* ---- Rail --------------------------------------------------------------- */
+/* The app rail. v1.0's DS-site nav reference is 66px (~4.125rem); the shell uses
+   4.5rem (72px) for slightly roomier touch targets, set both to 4.125rem if
+   exact DS parity is wanted. (The 264px --hb-sidebar-w token is the docs-site
+   secondary sidebar, not this rail.) */
+.hb-rail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--hb-space-2);
+  inline-size: 4.5rem;
+  flex: 0 0 4.5rem;
+  padding: var(--hb-space-4) var(--hb-space-2);
+  background: var(--hb-color-surface-sunken);
+  border-inline-end: var(--hb-stroke-hair) solid var(--hb-color-border);
+  z-index: var(--hb-z-nav);
+}
+
+.hb-rail__brand {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 2.75rem;
+  block-size: 2.75rem;
+  margin-block-end: var(--hb-space-2);
+  border: none;
+  border-radius: var(--hb-radius-lg);
+  background: transparent;
+  color: var(--hb-color-primary);
+  cursor: pointer;
+}
+.hb-rail__brand:hover {
+  background: var(--hb-color-surface);
+}
+
+.hb-rail__nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hb-space-1);
+}
+
+.hb-rail__item,
+.hb-rail__action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 2.75rem;
+  block-size: 2.75rem;
+  border: var(--hb-stroke-hair) solid transparent;
+  border-radius: var(--hb-radius-md);
+  background: transparent;
+  color: var(--hb-color-text-muted);
+  cursor: pointer;
+  transition:
+    background-color var(--hb-dur-fast) var(--hb-ease-standard),
+    color var(--hb-dur-fast) var(--hb-ease-standard);
+}
+.hb-rail__item:hover,
+.hb-rail__action:hover {
+  background: var(--hb-color-surface);
+  color: var(--hb-color-text);
+}
+.hb-rail__item:focus-visible,
+.hb-rail__action:focus-visible,
+.hb-rail__brand:focus-visible {
+  outline: var(--hb-size-focus-ring) solid var(--hb-color-ring);
+  outline-offset: 2px;
+}
+.hb-rail__item.is-active {
+  background: var(--hb-color-surface);
+  color: var(--hb-color-primary);
+  border-color: var(--hb-color-border);
+  box-shadow: var(--hb-elev-1);
+}
+
+.hb-rail__spacer {
+  flex: 1;
+}
+
+.hb-rail__avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 2.25rem;
+  block-size: 2.25rem;
+  border-radius: var(--hb-radius-pill);
+  background: var(--hb-color-primary);
+  color: var(--hb-color-text-on-primary);
+  font-weight: var(--hb-weight-semibold);
+  font-size: var(--hb-text-body-sm);
+  user-select: none;
+}
+
+/* ---- Workspace + top bar ------------------------------------------------ */
+.hb-workspace {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-inline-size: 0;
+}
+
+.hb-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--hb-space-4);
+  padding: var(--hb-space-3) var(--hb-space-5);
+  border-block-end: var(--hb-stroke-hair) solid var(--hb-color-border);
+  background: var(--hb-color-bg);
+}
+
+.hb-topbar__title {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  min-inline-size: 0;
+}
+.hb-topbar__brand {
+  font-family: var(--hb-font-serif);
+  font-size: var(--hb-text-body-lg);
+  font-weight: var(--hb-weight-semibold);
+  color: var(--hb-color-text);
+}
+.hb-topbar__sep {
+  color: var(--hb-color-text-muted);
+}
+.hb-topbar__crumb {
+  color: var(--hb-color-text-muted);
+  font-size: var(--hb-text-body-sm);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hb-device {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--hb-space-1);
+  flex: 0 0 auto;
+  padding: var(--hb-space-1) var(--hb-space-3);
+  border: var(--hb-stroke-hair) solid var(--hb-color-border);
+  border-radius: var(--hb-radius-pill);
+  background: var(--hb-color-surface);
+  color: var(--hb-color-text-muted);
+  font-size: var(--hb-text-caption);
+  font-weight: var(--hb-weight-medium);
+}
+.hb-device .hb-icon {
+  color: var(--hb-color-primary);
+}
+
+.hb-chrome__content {
+  flex: 1;
+  min-block-size: 0;
+  overflow: auto;
+}
+.hb-chrome__error {
+  padding: var(--hb-space-6);
+  color: var(--hb-color-danger);
+}
+
+.hb-icon {
+  display: block;
+}
+
+/* ---- Responsive: rail becomes a bottom bar on narrow viewports. --------- */
+@media (max-width: 640px) {
+  .hb-app {
+    flex-direction: column-reverse;
+  }
+  .hb-rail {
+    flex: 0 0 auto;
+    inline-size: 100%;
+    flex-direction: row;
+    justify-content: space-around;
+    padding: var(--hb-space-2);
+    border-inline-end: none;
+    border-block-start: var(--hb-stroke-hair) solid var(--hb-color-border);
+  }
+  .hb-rail__brand,
+  .hb-rail__spacer {
+    display: none;
+  }
+  .hb-rail__nav {
+    flex-direction: row;
+    gap: var(--hb-space-2);
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "name": "hearth",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Hearth Suite, an open-source, offline-first, privacy-first productivity suite.",
+  "license": "Apache-2.0",
+  "author": "Veldris Ltd.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/veldris-ltd/hearth-suite.git"
+  },
+  "type": "module",
+  "packageManager": "pnpm@10.34.6",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "tsc --build",
+    "test": "pnpm -r --if-present test",
+    "build": "pnpm -r --if-present build",
+    "e2e": "pnpm -r --if-present e2e",
+    "coverage": "c8 --check-coverage --lines 75 --branches 70 --functions 75 --reporter=text --reporter=lcov --include=\"apps/**/src/**/*.mjs\" --include=\"packages/**/src/**/*.mjs\" pnpm -r --if-present test"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.13.0",
+    "c8": "^10.1.3",
+    "eslint": "^9.13.0",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.3.3",
+    "typescript": "^5.6.3",
+    "typescript-eslint": "^8.10.0"
+  }
+}

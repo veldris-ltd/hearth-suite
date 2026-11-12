@@ -1,0 +1,67 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/bundle",
+    "crates/odf-io",
+    "crates/legacy-import",
+    "crates/crdt-sync",
+    "crates/key-manager",
+    "crates/lexicon",
+    "crates/seal",
+    "crates/ember-bridge",
+    "crates/store",
+    "crates/ffi",
+    "crates/release",
+    "crates/admin-core",
+    "crates/observability",
+    "crates/relay-core",
+    "crates/key-directory-core",
+]
+# These binaries are intentionally NOT workspace members: they pull heavy I/O
+# stacks (the Tauri webview toolchain; the admin-cp web-server + WebAuthn stack)
+# that should only be provisioned on their dedicated build/runners. Keeping them
+# out leaves the core workspace, lint, `cargo test --workspace`, `cargo deny`,
+# reproducible-build, toolchain-light. Each depends on the workspace crates by
+# path and builds via its own job (`just desktop`, the services image build).
+exclude = [
+    "apps/desktop/src-tauri",
+    "services/admin-cp/api",
+    "services/sync-relay/api",
+    "services/key-directory/api",
+    "services/release-service/api",
+    "fuzz",
+]
+
+[workspace.package]
+version = "0.0.0"
+edition = "2021"
+rust-version = "1.82"
+license = "Apache-2.0"
+authors = ["Veldris Ltd."]
+repository = "https://github.com/veldris-ltd/hearth-suite"
+homepage = "https://github.com/veldris-ltd/hearth-suite"
+description = "Hearth Suite, an open-source, offline-first, privacy-first productivity suite."
+publish = false
+# Shared third-party dependencies are declared here as the workspace grows
+# (P1.x). Kept empty during P0.1 so the scaffold builds with no external deps.
+
+# Lints applied across every crate via `[lints] workspace = true`.
+# `just lint` runs clippy with `-D warnings`, so these surface as hard errors.
+[workspace.lints.rust]
+unsafe_code = "warn"
+missing_docs = "warn"
+rust_2018_idioms = { level = "warn", priority = -1 }
+unreachable_pub = "warn"
+
+[workspace.lints.clippy]
+all = { level = "warn", priority = -1 }
+pedantic = { level = "warn", priority = -1 }
+# Allow a few pedantic lints that are noisy for library crates.
+module_name_repetitions = "allow"
+must_use_candidate = "allow"
+# Proper nouns and acronyms in prose (SQLite, OpenDocument, ML-KEM, ...) are fine.
+doc_markdown = "allow"
+
+[profile.release]
+lto = "thin"
+strip = true

@@ -1,0 +1,20 @@
+# Prometheus scrape config for Hearth Suite's optional cloud services.
+# Each service exposes aggregate, content-free metrics at /metrics
+# (rendered by the hearth-observability crate). Clients are never scraped -
+# they emit no telemetry (AC-OBS-1).
+global:
+  scrape_interval: 30s
+  scrape_timeout: 10s
+
+scrape_configs:
+  - job_name: hearth-services
+    metrics_path: /metrics
+    scheme: http
+    static_configs:
+      - targets:
+          - sync-relay:8080
+          - key-directory:8080
+          - release-service:8080
+          - admin-cp:8080
+        labels:
+          deployment: self-hosted

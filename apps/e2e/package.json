@@ -1,0 +1,16 @@
+{
+  "name": "@hearth/e2e",
+  "version": "0.0.0",
+  "private": true,
+  "description": "End-to-end client journeys exercised offline against the module logic.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "scripts": {
+    "e2e": "node --test tests/journey.test.mjs tests/no-telemetry.test.mjs tests/brand.test.mjs tests/a11y.test.mjs",
+    "a11y:axe": "node axe-ci.mjs"
+  },
+  "dependencies": {
+    "@hearth/shell": "workspace:*",
+    "@hearth/writer": "workspace:*"
+  }
+}

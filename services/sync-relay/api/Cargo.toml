@@ -1,0 +1,32 @@
+# The sync-relay service. NOT a workspace member (see root Cargo.toml `exclude`):
+# it pulls a web/DB/object-store stack (axum, sqlx, object_store) provisioned only
+# on the service runners. It depends on the in-workspace `hearth-relay-core`
+# (tested quota/lifecycle/rate-limit logic) by path and is built into a container
+# image by `.github/workflows/services.yml`.
+[package]
+name = "hearth-sync-relay"
+version = "0.0.0"
+edition = "2021"
+rust-version = "1.82"
+description = "Hearth Suite sync relay, zero-knowledge encrypted-blob store."
+license = "Apache-2.0"
+authors = ["Veldris Ltd."]
+publish = false
+
+[[bin]]
+name = "hearth-sync-relay"
+path = "src/main.rs"
+
+[dependencies]
+hearth-relay-core = { path = "../../../crates/relay-core" }
+hearth-observability = { path = "../../../crates/observability" }
+axum = "0.7"
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "signal", "time"] }
+tower-http = { version = "0.6", features = ["trace", "set-header"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["json", "env-filter"] }
+sqlx = { version = "0.8", features = ["runtime-tokio-rustls", "postgres"] }
+object_store = { version = "0.14.2", features = ["aws"] }
+bytes = "1"

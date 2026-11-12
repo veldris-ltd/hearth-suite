@@ -1,0 +1,18 @@
+{
+  "_comment": "Known-answer vectors for Hearth Suite crypto review (P2-Q3, AC-SEC-12). See README.md in this directory for provenance.",
+  "ml_kem_768": {
+    "standard": "FIPS 203",
+    "note": "Deterministic keygen from a fixed 64-byte seed and deterministic encapsulation from fixed 32-byte coins.",
+    "keygen_seed_hex": "42424242424242424242424242424242424242424242424242424242424242424242424242424242424242424242424242424242424242424242424242424242",
+    "encaps_coins_hex": "0707070707070707070707070707070707070707070707070707070707070707",
+    "ek_sha256": "8cde1b49992415b527e361f52465634978fcc488d6f541c4a1fec97fd14b4661",
+    "ct_sha256": "d54ac82b1bb13d88772bfce83cf88deeaef060ef8e18c962f7ca2135a9fc1875",
+    "shared_secret_hex": "7086c0ef2f42dae278e18a1beb1552713341dac0da820821c5b7182e99735544"
+  },
+  "ml_dsa_65": {
+    "standard": "FIPS 204",
+    "note": "Deterministic keygen from a fixed 32-byte seed; the verifying key is pinned by SHA-256.",
+    "keygen_seed_hex": "9c9c9c9c9c9c9c9c9c9c9c9c9c9c9c9c9c9c9c9c9c9c9c9c9c9c9c9c9c9c9c9c",
+    "vk_sha256": "d9cf74c8cd6ee181076161265c4821897b0815e2925060f661012c8a1dc21178"
+  }
+}

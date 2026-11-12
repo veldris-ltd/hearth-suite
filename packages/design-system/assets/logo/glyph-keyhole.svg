@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" role="img" aria-label="Hearth Suite (sealed)">
+  <title>Hearth Suite flame, keyhole (Seal tie-in)</title>
+  <!-- Flame with a negative-space keyhole; inherits colour via currentColor. Use on app tiles >=48px. -->
+  <path fill="currentColor" fill-rule="evenodd" d="M24 3.5 C26 12.8 33 18 37 24 C40.4 28.9 40.2 34.2 38 38.2 C35.3 43.1 30 45.8 24 45.8 C18 45.8 12.7 43.1 10 38.2 C7.8 34.2 7.6 28.9 11 24 C15 18 22 12.8 24 3.5 Z M24 23.2 C21.7 23.2 19.9 25 19.9 27.3 C19.9 28.8 20.7 30.1 21.9 30.8 L20.7 37.2 L27.3 37.2 L26.1 30.8 C27.3 30.1 28.1 28.8 28.1 27.3 C28.1 25 26.3 23.2 24 23.2 Z"/>
+</svg>
